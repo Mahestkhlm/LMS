@@ -18,11 +18,11 @@ namespace LMSLexicon20.Models
 
         //Foreign Key
         public string UserId { get; set; }
-        public int CourseId { get; set; }
+        public int? CourseId { get; set; }
 
-        public int ModuleId { get; set; }
+        public int? ModuleId { get; set; }
 
-        public int ActivityId { get; set; }
+        public int? ActivityId { get; set; }
 
         //Navigation Prop
         public Course Course { get; set; }
