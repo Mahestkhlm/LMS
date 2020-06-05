@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace LMSLexicon20.Data.Migrations
+namespace LMSLexicon20.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200605132529_Init")]
-    partial class Init
+    [Migration("20200605135129_JossanInit")]
+    partial class JossanInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,7 +55,7 @@ namespace LMSLexicon20.Data.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("LMSLexicon20.Models.ActivityType", b =>
