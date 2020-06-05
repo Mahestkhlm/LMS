@@ -17,7 +17,7 @@ namespace LMSLexicon20.Models
         public DateTime RegDate { get; set; }
 
         //Foreign Key
-        public int CourseId { get; set; }
+        public int? CourseId { get; set; }
 
 
         //Navigation Prop
