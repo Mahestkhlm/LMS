@@ -16,6 +16,7 @@ using LMSLexicon20.Models;
 
 namespace LMSLexicon20
 {
+    // remove this 1
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -31,6 +32,7 @@ namespace LMSLexicon20
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
