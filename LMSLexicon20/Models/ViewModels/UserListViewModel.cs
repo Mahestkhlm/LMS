@@ -8,7 +8,7 @@ namespace LMSLexicon20.Models.ViewModels
 {
     public class UserListViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "Namn")]
         public string FullName { get; set; }
