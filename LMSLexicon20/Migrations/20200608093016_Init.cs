@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LMSLexicon20.Data.Migrations
+namespace LMSLexicon20.Migrations
 {
     public partial class Init : Migration
     {
@@ -216,7 +216,7 @@ namespace LMSLexicon20.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Activity",
+                name: "Activities",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -231,15 +231,15 @@ namespace LMSLexicon20.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Activity", x => x.Id);
+                    table.PrimaryKey("PK_Activities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Activity_ActivityType_ActivityTypeId",
+                        name: "FK_Activities_ActivityType_ActivityTypeId",
                         column: x => x.ActivityTypeId,
                         principalTable: "ActivityType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Activity_Module_ModuleId",
+                        name: "FK_Activities_Module_ModuleId",
                         column: x => x.ModuleId,
                         principalTable: "Module",
                         principalColumn: "Id",
@@ -265,9 +265,9 @@ namespace LMSLexicon20.Data.Migrations
                 {
                     table.PrimaryKey("PK_Document", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Document_Activity_ActivityId",
+                        name: "FK_Document_Activities_ActivityId",
                         column: x => x.ActivityId,
-                        principalTable: "Activity",
+                        principalTable: "Activities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -291,13 +291,13 @@ namespace LMSLexicon20.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Activity_ActivityTypeId",
-                table: "Activity",
+                name: "IX_Activities_ActivityTypeId",
+                table: "Activities",
                 column: "ActivityTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Activity_ModuleId",
-                table: "Activity",
+                name: "IX_Activities_ModuleId",
+                table: "Activities",
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
@@ -394,7 +394,7 @@ namespace LMSLexicon20.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Activity");
+                name: "Activities");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

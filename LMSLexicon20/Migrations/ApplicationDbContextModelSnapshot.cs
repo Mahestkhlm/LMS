@@ -4,16 +4,14 @@ using LMSLexicon20.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace LMSLexicon20.Data.Migrations
+namespace LMSLexicon20.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200605132529_Init")]
-    partial class Init
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +53,7 @@ namespace LMSLexicon20.Data.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("LMSLexicon20.Models.ActivityType", b =>
