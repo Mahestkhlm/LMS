@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+
 using LMSLexicon20.Data;
 using LMSLexicon20.Models;
 using LMSLexicon20.Models.ViewModels;
@@ -12,10 +13,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
+
 namespace LMSLexicon20.Controllers
 {
     public class UsersController : Controller
     {
+
         private ApplicationDbContext _context;
         private UserManager<User> _userManager;
         private IMapper _mapper;
@@ -25,6 +28,7 @@ namespace LMSLexicon20.Controllers
             _context = dbContext;
             _userManager = userManager;
             _mapper = mapper;
+
         }
 
         public IActionResult Index()
@@ -36,6 +40,7 @@ namespace LMSLexicon20.Controllers
         {
             return View();
         }
+
 
         // GET: User/Create
         [Authorize(Roles = "Teacher")]
@@ -98,6 +103,21 @@ namespace LMSLexicon20.Controllers
                 chars[i] = validChars[random.Next(0, validChars.Length)];
             }
             return new string(chars);
+
+        public async Task<IActionResult> List(string filterSearch)
+        {
+            var viewModel = await _mapper.ProjectTo<UserListViewModel>(_userManager.Users).ToListAsync();
+            for (int i = 0; i < viewModel.Count; i++)
+            {
+                var role = _userManager.GetRolesAsync(_userManager.FindByIdAsync(viewModel[i].Id).Result).Result[0];
+                viewModel[i].UserRole = role == "Teacher" ? "Lärare" : "Elev";
+            }
+            
+            var filter = string.IsNullOrWhiteSpace(filterSearch) ?
+                            viewModel : viewModel.Where(m => m.FullName.ToLower().Contains(filterSearch.ToLower()) || 
+                                                                m.Email.ToLower().Contains(filterSearch.ToLower()));
+            return View(filter);
+
         }
         
     }

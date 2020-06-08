@@ -12,12 +12,19 @@ namespace LMSLexicon20.Data
     {
         public MapperProfile()
         {
+
             //from viewmodel to user
             CreateMap<CreateUserViewModel, User>()
                 .ForMember(dest => dest.UserName,
                 opt => opt.MapFrom(src => src.Email));
                 //.ForMember(dest => dest.CourseId,
                 //opt => opt.MapFrom(src => src.));
+
+            CreateMap<User, UserListViewModel>()
+                .ForMember(
+                       dest => dest.FullName,
+                       from => from.MapFrom(e => $"{e.FirstName} {e.LastName}"));
+
         }
     }
 }
