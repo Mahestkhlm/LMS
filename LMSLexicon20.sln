@@ -3,7 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMSLexicon20", "LMSLexicon20\LMSLexicon20.csproj", "{9C7D0FCC-A3A5-4103-A0E4-8E9A903A39DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LMSLexicon20", "LMSLexicon20\LMSLexicon20.csproj", "{9C7D0FCC-A3A5-4103-A0E4-8E9A903A39DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{03975D36-17DD-488F-BAAA-36976EF27A77}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{1E791DEA-AD11-434E-8F16-44E2D506328B}"
+	ProjectSection(SolutionItems) = preProject
+		Seed.cs = Seed.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +25,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1E791DEA-AD11-434E-8F16-44E2D506328B} = {03975D36-17DD-488F-BAAA-36976EF27A77}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A15B58A-FAF8-4F37-961C-CE60A39F7F0B}

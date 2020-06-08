@@ -13,10 +13,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using LMSLexicon20.Models;
+using AutoMapper;
 
 namespace LMSLexicon20
 {
-    // remove this 1
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -38,6 +38,10 @@ namespace LMSLexicon20
             
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddAutoMapper(typeof(MapperProfile));
+
+            services.AddDbContext<LMSLexicon20Context>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("LMSLexicon20Context")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
