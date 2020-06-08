@@ -4,10 +4,17 @@
     ViewData["Title"] = "List";
 }
 
-<h1>List</h1>
-
+<h1>Användarlista</h1>
+<form method="get" asp-controller="Users" asp-action="List" class="text-light border rounded-lg">
+    <div class="input-group">
+        <input type="text" class="form-control" name="filterSearch" placeholder="Sök på namn eller email..." />
+        <div class="input-group-append">
+            <button type="submit" class="btn">&#128270;Sök</button>
+        </div>
+    </div>
+</form>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Lägga till en ny lärare</a>
 </p>
 <table class="table">
     <thead>
@@ -34,12 +41,12 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CourseName)
+                <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">@Html.DisplayFor(modelItem => item.CourseName)</a>
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">EDIT</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">DETAILS</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">DELETE</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Redigera</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Radera</a>
             </td>
         </tr>
 }

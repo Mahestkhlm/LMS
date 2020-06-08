@@ -32,11 +32,15 @@ namespace LMSLexicon20.Controllers
             return View();
         }
 
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(string filterSearch)
         {
             var viewModel = await mapper.ProjectTo<UserListViewModel>(userManager.Users).ToListAsync();
             
-            return View(viewModel);
+            var filter = string.IsNullOrWhiteSpace(filterSearch) ?
+                            viewModel : viewModel.Where(m => m.FullName.ToLower().Contains(filterSearch.ToLower()) || 
+                                                                m.Email.ToLower().Contains(filterSearch.ToLower()));
+
+            return View(filter);
         }
     }
 }

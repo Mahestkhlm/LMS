@@ -15,5 +15,6 @@ namespace LMSLexicon20.Models.ViewModels
         public string Email { get; set; }
         [Display(Name = "Kurs")]
         public string CourseName { get; set; }
+        public int CourseId { get; set; }
     }
 }
