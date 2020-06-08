@@ -8,7 +8,6 @@ namespace LMSLexicon20.Controllers
 {
     public class UsersController : Controller
     {
-        private object _context;
 
         public IActionResult Index()
         {
@@ -19,9 +18,6 @@ namespace LMSLexicon20.Controllers
         {
             return View();
         }
-
-
-
         
     }
 }
