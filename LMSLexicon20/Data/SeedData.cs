@@ -20,7 +20,7 @@ namespace LMSLexicon20.Data
             {
                 var userManager = services.GetRequiredService<UserManager<User>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                var roleNames = new[] { "Teacher", "Student" }; //ToDo: ha med Member?
+                var roleNames = new[] { "Teacher", "Student" }; 
 
                 //--------SKAPA ROLLER--------
                 foreach (var name in roleNames)
