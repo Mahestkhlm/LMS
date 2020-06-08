@@ -24,9 +24,14 @@ namespace LMSLexicon20
                 context.Database.Migrate();
                 var config = services.GetRequiredService<IConfiguration>();
 
+                //ANVÄND FÖR ERAT LÖSEN
+                //(i cmnd line, stå i solution-folder. Ex: C:\Users\josefin\source\repos\LMSLexicon20\LMSLexicon20) :
+                //dotnet user-secrets set "TeacherPW" "ert lösenord"  
+                var teacherPW = config["TeacherPW"];
+
                 try
                 {
-                    SeedData.InitializeAsync(services).Wait();
+                    SeedData.InitializeAsync(services, teacherPW).Wait();
                 }
                 catch (Exception ex )
                 {
