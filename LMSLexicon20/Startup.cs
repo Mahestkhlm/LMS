@@ -40,8 +40,8 @@ namespace LMSLexicon20
             services.AddRazorPages();
             services.AddAutoMapper(typeof(MapperProfile));
 
-            services.AddDbContext<LMSLexicon20Context>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("LMSLexicon20Context")));
+            services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

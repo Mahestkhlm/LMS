@@ -7,22 +7,60 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LMSLexicon20.Data;
 using LMSLexicon20.Models;
+using LMSLexicon20.ViewModels;
 
 namespace LMSLexicon20.Controllers
 {
     public class CoursesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext db;
 
         public CoursesController(ApplicationDbContext context)
         {
-            _context = context;
+            db = context;
+
+            var CourseId = db.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
+            if (db.Courses.Find(CourseId)?.Id is null)
+            {
+                db.Courses.Add(new Course {  Name = ".Net", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "I den här självstudien visas hur du skapar en .NET Core-app och ansluter den till SQL Database. När du är klar har du en .NET Core MVC-app som körs i App Service" });
+                db.Courses.Add(new Course {  Name = "Azure", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Automatically deploy and update a static web application and its API from a GitHub repository.\nIn this module, you will:\nChoose an existing web app project with either Angular,\nReact,\nSvelte or Vue\nCreate an API for the app with Azure Functions\nRun the application locally\nPublish the app and its API to Azure Static Web Apps" });
+                db.SaveChanges();
+                CourseId = db.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
+            }
+            var ModuleId = db.Modules.Where(m => m.Name == "Azure deploy").Select(m => m.Id).FirstOrDefault();
+            if (db.Modules.Find(ModuleId)?.Id is null)
+            {
+                db.Modules.Add(new Module { CourseId = CourseId, Name = "Azure deploy", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Deploy a website to Azure with Azure App Service" });
+                db.Modules.Add(new Module { CourseId = CourseId, Name = "Azure Well", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Build great solutions with the Microsoft Azure Well - Architected Framework" });
+                db.SaveChanges();
+                ModuleId = db.Modules.Where(m => m.Name == "Azure deploy").Select(m => m.Id).FirstOrDefault();
+            }
+
+            var ActivityTypeId = db.ActivityTypes.Where(a => a.Name == "e-learningpass").Select(m => m.Id).FirstOrDefault();
+            if (db.ActivityTypes.Find(ActivityTypeId)?.Id is null)
+            {
+                db.ActivityTypes.Add(new ActivityType { Name = "e-learningpass" });
+                db.ActivityTypes.Add(new ActivityType { Name = "föreläsningar" });
+                db.ActivityTypes.Add(new ActivityType { Name = "övningstillfällen" });
+                db.ActivityTypes.Add(new ActivityType { Name = "annat" });
+                db.SaveChanges();
+                ActivityTypeId = db.ActivityTypes.Where(a => a.Name == "e-learningpass").Select(m => m.Id).FirstOrDefault();
+            }
+
+            var ActivityId = db.Activities.Where(a => a.Name == "Environment").Select(m => m.Id).FirstOrDefault();
+            if (db.Activities.Find(ActivityId)?.Id is null)
+            {
+                db.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId= ActivityTypeId, Name = "Environment", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Prepare your development environment for Azure development" });
+                db.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "App service", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Host a web application with Azure App service" });
+                db.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "Web app platform", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Learn how to create a website through the hosted web app platform in Azure App Service" });
+                db.SaveChanges();
+            }
         }
 
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Courses.ToListAsync());
+            return View(await db.Courses.ToListAsync());
         }
 
         // GET: Courses/Details/5
@@ -32,15 +70,51 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
+            //
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (course == null)
+            //db.Courses.Find(1)
+            //await 
+            var courseDetailVM = db.Courses
+                //.Include(c => c.Modules)
+                //.ThenInclude(m => m.Activities)
+                    .Select(c => new CourseDetailVM
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        StartDate = c.StartDate,
+                        EndDate = c.EndDate,
+                        Description = c.Description
+                        ,
+                        ModuleDetailVM = (ICollection<ModuleDetailVM>)c.Modules
+                                   .Select(m => new ModuleDetailVM
+                                   {
+                                       Id = m.Id,
+                                       Name = m.Name,
+                                       StartDate = m.StartDate,
+                                       EndDate = m.EndDate,
+                                       Description = m.Description
+                                       ,
+                                       ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
+                                            .Select(a => new ActivityDetailVM
+                                            {
+                                                Id = a.Id,
+                                                Name = a.Name,
+                                                StartDate = a.StartDate,
+                                                EndDate = a.EndDate,
+                                                Description = a.Description
+                                            })
+                                   })
+                    })
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+
+            if (courseDetailVM == null)
             {
+                //var courseTmp = db.Courses.FirstOrDefaultAsync(c => c.Id == id);
                 return NotFound();
             }
 
-            return View(course);
+            return View(nameof(Details),await courseDetailVM);
         }
 
         // GET: Courses/Create
@@ -58,8 +132,8 @@ namespace LMSLexicon20.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+                db.Add(course);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(course);
@@ -73,7 +147,7 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await db.Courses.FindAsync(id);
             if (course == null)
             {
                 return NotFound();
@@ -97,8 +171,8 @@ namespace LMSLexicon20.Controllers
             {
                 try
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    db.Update(course);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +198,7 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
+            var course = await db.Courses
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
@@ -139,15 +213,15 @@ namespace LMSLexicon20.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
+            var course = await db.Courses.FindAsync(id);
+            db.Courses.Remove(course);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CourseExists(int id)
         {
-            return _context.Courses.Any(e => e.Id == id);
+            return db.Courses.Any(e => e.Id == id);
         }
     }
 }
