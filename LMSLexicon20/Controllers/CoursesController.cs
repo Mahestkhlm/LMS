@@ -10,16 +10,19 @@ using LMSLexicon20.Models;
 using LMSLexicon20.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using LMSLexicon20.Models.ViewModels;
+using AutoMapper;
 
 namespace LMSLexicon20.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper mapper;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            this.mapper = mapper;
 
             var CourseId = _context.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
             if (_context.Courses.Find(CourseId)?.Id is null)
@@ -137,12 +140,13 @@ namespace LMSLexicon20.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(viewModel);
+                var model = mapper.Map<Course>(viewModel);
+
+                _context.Add(model);
                 await _context.SaveChangesAsync();
-                TempData["SuccessText"] = $"The Course: {viewModel.Name} is Created!";
+                TempData["SuccessText"] = $"Kursen: {model.Name} - är skapad!";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["FailText"] = "Try Again! Something Went wrong!!";
             return View(viewModel);
         }
 
