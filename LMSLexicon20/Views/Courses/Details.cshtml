@@ -41,196 +41,86 @@
 <div id="accordion">
     @foreach (var item in Model.ModuleDetailVM)
     {
-        <div class="card">
-            <div class="card-header" id="@String.Format($"heading{item.Id}")">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")" aria-expanded="true" aria-controls="@String.Format($"collapse{item.Id}")">
-                        &nbsp;&nbsp;
-                        <span>@Html.DisplayFor(modelItem => item.Name)</span>
-                        &nbsp;&nbsp;
-                        <span>@Html.DisplayFor(modelItem => item.StartDate)</span>
-                        -
-                        <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
+    <div class="card">
+        <div class="card-header" id="@String.Format($"heading{item.Id}")">
+            <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")" aria-expanded="true" aria-controls="@String.Format($"collapse{item.Id}")">
+                    &nbsp;&nbsp;
+                    <span>@Html.DisplayFor(modelItem => item.Name)</span>
+                    &nbsp;&nbsp;
+                    <span>@Html.DisplayFor(modelItem => item.StartDate)</span>
+                    -
+                    <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
 
-                    </button>
-                </h5>
-            </div>
+                </button>
+            </h5>
+        </div>
 
 
-            <div id="@String.Format($"collapse{item.Id}")" class="collapse show" aria-labelledby="@String.Format($"heading{item.Id}")" data-parent="#accordion">
-                <div class="card-body">
-                    <span>@Html.DisplayFor(modelItem => item.Description)</span>
-                    <div style="display: flex; justify-content: flex-end">
-                        <div style="">
-                            <span><a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | </span>
-                            <span><a asp-action="Details" asp-route-id="@item.Id">Details</a> | </span>
-                            <span><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></span>
-                        </div>
+        <div id="@String.Format($"collapse{item.Id}")" class="collapse show" aria-labelledby="@String.Format($"heading{item.Id}")" data-parent="#accordion">
+            <div class="card-body">
+                <span>@Html.DisplayFor(modelItem => item.Description)</span>
+                <div style="display: flex; justify-content: flex-end">
+                    <div style="">
+                        <span><a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | </span>
+                        <span><a asp-action="Details" asp-route-id="@item.Id">Details</a> | </span>
+                        <span><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></span>
                     </div>
-                    @if (item.ActivityDetailVM.Count() == 0)
+                </div>
+                @if (item.ActivityDetailVM.Count() == 0)
                     {
-                        <span><a asp-action="AddAcivity" asp-route-id="@item.Id">Add Activity</a></span>
+                <span><a asp-action="AddAcivity" asp-route-id="@item.Id">Add Activity</a></span>
                     }
-                    @foreach (var itemActiv in item.ActivityDetailVM)
+                @foreach (var itemActiv in item.ActivityDetailVM)
                     {
-                        <div id="@String.Format($"accordion{item.Id}")">
-                            <div class="card">
-                                <div class="card-header" id="@String.Format($"heading{item.Id}_{itemActiv.Id}")">
-                                    <h5 class="mb-0">
-                                        <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}_{itemActiv.Id}")" aria-expanded="false" aria-controls="@String.Format($"collapse{item.Id}_{itemActiv.Id}")">
-                                            &nbsp;&nbsp;
-                                            <span>@Html.DisplayFor(modelItem => itemActiv.Name)</span>
-                                            &nbsp;&nbsp;
-                                            <span>@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
-                                            -
-                                            <span>@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
+                <div id="@String.Format($"accordion{item.Id}")">
+                    <div class="card">
+                        <div class="card-header" id="@String.Format($"heading{item.Id}_{itemActiv.Id}")">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}_{itemActiv.Id}")" aria-expanded="false" aria-controls="@String.Format($"collapse{item.Id}_{itemActiv.Id}")">
+                                    &nbsp;&nbsp;
+                                    <span>@Html.DisplayFor(modelItem => itemActiv.Name)</span>
+                                    &nbsp;&nbsp;
+                                    <span>@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
+                                    -
+                                    <span>@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
 
-                                        </button>
-                                    </h5>
-                                </div>
+                                </button>
+                            </h5>
+                        </div>
 
-                                <div id="@String.Format($"collapse{item.Id}_{itemActiv.Id}")" class="collapse" aria-labelledby="@String.Format($"heading{item.Id}_{itemActiv.Id}")" data-parent="@String.Format($"#accordion{item.Id}")">
-                                    <div class="card-body">
-                                        <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
-                                        <div style="display: flex; justify-content: flex-end">
-                                            <div style="">
-                                                <span><a asp-action="Edit" asp-route-id="@itemActiv.Id">Edit</a> | </span>
-                                                <span><a asp-action="Details" asp-route-id="@itemActiv.Id">Details</a> | </span>
-                                                <span><a asp-action="Delete" asp-route-id="@itemActiv.Id">Delete</a></span>
-                                            </div>
-                                        </div>
+                        <div id="@String.Format($"collapse{item.Id}_{itemActiv.Id}")" class="collapse" aria-labelledby="@String.Format($"heading{item.Id}_{itemActiv.Id}")" data-parent="@String.Format($"#accordion{item.Id}")">
+                            <div class="card-body">
+                                <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
+                                <div style="display: flex; justify-content: flex-end">
+                                    <div style="">
+                                        <span><a asp-action="Edit" asp-route-id="@itemActiv.Id">Edit</a> | </span>
+                                        <span><a asp-action="Details" asp-route-id="@itemActiv.Id">Details</a> | </span>
+                                        <span><a asp-action="Delete" asp-route-id="@itemActiv.Id">Delete</a></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @if (itemActiv.Id == item.ActivityDetailVM.Select(a => a.Id).Last())
-                        {
-                            <span><a asp-action="AddAcivity" asp-route-id="@item.Id">Add Activity</a></span>
-                        }
-                    }
+                    </div>
                 </div>
+                @if (item.ActivityDetailVM.Count() == 0)
+                    {
+                <span><a asp-action="AddAcivity" asp-route-id="@item.Id">Add Activity</a></span>
+                    }
+
+                    }
             </div>
         </div>
+    </div>
     }
     <span><a asp-action="AddModule" asp-route-id="@Model.Id">Add Module</a></span>
 </div>
-
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
 <br />
 <br />
 
-<div id="accordion">
-    <div class="card">
-        <div class="card-header" id="headingOne">
-            <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    Collapsible Group Item #1
-                </button>
-            </h5>
-        </div>
-
-        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-            <div class="card-body">
-                Anim pariatur cliche repr eiusmod. Brunch bly haven't heard of them accusamus labore sustainable VHS.
+<a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="./Course" asp-route-CourseId="myValue">Skapa ny student</a>
 
 
-
-
-                <div id="accordion1">
-                    <div class="card">
-                        <div class="card-header" id="headingOneOne">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOneOne" aria-expanded="true" aria-controls="collapseOneOne">
-                                    Collapsible Group Item #1.1
-                                </button>
-                            </h5>
-                        </div>
-
-                        <div id="collapseOneOne" class="collapse show" aria-labelledby="headingOneOne" data-parent="#accordion1">
-                            <div class="card-body">
-                                Anim eboarAd vegan excepteur butcher  them accusamus labore sustainable VHS.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="headingOneTwo">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOneTwo" aria-expanded="false" aria-controls="collapseOneTwo">
-                                    Collapsible Group Item #1.2
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="collapseOneTwo" class="collapse" aria-labelledby="headingOneTwo" data-parent="#accordion1">
-                            <div class="card-body">
-                                Anim pariatur u iente nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="headingOneThree">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOneThree" aria-expanded="false" aria-controls="collapseOneThree">
-                                    Collapsible Group Item #1.3
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="collapseOneThree" class="collapse" aria-labelledby="headingOneThree" data-parent="#accordion1">
-                            <div class="card-body">
-                                Anim pariaturlaborum eiusmod. Brunch er labore wes ane sustainable VHS.
-                            </div>
-                        </div>
-                    </div>
-                </div> //accordion1
-
-
-            </div>
-
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header" id="headingTwo">
-            <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Collapsible Group Item #2
-                </button>
-            </h5>
-        </div>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-            <div class="card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header" id="headingThree">
-            <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Collapsible Group Item #3
-                </button>
-            </h5>
-        </div>
-
-        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-            <div class="card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-            </div>
-        </div>
-    </div>
-</div>
 <div>
     @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>*@ |
     <a asp-action="Index">Back to List</a>
