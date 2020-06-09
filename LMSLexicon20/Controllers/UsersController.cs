@@ -79,7 +79,7 @@ namespace LMSLexicon20.Controllers
 
                 //_context.Add(model);
                 await _context.SaveChangesAsync();
-                return RedirectToAction();
+                return RedirectToAction(nameof(List));
             }
             return View(viewModel);
 
@@ -97,13 +97,13 @@ namespace LMSLexicon20.Controllers
             Random random = new Random();
 
             char[] chars = new char[length];
-            
+
             for (int i = 0; i < length; i++)
             {
                 chars[i] = validChars[random.Next(0, validChars.Length)];
             }
             return new string(chars);
-
+        }
         public async Task<IActionResult> List(string filterSearch)
         {
             var viewModel = await _mapper.ProjectTo<UserListViewModel>(_userManager.Users).ToListAsync();
