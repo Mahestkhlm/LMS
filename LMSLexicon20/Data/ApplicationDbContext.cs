@@ -15,10 +15,8 @@ namespace LMSLexicon20.Data
         {
         }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<Module> Modules { get; set; }
         public DbSet<Activity> Activities { get; set; }
-
-       
-
-
+        public DbSet<ActivityType> ActivityTypes { get; set; }
     }
 }
