@@ -91,9 +91,9 @@
                                         <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
                                         <div style="display: flex; justify-content: flex-end">
                                             <div style="">
-                                                <span><a asp-controller="Activities"  asp-action="Edit" asp-route-id="@itemActiv.Id">Ändra</a> | </span>
-                                                <span><a asp-controller="Activities"  asp-action="Details" asp-route-id="@itemActiv.Id">Detaljer</a> | </span>
-                                                <span><a asp-controller="Activities"  asp-action="Delete" asp-route-id="@itemActiv.Id">Ta bort</a></span>
+                                                <span><a asp-controller="Activities" asp-action="Edit" asp-route-id="@itemActiv.Id">Ändra</a> | </span>
+                                                <span><a asp-controller="Activities" asp-action="Details" asp-route-id="@itemActiv.Id">Detaljer</a> | </span>
+                                                <span><a asp-controller="Activities" asp-action="Delete" asp-route-id="@itemActiv.Id">Ta bort</a></span>
                                             </div>
                                         </div>
                                     </div>
@@ -110,10 +110,13 @@
             </div>
         </div>
     }
-    <span><a asp-controller="Modules"  asp-action="Create" asp-route-id="@Model.Id">Lägg till modul</a></span>
+    <span><a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Id">Lägg till modul</a></span>
 </div>
 <br />
 <br />
+
+@await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
+
 <a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="~/Courses/Details/@Model.Id" asp-route-CourseId="@Model.Id">Registera ny student</a>
 <br />
 <br />
