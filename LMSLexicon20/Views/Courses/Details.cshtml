@@ -62,14 +62,14 @@
                 <span>@Html.DisplayFor(modelItem => item.Description)</span>
                 <div style="display: flex; justify-content: flex-end">
                     <div style="">
-                        <span><a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | </span>
-                        <span><a asp-action="Details" asp-route-id="@item.Id">Details</a> | </span>
-                        <span><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></span>
+                        <span><a asp-action="Module/Edit" asp-route-id="@item.Id">Ändra</a> | </span>
+                        <span><a asp-action="Module/Details" asp-route-id="@item.Id">Detaljer</a> | </span>
+                        <span><a asp-action="Module/Delete" asp-route-id="@item.Id">Ta bort</a></span>
                     </div>
                 </div>
                 @if (item.ActivityDetailVM.Count() == 0)
                     {
-                <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Add Activity</a></span>
+                <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                     }
                 @foreach (var itemActiv in item.ActivityDetailVM)
                     {
@@ -94,9 +94,9 @@
                                 <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
                                 <div style="display: flex; justify-content: flex-end">
                                     <div style="">
-                                        <span><a asp-action="Edit" asp-route-id="@itemActiv.Id">Edit</a> | </span>
-                                        <span><a asp-action="Details" asp-route-id="@itemActiv.Id">Details</a> | </span>
-                                        <span><a asp-action="Delete" asp-route-id="@itemActiv.Id">Delete</a></span>
+                                        <span><a asp-action="Activity/Edit" asp-route-id="@itemActiv.Id">Ändra</a> | </span>
+                                        <span><a asp-action="Activity/Details" asp-route-id="@itemActiv.Id">Detaljer</a> | </span>
+                                        <span><a asp-action="Activity/Delete" asp-route-id="@itemActiv.Id">Ta bort</a></span>
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                 </div>
                 @if (item.ActivityDetailVM.Count() == 0)
                     {
-                    <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Add Activity</a></span>
+                    <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                     }
 
                     }
@@ -113,7 +113,7 @@
         </div>
     </div>
     }
-    <span><a asp-action="Module/Create" asp-route-id="@Model.Id">Add Module</a></span>
+    <span><a asp-action="Module/Create" asp-route-id="@Model.Id">Lägg till modul</a></span>
 </div>
 <br />
 <br />
@@ -123,5 +123,5 @@
 
 <div>
     @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>*@ |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Tillbaka</a>
 </div>
