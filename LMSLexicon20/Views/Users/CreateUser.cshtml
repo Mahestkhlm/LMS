@@ -3,20 +3,22 @@
 @{
     ViewData["Title"] = "CreateUser";
 }
-
-<h2>Lägg till användare</h2>
+@if (ViewContext.RouteData.Values.ContainsKey("id"))
+{<h2>Lägg till student</h2>}
+else
+{<h2>Lägg till lärare</h2>}
 
 <p>Email-adressen blir automatiskt användarnamnet</p>
 <hr />
 @*<div id="createForm">*@
-    <div class="row">
-        <div class="col-md-4">
-            <partial name="CreateUserPartial" />
-        </div>
+<div class="row">
+    <div class="col-md-4">
+        <partial name="CreateUserPartial" />
     </div>
+</div>
 @*</div>*@
 <div>
-        <a asp-action="List">Tillbaka till listan</a>
+    <a asp-action="List">Tillbaka till listan</a>
 </div>
 
 @section Scripts {

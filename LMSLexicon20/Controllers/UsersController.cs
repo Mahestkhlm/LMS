@@ -44,8 +44,16 @@ namespace LMSLexicon20.Controllers
 
         // GET: User/Create
         [Authorize(Roles = "Teacher")]
-        public ActionResult CreateUser(int? courseId=null)
+        public ActionResult CreateUser(int? courseId = null)
         {
+            //courseId sätts inte som /Users/CreateUser/1 men /Users/CreateUser?courseId=1
+            //Den funkar för det andra. Mest jag som ville prova!
+            if (courseId != null)
+            {
+                var courseExists = _context.Courses.Any(c => c.Id == courseId);
+                if (!courseExists)
+                    throw new Exception("Du försökte gå till en kurs som inte finns!");
+            }
             return View();
         }
 
@@ -68,9 +76,9 @@ namespace LMSLexicon20.Controllers
                 //Lägg till kurs om finns (checkat att den finns)
                 if (courseId != null) model.CourseId = courseId;
                 //if (courseId != null) model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
-                
+
                 //ToDo: show password in view
-                
+
                 //Lägg till användare m. lösen
                 var pw = GeneratePassword();
                 var addUserResult = await _userManager.CreateAsync(model, pw);
