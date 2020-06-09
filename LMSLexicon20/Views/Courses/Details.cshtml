@@ -44,14 +44,13 @@
             <div class="card-header" id="@String.Format($"heading{item.Id}")">
                 <h5 class="mb-0">
                     <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")" aria-expanded="true" aria-controls="@String.Format($"collapse{item.Id}")">
+
                         <span>@Html.DisplayFor(modelItem => item.Name)</span>
-                        &nbsp;&nbsp;
+                     
                         <span>@Html.DisplayFor(modelItem => item.StartDate)</span>
                         -
                         <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
-                    </button>
-                </h5>
-            </div>
+
 
             <div id="@String.Format($"collapse{item.Id}")" class="collapse show" aria-labelledby="@String.Format($"heading{item.Id}")" data-parent="#accordion">
                 <div class="card-body">
@@ -74,11 +73,13 @@
                                 <div class="card-header" id="@String.Format($"heading{item.Id}_{itemActiv.Id}")">
                                     <h5 class="mb-0">
                                         <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}_{itemActiv.Id}")" aria-expanded="false" aria-controls="@String.Format($"collapse{item.Id}_{itemActiv.Id}")">
+
                                             <span>@Html.DisplayFor(modelItem => itemActiv.Name)</span>
                                             &nbsp;&nbsp;
                                             <span>@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
                                             -
                                             <span>@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
+
                                         </button>
                                     </h5>
                                 </div>
@@ -112,18 +113,21 @@
 <br />
 <br />
 
+@*asp-route-returnUrl="./Course/Details"*@
+<a asp-controller="Users" asp-action="CreateUser" asp-route-courseId="@Model.Id">Skapa ny student</a>
+=======
+
 <a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="./Courses/Details" asp-route-CourseId="@Model.Id">Registera ny student</a>
-<br />
-<br />
 
 
 <a asp-controller="Users" asp-action="CreateUser" asp-route-CourseId="@Model.Id" asp-route-id="@Model.Id" asp-route-returnUrl="./Courses/Details">Skapa ny student</a>
 
 <br />
 <br />
+
 <br />
 
 <div>
-    @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>*@ |
-    <a asp-action="Index">Tillbaka</a>
+    @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |*@
+    <a asp-action="Index">Tillbaka till kurser</a>
 </div>
