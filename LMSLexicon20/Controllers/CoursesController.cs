@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using LMSLexicon20.Models.ViewModels;
 using AutoMapper;
 
+
 namespace LMSLexicon20.Controllers
 {
     public class CoursesController : Controller
@@ -65,7 +66,17 @@ namespace LMSLexicon20.Controllers
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Courses.ToListAsync());
+            var model = _context.Courses
+                   .Select(c => new CourseIndexViewModel
+                   {
+                       Id = c.Id,
+                       Name = c.Name,
+                       Description = c.Description,
+                       StartDate = c.StartDate,
+                       EndDate = c.EndDate
+                   });
+
+            return View(await model.ToListAsync());
         }
 
         // GET: Courses/Details/5

@@ -3,51 +3,23 @@
 @{
     ViewData["Title"] = "CreateUser";
 }
+@if (ViewContext.RouteData.Values.ContainsKey("id"))
+{<h2>Lägg till student</h2>}
+else
+{<h2>Lägg till lärare</h2>}
 
-<h3>Lägg till</h3>
-
-<p>Användarnamnet kommer automatiskt att vara samma som email</p>
+<p>Email-adressen blir automatiskt användarnamnet</p>
 <hr />
+@*<div id="createForm">*@
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateUser">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <p>Koppla användaren till en kurs genom att ange kursens ID nedan</p>
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <input asp-for="CourseId" class="form-control" />
-                <span asp-validation-for="CourseId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Lägg till" class="btn btn-primary" />
-            </div>
-        </form>
+        <partial name="CreateUserPartial" />
     </div>
 </div>
-
-@*<div>
-    <a asp-action="Index">Tillbaka</a>
-</div>*@
+@*</div>*@
+<div>
+    <a asp-action="List">Tillbaka till listan</a>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
