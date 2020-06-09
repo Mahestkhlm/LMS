@@ -17,7 +17,6 @@ using AutoMapper;
 
 namespace LMSLexicon20
 {
-    // remove this 1
     public class Startup
     {
         public Startup(IConfiguration configuration)
