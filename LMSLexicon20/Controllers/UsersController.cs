@@ -66,10 +66,9 @@ namespace LMSLexicon20.Controllers
                 var courseId = model.CourseId;
                 model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
                 //ToDo: generate pw
-                //var pw = GeneratePassword();
-
+                var pw = GeneratePassword();
                 //ToDo: show password in view
-                var addUserResult = await _userManager.CreateAsync(model, "StrongPassword!1");
+                var addUserResult = await _userManager.CreateAsync(model, pw);
                 if (!addUserResult.Succeeded) throw new Exception(string.Join("\n", addUserResult.Errors));
 
                 var addRoleResult = courseId == null ?
@@ -80,19 +79,20 @@ namespace LMSLexicon20.Controllers
 
                 //_context.Add(model);
                 await _context.SaveChangesAsync();
-                return RedirectToAction();
+                return RedirectToAction(nameof(List));
             }
             return View(viewModel);
 
         }
         static string GeneratePassword()
         {
+            //ToDo: check final string
             var length = 15;
             string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-";
             //var validUpperCases = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
             //var validLowerCases = "abcdefghijklmnopqrstuvwxyz";
             //var validNumbers = "0123456789";
-            //var validSpecial = "0123456789";
+            //var validSpecial = "!@#$%^&*?_-";
 
             Random random = new Random();
 
