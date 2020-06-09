@@ -11,7 +11,7 @@ using LMSLexicon20.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using LMSLexicon20.Models.ViewModels;
 using AutoMapper;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace LMSLexicon20.Controllers
 {
@@ -64,19 +64,14 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filterSearch)
         {
-            var model = _context.Courses
-                   .Select(c => new CourseIndexViewModel
-                   {
-                       Id = c.Id,
-                       Name = c.Name,
-                       Description = c.Description,
-                       StartDate = c.StartDate,
-                       EndDate = c.EndDate
-                   });
+            var viewModel = await mapper.ProjectTo<CourseIndexViewModel>(_context.Courses).ToListAsync();
 
-            return View(await model.ToListAsync());
+            var filter = string.IsNullOrWhiteSpace(filterSearch) ?
+                              viewModel : viewModel.Where(m => m.Name.ToLower().Contains(filterSearch.ToLower())) ;
+                                                                  
+            return View(filter);
         }
 
         // GET: Courses/Details/5
@@ -256,19 +251,7 @@ namespace LMSLexicon20.Controllers
             TempData["SuccessText"] = $"The Course: {course.Name} is deleted!";
             return RedirectToAction(nameof(Index));
         }
-        // Course / Filter
-        public async Task<IActionResult> Filter(string CourseName)
-        {
-            var model = await _context.Courses.ToListAsync();
-
-            model = string.IsNullOrWhiteSpace(CourseName) ?
-                model :
-                model.Where(p => p.Name.ToLower().Contains(CourseName.ToLower())).ToList();
-
-            return View(nameof(Index), model);
-        }
-
-
+       
 
 
         private bool CourseExists(int id)
