@@ -55,36 +55,31 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         //ToDo: add attributes(phoneNumber, email...)
         //ToDo: rätt namn?
-        public async Task<IActionResult> CreateUser(CreateUserViewModel viewModel, int? id=null)
+        public async Task<IActionResult> CreateUser(CreateUserViewModel viewModel, int? id = null)
         {
-            //ToDo:add mapping
             if (ModelState.IsValid)
             {
-                
+                //Hämta användare
                 var model = _mapper.Map<User>(viewModel);
                 var user = await _userManager.FindByNameAsync(model.UserName);
-                if (user != null) throw new Exception("User already exists");
+                if (user != null) throw new Exception("Användaren finns redan");
 
-                if (id != null)
-                {
-                    //var courseId = model.CourseId;
-                    model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
-                    //finns inte kurs 
-                }
-
-                //ToDo: generate pw
-                var pw = GeneratePassword();
+                //Lägg till kurs om finns (checkat att den finns)
+                if (id != null) model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
+                
                 //ToDo: show password in view
+                
+                //Lägg till användare m. lösen
+                var pw = GeneratePassword();
                 var addUserResult = await _userManager.CreateAsync(model, pw);
                 if (!addUserResult.Succeeded) throw new Exception(string.Join("\n", addUserResult.Errors));
 
+                //Lägg till roll
                 var addRoleResult = id == null ?
                 await _userManager.AddToRoleAsync(model, "Teacher") :        //true=teacher
                 await _userManager.AddToRoleAsync(model, "Student");         //false=student
-
                 if (!addRoleResult.Succeeded) throw new Exception(string.Join("\n", addRoleResult.Errors));
 
-                //_context.Add(model);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(List));
             }
@@ -119,9 +114,9 @@ namespace LMSLexicon20.Controllers
                 var role = _userManager.GetRolesAsync(_userManager.FindByIdAsync(viewModel[i].Id).Result).Result[0];
                 viewModel[i].UserRole = role == "Teacher" ? "Lärare" : "Elev";
             }
-            
+
             var filter = string.IsNullOrWhiteSpace(filterSearch) ?
-                            viewModel : viewModel.Where(m => m.FullName.ToLower().Contains(filterSearch.ToLower()) || 
+                            viewModel : viewModel.Where(m => m.FullName.ToLower().Contains(filterSearch.ToLower()) ||
                                                                 m.Email.ToLower().Contains(filterSearch.ToLower()));
             return View(filter);
 
