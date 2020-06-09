@@ -1,4 +1,4 @@
-﻿@model LMSLexicon20.Models.Course
+﻿@model LMSLexicon20.ViewModels.CourseDetailVM
 
 @{
     ViewData["Title"] = "Details";
@@ -10,33 +10,118 @@
     <h4>Course</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StartDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StartDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.EndDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.EndDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
     </dl>
 </div>
+
+
+<div id="accordion">
+    @foreach (var item in Model.ModuleDetailVM)
+    {
+    <div class="card">
+        <div class="card-header" id="@String.Format($"heading{item.Id}")">
+            <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")" aria-expanded="true" aria-controls="@String.Format($"collapse{item.Id}")">
+                    &nbsp;&nbsp;
+                    <span>@Html.DisplayFor(modelItem => item.Name)</span>
+                    &nbsp;&nbsp;
+                    <span>@Html.DisplayFor(modelItem => item.StartDate)</span>
+                    -
+                    <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
+
+                </button>
+            </h5>
+        </div>
+
+
+        <div id="@String.Format($"collapse{item.Id}")" class="collapse show" aria-labelledby="@String.Format($"heading{item.Id}")" data-parent="#accordion">
+            <div class="card-body">
+                <span>@Html.DisplayFor(modelItem => item.Description)</span>
+                <div style="display: flex; justify-content: flex-end">
+                    <div style="">
+                        <span><a asp-action="Module/Edit" asp-route-id="@item.Id">Ändra</a> | </span>
+                        <span><a asp-action="Module/Details" asp-route-id="@item.Id">Detaljer</a> | </span>
+                        <span><a asp-action="Module/Delete" asp-route-id="@item.Id">Ta bort</a></span>
+                    </div>
+                </div>
+                @if (item.ActivityDetailVM.Count() == 0)
+                    {
+                <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
+                    }
+                @foreach (var itemActiv in item.ActivityDetailVM)
+                    {
+                <div id="@String.Format($"accordion{item.Id}")">
+                    <div class="card">
+                        <div class="card-header" id="@String.Format($"heading{item.Id}_{itemActiv.Id}")">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}_{itemActiv.Id}")" aria-expanded="false" aria-controls="@String.Format($"collapse{item.Id}_{itemActiv.Id}")">
+                                    &nbsp;&nbsp;
+                                    <span>@Html.DisplayFor(modelItem => itemActiv.Name)</span>
+                                    &nbsp;&nbsp;
+                                    <span>@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
+                                    -
+                                    <span>@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
+
+                                </button>
+                            </h5>
+                        </div>
+
+                        <div id="@String.Format($"collapse{item.Id}_{itemActiv.Id}")" class="collapse" aria-labelledby="@String.Format($"heading{item.Id}_{itemActiv.Id}")" data-parent="@String.Format($"#accordion{item.Id}")">
+                            <div class="card-body">
+                                <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
+                                <div style="display: flex; justify-content: flex-end">
+                                    <div style="">
+                                        <span><a asp-action="Activity/Edit" asp-route-id="@itemActiv.Id">Ändra</a> | </span>
+                                        <span><a asp-action="Activity/Details" asp-route-id="@itemActiv.Id">Detaljer</a> | </span>
+                                        <span><a asp-action="Activity/Delete" asp-route-id="@itemActiv.Id">Ta bort</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (item.ActivityDetailVM.Count() == 0)
+                    {
+                    <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
+                    }
+
+                    }
+            </div>
+        </div>
+    </div>
+    }
+    <span><a asp-action="Module/Create" asp-route-id="@Model.Id">Lägg till modul</a></span>
+</div>
+<br />
+<br />
+
+<a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="./Course/Details" asp-route-CourseId="@Model.Id">Skapa ny student</a>
+<br />
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>*@ |
+    <a asp-action="Index">Tillbaka</a>
 </div>
