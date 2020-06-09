@@ -27,8 +27,8 @@ namespace LMSLexicon20.Controllers
             var CourseId = _context.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
             if (_context.Courses.Find(CourseId)?.Id is null)
             {
-                _context.Courses.Add(new Course {  Name = ".Net", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "I den här självstudien visas hur du skapar en .NET Core-app och ansluter den till SQL Database. När du är klar har du en .NET Core MVC-app som körs i App Service" });
-                _context.Courses.Add(new Course {  Name = "Azure", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Automatically deploy and update a static web application and its API from a GitHub repository.\nIn this module, you will:\nChoose an existing web app project with either Angular,\nReact,\nSvelte or Vue\nCreate an API for the app with Azure Functions\nRun the application locally\nPublish the app and its API to Azure Static Web Apps" });
+                _context.Courses.Add(new Course { Name = ".Net", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "I den här självstudien visas hur du skapar en .NET Core-app och ansluter den till SQL Database. När du är klar har du en .NET Core MVC-app som körs i App Service" });
+                _context.Courses.Add(new Course { Name = "Azure", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Automatically deploy and update a static web application and its API from a GitHub repository.\nIn this module, you will:\nChoose an existing web app project with either Angular,\nReact,\nSvelte or Vue\nCreate an API for the app with Azure Functions\nRun the application locally\nPublish the app and its API to Azure Static Web Apps" });
                 _context.SaveChanges();
                 CourseId = _context.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
             }
@@ -55,7 +55,7 @@ namespace LMSLexicon20.Controllers
             var ActivityId = _context.Activities.Where(a => a.Name == "Environment").Select(m => m.Id).FirstOrDefault();
             if (_context.Activities.Find(ActivityId)?.Id is null)
             {
-                _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId= ActivityTypeId, Name = "Environment", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Prepare your development environment for Azure development" });
+                _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "Environment", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Prepare your development environment for Azure development" });
                 _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "App service", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Host a web application with Azure App service" });
                 _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "Web app platform", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Learn how to create a website through the hosted web app platform in Azure App Service" });
                 _context.SaveChanges();
@@ -80,8 +80,8 @@ namespace LMSLexicon20.Controllers
             //_context.Courses.Find(1)
             //await 
             var courseDetailVM = _context.Courses
-                //.Include(c => c.Modules)
-                //.ThenInclude(m => m.Activities)
+                    //.Include(c => c.Modules)
+                    //.ThenInclude(m => m.Activities)
                     .Select(c => new CourseDetailVM
                     {
                         Id = c.Id,
@@ -119,7 +119,7 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            return View(nameof(Details),await courseDetailVM);
+            return View(nameof(Details), await courseDetailVM);
         }
 
         // GET: Courses/Create
@@ -138,6 +138,11 @@ namespace LMSLexicon20.Controllers
         //[Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Create(CreateCourseViewModel viewModel)
         {
+            if (viewModel.StartDate >= viewModel.EndDate)
+            {
+                ModelState.AddModelError("EndDate", "Kursen kan inte avsluta innan den börjar");
+            }
+
             if (ModelState.IsValid)
             {
                 var model = mapper.Map<Course>(viewModel);
@@ -153,7 +158,7 @@ namespace LMSLexicon20.Controllers
 
 
         // GET: Courses/Edit/5
-       [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -254,7 +259,7 @@ namespace LMSLexicon20.Controllers
 
 
 
-      
+
         private bool CourseExists(int id)
         {
             return _context.Courses.Any(e => e.Id == id);
@@ -262,8 +267,14 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         public JsonResult DoesCourseExist(int CourseId)
         {
-            var courseExists = _context.Courses.Any(c => c.Id == CourseId) ;
+            var courseExists = _context.Courses.Any(c => c.Id == CourseId);
             return Json(courseExists);
+        }
+
+        public IActionResult IsNameUnique(string name)
+        {
+            var result = _context.Courses.Any(s => s.Name.ToLower() == name.ToLower());
+            return Json(!result);
         }
 
     }
