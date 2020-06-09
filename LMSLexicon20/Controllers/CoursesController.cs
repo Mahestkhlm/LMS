@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LMSLexicon20.Data;
 using LMSLexicon20.Models;
+using LMSLexicon20.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using LMSLexicon20.Models.ViewModels;
 
@@ -19,6 +20,43 @@ namespace LMSLexicon20.Controllers
         public CoursesController(ApplicationDbContext context)
         {
             _context = context;
+
+            var CourseId = _context.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
+            if (_context.Courses.Find(CourseId)?.Id is null)
+            {
+                _context.Courses.Add(new Course {  Name = ".Net", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "I den här självstudien visas hur du skapar en .NET Core-app och ansluter den till SQL Database. När du är klar har du en .NET Core MVC-app som körs i App Service" });
+                _context.Courses.Add(new Course {  Name = "Azure", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Automatically deploy and update a static web application and its API from a GitHub repository.\nIn this module, you will:\nChoose an existing web app project with either Angular,\nReact,\nSvelte or Vue\nCreate an API for the app with Azure Functions\nRun the application locally\nPublish the app and its API to Azure Static Web Apps" });
+                _context.SaveChanges();
+                CourseId = _context.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
+            }
+            var ModuleId = _context.Modules.Where(m => m.Name == "Azure deploy").Select(m => m.Id).FirstOrDefault();
+            if (_context.Modules.Find(ModuleId)?.Id is null)
+            {
+                _context.Modules.Add(new Module { CourseId = CourseId, Name = "Azure deploy", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Deploy a website to Azure with Azure App Service" });
+                _context.Modules.Add(new Module { CourseId = CourseId, Name = "Azure Well", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Build great solutions with the Microsoft Azure Well - Architected Framework" });
+                _context.SaveChanges();
+                ModuleId = _context.Modules.Where(m => m.Name == "Azure deploy").Select(m => m.Id).FirstOrDefault();
+            }
+
+            var ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "e-learningpass").Select(m => m.Id).FirstOrDefault();
+            if (_context.ActivityTypes.Find(ActivityTypeId)?.Id is null)
+            {
+                _context.ActivityTypes.Add(new ActivityType { Name = "e-learningpass" });
+                _context.ActivityTypes.Add(new ActivityType { Name = "föreläsningar" });
+                _context.ActivityTypes.Add(new ActivityType { Name = "övningstillfällen" });
+                _context.ActivityTypes.Add(new ActivityType { Name = "annat" });
+                _context.SaveChanges();
+                ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "e-learningpass").Select(m => m.Id).FirstOrDefault();
+            }
+
+            var ActivityId = _context.Activities.Where(a => a.Name == "Environment").Select(m => m.Id).FirstOrDefault();
+            if (_context.Activities.Find(ActivityId)?.Id is null)
+            {
+                _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId= ActivityTypeId, Name = "Environment", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Prepare your development environment for Azure development" });
+                _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "App service", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Host a web application with Azure App service" });
+                _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "Web app platform", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Learn how to create a website through the hosted web app platform in Azure App Service" });
+                _context.SaveChanges();
+            }
         }
 
         // GET: Courses
@@ -44,15 +82,51 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
+            //
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (course == null)
+            //_context.Courses.Find(1)
+            //await 
+            var courseDetailVM = _context.Courses
+                //.Include(c => c.Modules)
+                //.ThenInclude(m => m.Activities)
+                    .Select(c => new CourseDetailVM
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        StartDate = c.StartDate,
+                        EndDate = c.EndDate,
+                        Description = c.Description
+                        ,
+                        ModuleDetailVM = (ICollection<ModuleDetailVM>)c.Modules
+                                   .Select(m => new ModuleDetailVM
+                                   {
+                                       Id = m.Id,
+                                       Name = m.Name,
+                                       StartDate = m.StartDate,
+                                       EndDate = m.EndDate,
+                                       Description = m.Description
+                                       ,
+                                       ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
+                                            .Select(a => new ActivityDetailVM
+                                            {
+                                                Id = a.Id,
+                                                Name = a.Name,
+                                                StartDate = a.StartDate,
+                                                EndDate = a.EndDate,
+                                                Description = a.Description
+                                            })
+                                   })
+                    })
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+
+            if (courseDetailVM == null)
             {
+                //var courseTmp = _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
                 return NotFound();
             }
 
-            return View(course);
+            return View(nameof(Details),await courseDetailVM);
         }
 
         // GET: Courses/Create
@@ -190,6 +264,12 @@ namespace LMSLexicon20.Controllers
         private bool CourseExists(int id)
         {
             return _context.Courses.Any(e => e.Id == id);
+        }
+        [HttpPost]
+        public JsonResult DoesCourseExist(int CourseId)
+        {
+            var courseExists = _context.Courses.Any(c => c.Id == CourseId) ;
+            return Json(courseExists);
         }
 
     }
