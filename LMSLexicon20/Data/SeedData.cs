@@ -115,12 +115,12 @@ namespace LMSLexicon20.Data
                         RegDate = DateTime.Now
                     };
 
-                    //--------LÄGG TILL TEACHER1--------
+                    //--------LÄGG TILL STUDENT2--------
                     var addTeacherResult = await userManager.CreateAsync(user, studentPW);
                     if (!addTeacherResult.Succeeded) throw new Exception(string.Join("\n", addTeacherResult.Errors));
                 }
 
-                //--------GE ROLL TEACHER--------
+                //--------GE ROLL STUDENT--------
                 var student = await userManager.FindByNameAsync(studentEmail);
 
                 if (!await userManager.IsInRoleAsync(student, "Student"))
