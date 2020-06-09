@@ -69,7 +69,7 @@
                 </div>
                 @if (item.ActivityDetailVM.Count() == 0)
                     {
-                <span><a asp-action="AddAcivity" asp-route-id="@item.Id">Add Activity</a></span>
+                <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Add Activity</a></span>
                     }
                 @foreach (var itemActiv in item.ActivityDetailVM)
                     {
@@ -105,7 +105,7 @@
                 </div>
                 @if (item.ActivityDetailVM.Count() == 0)
                     {
-                <span><a asp-action="AddAcivity" asp-route-id="@item.Id">Add Activity</a></span>
+                    <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Add Activity</a></span>
                     }
 
                     }
@@ -113,13 +113,13 @@
         </div>
     </div>
     }
-    <span><a asp-action="AddModule" asp-route-id="@Model.Id">Add Module</a></span>
+    <span><a asp-action="Module/Create" asp-route-id="@Model.Id">Add Module</a></span>
 </div>
 <br />
 <br />
 
-<a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="./Course" asp-route-CourseId="myValue">Skapa ny student</a>
-
+<a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="./Course/Details" asp-route-CourseId="@Model.Id">Skapa ny student</a>
+<br />
 
 <div>
     @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>*@ |
