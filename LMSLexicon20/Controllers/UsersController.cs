@@ -44,7 +44,7 @@ namespace LMSLexicon20.Controllers
 
         // GET: User/Create
         [Authorize(Roles = "Teacher")]
-        public ActionResult CreateUser()
+        public ActionResult CreateUser(int? courseId=null)
         {
             return View();
         }
@@ -55,17 +55,19 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         //ToDo: add attributes(phoneNumber, email...)
         //ToDo: rätt namn?
-        public async Task<IActionResult> CreateUser(CreateUserViewModel viewModel, int? id = null)
+        public async Task<IActionResult> CreateUser(CreateUserViewModel viewModel, int? courseId = null)
         {
             if (ModelState.IsValid)
             {
                 //Hämta användare
                 var model = _mapper.Map<User>(viewModel);
                 var user = await _userManager.FindByNameAsync(model.UserName);
+                //Bör aldrig vara null - checkar ändå
                 if (user != null) throw new Exception("Användaren finns redan");
 
                 //Lägg till kurs om finns (checkat att den finns)
-                if (id != null) model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == id);
+                if (courseId != null) model.CourseId = courseId;
+                //if (courseId != null) model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
                 
                 //ToDo: show password in view
                 
@@ -75,7 +77,7 @@ namespace LMSLexicon20.Controllers
                 if (!addUserResult.Succeeded) throw new Exception(string.Join("\n", addUserResult.Errors));
 
                 //Lägg till roll
-                var addRoleResult = id == null ?
+                var addRoleResult = courseId == null ?
                 await _userManager.AddToRoleAsync(model, "Teacher") :        //true=teacher
                 await _userManager.AddToRoleAsync(model, "Student");         //false=student
                 if (!addRoleResult.Succeeded) throw new Exception(string.Join("\n", addRoleResult.Errors));
@@ -124,7 +126,7 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         public JsonResult EmailInUse(string Email)
         {
-            return Json(_context.Users.Any(u => u.Email == Email));
+            return Json(_context.Users.Any(u => u.Email == Email) == false);
         }
 
     }
