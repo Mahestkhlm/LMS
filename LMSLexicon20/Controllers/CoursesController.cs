@@ -180,6 +180,12 @@ namespace LMSLexicon20.Controllers
         {
             return _context.Courses.Any(e => e.Id == id);
         }
+        [HttpPost]
+        public JsonResult DoesCourseExist(int CourseId)
+        {
+            var courseExists = _context.Courses.Any(c => c.Id == CourseId) ;
+            return Json(courseExists);
+        }
 
     }
 }
