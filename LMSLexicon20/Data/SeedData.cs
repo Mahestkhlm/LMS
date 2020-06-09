@@ -109,13 +109,15 @@ namespace LMSLexicon20.Data
                     var user = new User
                     {
                         UserName = studentEmail,
-                        FirstName = "Student2",
-                        LastName = "2",
+                        FirstName = "Student1",
+                        LastName = "1",
                         Email = studentEmail,
-                        RegDate = DateTime.Now
+                        RegDate = DateTime.Now,
+                        CourseId=1
+                        
                     };
 
-                    //--------LÄGG TILL STUDENT2--------
+                    //--------LÄGG TILL STUDENT1--------
                     var addTeacherResult = await userManager.CreateAsync(user, studentPW);
                     if (!addTeacherResult.Succeeded) throw new Exception(string.Join("\n", addTeacherResult.Errors));
                 }
@@ -128,6 +130,44 @@ namespace LMSLexicon20.Data
                     var addToRoleResult = await userManager.AddToRoleAsync(student, "Student");
                     if (!addToRoleResult.Succeeded) throw new Exception(string.Join("\n", addToRoleResult.Errors));
                 }
+
+
+
+
+
+
+
+                //--------SKAPA STUDENT--------
+                //var studentPW = "abc123";
+                studentEmail = "student2@lms.se";
+                studentUser = await userManager.FindByEmailAsync(studentEmail);
+                if (studentUser == null)
+                {
+                    var user = new User
+                    {
+                        UserName = studentEmail,
+                        FirstName = "Student2",
+                        LastName = "2",
+                        Email = studentEmail,
+                        RegDate = DateTime.Now,
+                        CourseId = 1
+
+                    };
+
+                    //--------LÄGG TILL STUDENT2--------
+                    var addTeacherResult = await userManager.CreateAsync(user, studentPW);
+                    if (!addTeacherResult.Succeeded) throw new Exception(string.Join("\n", addTeacherResult.Errors));
+                }
+
+                //--------GE ROLL STUDENT--------
+                student = await userManager.FindByNameAsync(studentEmail);
+
+                if (!await userManager.IsInRoleAsync(student, "Student"))
+                {
+                    var addToRoleResult = await userManager.AddToRoleAsync(student, "Student");
+                    if (!addToRoleResult.Succeeded) throw new Exception(string.Join("\n", addToRoleResult.Errors));
+                }
+
 
 
 
