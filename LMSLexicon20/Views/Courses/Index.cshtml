@@ -1,20 +1,17 @@
-﻿@model IEnumerable<LMSLexicon20.Models.Course>
+﻿@model IEnumerable<CourseIndexViewModel>
+
 
 @{
-    ViewData["Title"] = "Courses";
+    ViewData["Title"] = "Index";
 }
 
 <div id="mainbackgroundcolor" class="rounded-lg">
     <h1 class="text-light rounded-top p-3" id="searchindex">@ViewData["Title"]</h1>
-    <form class="text-light" asp-action="Filter"
-          data-ajax="true"
-          data-ajax-method="GET"
-          data-ajax-mode="replace"
-          data-ajax-update="usersupdate">
-        <div class="input-group m-auto" id="searchindex">
-            <input type="text" name="courseName" class="form-control" placeholder="Search on Course Name." />
+    <form method="get" asp-controller="Courses" asp-action="Filter" class="text-light border rounded-lg">
+        <div class="input-group">
+            <input type="text" class="form-control" name="filterSearch" placeholder="Search On Name" />
             <div class="input-group-append">
-                <button type="submit" class="btn btn-primary "><i class="fa fa-search">&emsp;Search</i></button>
+                <button type="submit" class="btn">&#128270;Sök</button>
             </div>
         </div>
     </form>
@@ -23,7 +20,9 @@
 
     <p>
         <div class="container pb-1">
-            <a asp-action="Create">Create New</a>
+            <a asp-action="Create">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </a>
         </div>
         <div class="text-success blink_me">
             @TempData["SuccessText"]
