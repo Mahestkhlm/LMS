@@ -14,7 +14,10 @@
     </div>
 </form>
 <p>
-    <a asp-action="Create">Lägga till en ny lärare</a>
+     @if (User.IsInRole("Teacher")) { <div class="container pb-1">
+                <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+            </div>
+        }
 </p>
 <table class="table">
     <thead>
