@@ -112,12 +112,12 @@
 <br />
 <br />
 
-<a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="./Course/Details" asp-route-CourseId="@Model.Id">Registera ny student</a>
+<a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="./Courses/Details" asp-route-CourseId="@Model.Id">Registera ny student</a>
 <br />
 <br />
 
 
-<a asp-controller="User" asp-action="CreateUser" asp-route-id="@Model.Id">Skapa ny student</a>
+<a asp-controller="Users" asp-action="CreateUser" asp-route-CourseId="@Model.Id" asp-route-id="@Model.Id" asp-route-returnUrl="./Courses/Details">Skapa ny student</a>
 
 <br />
 <br />
