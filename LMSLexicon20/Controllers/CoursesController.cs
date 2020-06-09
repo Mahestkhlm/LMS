@@ -9,6 +9,7 @@ using LMSLexicon20.Data;
 using LMSLexicon20.Models;
 using LMSLexicon20.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using LMSLexicon20.Models.ViewModels;
 
 namespace LMSLexicon20.Controllers
 {
@@ -132,17 +133,17 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create([Bind("Id,Name,StartDate,EndDate,Description")] Course course)
+        public async Task<IActionResult> Create(CreateCourseViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(course);
+                _context.Add(viewModel);
                 await _context.SaveChangesAsync();
-                TempData["SuccessText"] = $"The Course: {course.Name} is Created!";
+                TempData["SuccessText"] = $"The Course: {viewModel.Name} is Created!";
                 return RedirectToAction(nameof(Index));
             }
             TempData["FailText"] = "Try Again! Something Went wrong!!";
-            return View(course);
+            return View(viewModel);
         }
 
 
