@@ -1,0 +1,42 @@
+﻿@model LMSLexicon20.Models.ViewModels.CreateModuleViewModel
+
+<h2>Skapa ny modul</h2>
+<hr />
+<div class="row">
+    <div class="col-md-6 p-3">
+        <form asp-action="CreateModule">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Tidsperiod</label>
+                <div class="form-inline">
+                    <input asp-for="StartDate" class="form-control" />
+                    <input asp-for="EndDate" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                    @*<label asp-for="EndDate" class="control-label"></label>*@
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" maxlength="500"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Lägg till" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
