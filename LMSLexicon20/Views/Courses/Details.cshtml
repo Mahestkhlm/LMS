@@ -44,28 +44,30 @@
             <div class="card-header" id="@String.Format($"heading{item.Id}")">
                 <h5 class="mb-0">
                     <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")" aria-expanded="true" aria-controls="@String.Format($"collapse{item.Id}")">
-                    </button>
-
                         <span>@Html.DisplayFor(modelItem => item.Name)</span>
-                     
+                        &nbsp;&nbsp;
                         <span>@Html.DisplayFor(modelItem => item.StartDate)</span>
                         -
                         <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
 
+                    </button>
                 </h5>
+            </div>
+
+
             <div id="@String.Format($"collapse{item.Id}")" class="collapse show" aria-labelledby="@String.Format($"heading{item.Id}")" data-parent="#accordion">
                 <div class="card-body">
                     <span>@Html.DisplayFor(modelItem => item.Description)</span>
                     <div style="display: flex; justify-content: flex-end">
                         <div style="">
-                            <span><a asp-action="Module/Edit" asp-route-id="@item.Id">Ändra</a> | </span>
-                            <span><a asp-action="Module/Details" asp-route-id="@item.Id">Detaljer</a> | </span>
-                            <span><a asp-action="Module/Delete" asp-route-id="@item.Id">Ta bort</a></span>
+                            <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
+                            <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
+                            <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
                         </div>
                     </div>
                     @if (item.ActivityDetailVM.Count() == 0)
                     {
-                        <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
+                        <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                     }
                     @foreach (var itemActiv in item.ActivityDetailVM)
                     {
@@ -74,7 +76,6 @@
                                 <div class="card-header" id="@String.Format($"heading{item.Id}_{itemActiv.Id}")">
                                     <h5 class="mb-0">
                                         <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}_{itemActiv.Id}")" aria-expanded="false" aria-controls="@String.Format($"collapse{item.Id}_{itemActiv.Id}")">
-
                                             <span>@Html.DisplayFor(modelItem => itemActiv.Name)</span>
                                             &nbsp;&nbsp;
                                             <span>@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
@@ -90,46 +91,37 @@
                                         <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
                                         <div style="display: flex; justify-content: flex-end">
                                             <div style="">
-                                                <span><a asp-action="Activity/Edit" asp-route-id="@itemActiv.Id">Ändra</a> | </span>
-                                                <span><a asp-action="Activity/Details" asp-route-id="@itemActiv.Id">Detaljer</a> | </span>
-                                                <span><a asp-action="Activity/Delete" asp-route-id="@itemActiv.Id">Ta bort</a></span>
+                                                <span><a asp-controller="Activities" asp-action="Edit" asp-route-id="@itemActiv.Id">Ändra</a> | </span>
+                                                <span><a asp-controller="Activities" asp-action="Details" asp-route-id="@itemActiv.Id">Detaljer</a> | </span>
+                                                <span><a asp-controller="Activities" asp-action="Delete" asp-route-id="@itemActiv.Id">Ta bort</a></span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @if (item.ActivityDetailVM.Count() == 0)
+                        @if (item.ActivityDetailVM.Select(a => a.Id).Last() == itemActiv.Id)
                         {
-                            <span><a asp-action="Activity/Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
+                            <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                         }
 
                     }
                 </div>
             </div>
-                        </div>
         </div>
     }
-    <span><a asp-action="Module/Create" asp-route-id="@Model.Id">Lägg till modul</a></span>
+    <span><a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Id">Lägg till modul</a></span>
 </div>
 <br />
 <br />
 
-@*asp-route-returnUrl="./Course/Details"*@
-<a asp-controller="Users" asp-action="CreateUser" asp-route-courseId="@Model.Id">Skapa ny student</a>
-=======
+@await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
 
-<a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="./Courses/Details" asp-route-CourseId="@Model.Id">Registera ny student</a>
-
-
-<a asp-controller="Users" asp-action="CreateUser" asp-route-CourseId="@Model.Id" asp-route-id="@Model.Id" asp-route-returnUrl="./Courses/Details">Skapa ny student</a>
-
+<a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="~/Courses/Details/@Model.Id" asp-route-CourseId="@Model.Id">Registera ny student</a>
 <br />
-<br />
-
 <br />
 
 <div>
-    @*<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |*@
-    <a asp-action="Index">Tillbaka till kurser</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Tillbaka</a>
 </div>
