@@ -79,9 +79,11 @@ namespace LMSLexicon20.Controllers
                 //if (courseId != null) model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
 
                 //ToDo: show password in view
+                //TempData och sen in i vy
 
                 //Lägg till användare m. lösen
                 var pw = GeneratePassword();
+                
                 var addUserResult = await _userManager.CreateAsync(model, pw);
                 if (!addUserResult.Succeeded) throw new Exception(string.Join("\n", addUserResult.Errors));
 
@@ -90,12 +92,18 @@ namespace LMSLexicon20.Controllers
                 await _userManager.AddToRoleAsync(model, "Teacher") :        //true=teacher
                 await _userManager.AddToRoleAsync(model, "Student");         //false=student
                 if (!addRoleResult.Succeeded) throw new Exception(string.Join("\n", addRoleResult.Errors));
-
+                
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(List));
+                return RedirectToAction(nameof(CreateUserConfirmed), new { userName=model.UserName, pw = pw });
             }
             return View(viewModel);
 
+        }
+        public IActionResult CreateUserConfirmed(string userName, string pw)
+        {
+            TempData["pw"] = pw;
+            TempData["userName"] = userName;
+            return View();
         }
         static string GeneratePassword()
         {
