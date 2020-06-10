@@ -65,10 +65,7 @@
                             <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
                         </div>
                     </div>
-                    @if (item.ActivityDetailVM.Count() == 0)
-                    {
-                        <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
-                    }
+
                     @foreach (var itemActiv in item.ActivityDetailVM)
                     {
                         <div id="@String.Format($"accordion{item.Id}")">
@@ -100,7 +97,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if (item.ActivityDetailVM.Count() == 0)
+                        @if (item.ActivityDetailVM.Select(a => a.Id).Last() == itemActiv.Id)
                         {
                             <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                         }
