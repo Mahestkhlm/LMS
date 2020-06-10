@@ -117,6 +117,8 @@ namespace LMSLexicon20.Controllers
             }
             return new string(chars);
         }
+
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> List(string filterSearch)
         {
             var viewModel = await _mapper.ProjectTo<UserListViewModel>(_userManager.Users).ToListAsync();
