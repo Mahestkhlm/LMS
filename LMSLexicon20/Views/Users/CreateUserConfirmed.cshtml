@@ -1,0 +1,12 @@
+﻿@model LMSLexicon20.Models.ViewModels.CreateUserViewModel
+
+<div class="py-4">
+    <h3>
+        Användare skapad!
+        <span class="text-muted d-block py-3">@TempData["userName"]</span>
+    </h3>
+    <hr />
+    <p>Följande lösenord har givits till kontot:</p>
+    <h4 class="font-weight-bold">@TempData["pw"]</h4>
+    <p class="text-danger">Be användaren ändra lösenordet vid första inloggningen.</p>
+</div>

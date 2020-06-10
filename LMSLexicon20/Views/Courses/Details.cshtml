@@ -147,12 +147,12 @@
         </div>
         @if ((true || User.IsInRole("Teacher")) && Model.ModuleDetailVM.Select(a => a.Id).Last() == item.Id)
         {
-            <span><a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Id">Lägg till modul</a></span>
+            <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
         }
     }
     @if ((true || User.IsInRole("Teacher")) && Model.ModuleDetailVM.Count() == 0)
     {
-        <span><a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Id">Lägg till modul</a></span>
+        <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
     }
 
 </div>
@@ -160,7 +160,7 @@
 <br />
 
 @await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
-@if (User.IsInRole("Teacher"))
+@if (true || User.IsInRole("Teacher"))
 {
     <a asp-controller="Users" asp-action="CreateUser" asp-route-Id="@Model.Id">Lägg till Student</a>
 }
@@ -168,6 +168,7 @@
     @if (User.IsInRole("Teacher"))
     {
         <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a><span> | </span>
+        @* <a class="btn btn-info" asp-action="Index">All Courses</a>*@
     }
     <a asp-action="Index">Tillbaka</a>
 </div>
