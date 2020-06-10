@@ -10,6 +10,7 @@ using LMSLexicon20.Models;
 using AutoMapper;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMSLexicon20.Controllers
 {
@@ -59,6 +60,7 @@ namespace LMSLexicon20.Controllers
         public IActionResult CreateModule(int? id)
         {
             //ToDo: koppla kurs
+
             return View();
         }
 
@@ -67,6 +69,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Create([Bind("Id,Name,StartDate,EndDate,Description,CourseId")] Module model)
         {
             if (ModelState.IsValid)
@@ -79,6 +82,8 @@ namespace LMSLexicon20.Controllers
             return View(model);
         }
         //Post
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel viewModel, int id)
         {
