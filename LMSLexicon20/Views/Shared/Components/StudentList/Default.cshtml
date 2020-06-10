@@ -1,13 +1,17 @@
 ﻿@model IEnumerable<LMSLexicon20.Models.ViewModels.StudentVM>
-
-@foreach (var student in Model)
-{
-    <ul>
-        <li><a asp-action="Details" asp-route-id="@student.Id">@student.Email</a></li>
-        <li>@student.FullName</li>
-        <li>
-        @Html.ActionLink("Ta bort", "Delete", "Users",new { id = student.Id }, new { @class = "btn btn-danger" })
-        @Html.ActionLink( "Ändra", "Edit", "Users",new { id = student.Id })
-        </li>
-    </ul>
-}
+<table class="table">
+    <thead></thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
+            <tr>
+                <td><a asp-action="Details" asp-route-id="@student.Id">@student.Email</a></td>
+                <td>@student.FullName</td>
+                <td>
+                    @Html.ActionLink("Ta bort", "Delete", "Users", new { id = student.Id }, new { @class = "btn btn-danger" })
+                    @Html.ActionLink("Ändra", "Edit", "Users", new { id = student.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
