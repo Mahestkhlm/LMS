@@ -133,8 +133,8 @@ namespace LMSLexicon20.Controllers
             var viewModel = await _mapper.ProjectTo<UserListViewModel>(_userManager.Users).ToListAsync();
             for (int i = 0; i < viewModel.Count; i++)
             {
-                var role = _userManager.GetRolesAsync(_userManager.FindByIdAsync(viewModel[i].Id).Result).Result[0];
-                viewModel[i].UserRole = role == "Teacher" ? "Lärare" : "Elev";
+                var role = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(viewModel[i].Id));
+                viewModel[i].UserRole = role[0] == "Teacher" ? "Lärare" : "Elev";
             }
 
             var filter = string.IsNullOrWhiteSpace(filterSearch) ?
