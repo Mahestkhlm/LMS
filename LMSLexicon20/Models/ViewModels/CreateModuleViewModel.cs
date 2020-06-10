@@ -12,9 +12,17 @@ namespace LMSLexicon20.Models.ViewModels
 
         [Display(Name = "Module Name")]
         public string  Name { get; set; }
+
         [Display(Name = "Start Date")]
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime StartDate { get; set; }
+
         [Display(Name = "End Date")]
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime EndDate { get; set; }
 
         public string Description { get; set; }
