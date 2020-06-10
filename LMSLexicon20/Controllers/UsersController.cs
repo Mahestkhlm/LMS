@@ -46,6 +46,7 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public ActionResult CreateUser(int? courseId = null)
         {
+            //ToDo: testkör (courseid)
             //courseId sätts inte som /Users/CreateUser/1 men /Users/CreateUser?courseId=1
             //Den funkar för det andra. Mest jag som ville prova!
             if (courseId != null)
