@@ -19,11 +19,13 @@ namespace LMSLexicon20.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper mapper;
+        private readonly UserManager<User> userManager;
 
-        public CoursesController(ApplicationDbContext context, IMapper mapper)
+        public CoursesController(ApplicationDbContext context, IMapper mapper, UserManager<User> userManager)
         {
             _context = context;
             this.mapper = mapper;
+            this.userManager = userManager;
 
             var CourseId = _context.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
             if (_context.Courses.Find(CourseId)?.Id is null)
@@ -229,8 +231,12 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await mapper.ProjectTo<DeleteCourseViewModel>(_context.Courses).FirstOrDefaultAsync(e => e.Id == id);
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
+            course.Teacher = teachers.FirstOrDefault(e => e.CourseId == id);
+            var students = await userManager.GetUsersInRoleAsync("Student");
+            course.Students = students.Where(e => e.CourseId == id).ToList();
+            
             if (course == null)
             {
                 return NotFound();
@@ -246,9 +252,10 @@ namespace LMSLexicon20.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await _context.Courses.FindAsync(id);
+
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
-            TempData["SuccessText"] = $"The Course: {course.Name} is deleted!";
+            TempData["SuccessText"] = $"Kursen: {course.Name} - är raderad!";
             return RedirectToAction(nameof(Index));
         }
        

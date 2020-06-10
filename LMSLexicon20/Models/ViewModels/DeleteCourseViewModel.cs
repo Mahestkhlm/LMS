@@ -8,6 +8,8 @@ namespace LMSLexicon20.Models.ViewModels
 {
     public class DeleteCourseViewModel
     {
+        public int Id { get; set; }
+
         [Display(Name = "Kursnamn")]
         public string Name { get; set; }
 

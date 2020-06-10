@@ -30,6 +30,8 @@ namespace LMSLexicon20.Data
 
             CreateMap<CreateCourseViewModel, Course>();
 
+            CreateMap<Course, DeleteCourseViewModel>();
+
         }
     }
 }
