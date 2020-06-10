@@ -253,6 +253,17 @@ namespace LMSLexicon20.Controllers
         {
             var course = await _context.Courses.FindAsync(id);
 
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
+            var teacher = teachers.FirstOrDefault(e => e.CourseId == id);
+            if (teacher != null) teacher.CourseId = null;
+
+            var students = await userManager.GetUsersInRoleAsync("Student");
+            var courseStudents = students.Where(e => e.CourseId == id).ToList();
+            foreach (var item in courseStudents)
+            {
+                _context.Users.Remove(item);
+            }
+
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
             TempData["SuccessText"] = $"Kursen: {course.Name} - är raderad!";
