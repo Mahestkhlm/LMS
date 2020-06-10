@@ -59,7 +59,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,StartDate,EndDate,Description,HasDeadline,ModuleId,ActivityTypeId")] Activity activity)
+        public async Task<IActionResult> Create([Bind("Name,StartDate,EndDate,Description,HasDeadline,ModuleId,ActivityTypeId")] Activity activity)
         {
             if (ModelState.IsValid)
             {

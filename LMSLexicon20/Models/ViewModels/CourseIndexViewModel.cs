@@ -25,8 +25,8 @@ namespace LMSLexicon20.Models.ViewModels
 
         [Display(Name = "Description ")]
         public string Description { get; set; }
-        public Module Module { get; set; }
-        public Course Course { get; set; }
+        //public Module Module { get; set; }
+       // public Course Course { get; set; }
 
     }
 }
