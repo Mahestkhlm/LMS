@@ -211,7 +211,7 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
-                TempData["SuccessText"] = $"The Course : {course.Name}is Updated!";
+                TempData["SuccessText"] = $"The Course : {course.Name} is updated!";
                 return RedirectToAction(nameof(Index));
             }
             TempData["FailText"] = $"Something Went Wrong! The Course: {course.Name} is not updated!";
