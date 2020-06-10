@@ -142,13 +142,7 @@
 <br />
 
 @await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
-@if (User.IsInRole("Teacher"))
-{
-    <a asp-controller="Users" asp-action="CreateUser" asp-route-Id="@Model.Id"  asp-route-CourseId="@Model.Id">Lägg till Student</a>
-}
-<br />
-<br />
-
+<a asp-controller="Users" asp-action="CreateUser" asp-route-Id="@Model.Id">Lägg till Student</a>
 <div>
     @if (User.IsInRole("Teacher"))
     {

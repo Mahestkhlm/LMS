@@ -10,7 +10,9 @@ footer{
     background-color:white;
     padding:10%;
 }
-
+#sharedLayout {
+    margin: 15px auto 150px auto;
+}
 
 
 a.navbar-brand {
