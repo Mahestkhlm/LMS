@@ -8,29 +8,21 @@ namespace LMSLexicon20.Models.ViewModels
 {
     public class CreateModuleViewModel
     {
-        public int Id { get; set; }
-
-        [Display(Name = "Module Name")]
-        public string  Name { get; set; }
-
-        [Display(Name = "Start Date")]
-
+        [Required]
+        [Display(Name ="Namn")]
+        public string Name { get; set; }
+        [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [Display(Name = "Startdatum")]
         public DateTime StartDate { get; set; }
-
-        [Display(Name = "End Date")]
-
-        [DataType(DataType.Date)]
+        [Required]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Slutdatum")]
         public DateTime EndDate { get; set; }
-
+        [Display(Name = "Beskrivning")]
         public string Description { get; set; }
-        
 
-        public int CourseId { get; set; }
-        public Course Course { get; set; }
-        public ICollection<Document> Documents { get; set; }
-        public ICollection<Activity> Activities { get; set; }
     }
 }
