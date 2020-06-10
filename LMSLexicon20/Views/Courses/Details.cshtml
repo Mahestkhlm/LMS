@@ -50,10 +50,10 @@
 
                         <div style="padding-top:10px" class="">
                             <h6 style="font-weight:400">
-                            <span>@Html.DisplayFor(modelItem => item.StartDate)</span>
-                            -
-                            <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
-                             </h6>
+                                <span>@Html.DisplayFor(modelItem => item.StartDate)</span>
+                                -
+                                <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
+                            </h6>
                         </div>
                         <div class="">
                             @if (true || User.IsInRole("Teacher"))
@@ -76,15 +76,15 @@
                 <div class="card-body">
                     <span>@Html.DisplayFor(modelItem => item.Description)</span>
                     @*@if (User.IsInRole("Teacher"))
-                    {
-                        <div style="display: flex; justify-content: flex-end">
-                            <div style="">
-                                <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
-                                <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
-                                <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
+                        {
+                            <div style="display: flex; justify-content: flex-end">
+                                <div style="">
+                                    <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
+                                    <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
+                                    <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
+                                </div>
                             </div>
-                        </div>
-                    }*@
+                        }*@
                     @if (User.IsInRole("Teacher") && item.ActivityDetailVM.Count() == 0)
                     {
                         <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
@@ -137,22 +137,22 @@
     {
         <span><a asp-controller="Modules" asp-action="Create" asp-route-id="@Model.Id">Lägg till modul</a></span>
     }
-   </div>
+</div>
 <br />
 <br />
 
 @await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
 @if (User.IsInRole("Teacher"))
 {
-    <a asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="~/Courses/Details/@Model.Id" asp-route-CourseId="@Model.Id">Registera ny student</a>
+    <a asp-controller="Users" asp-action="CreateUser" asp-route-Id="@Model.Id"  asp-route-CourseId="@Model.Id">Lägg till Student</a>
 }
-    <br />
-    <br />
+<br />
+<br />
 
-    <div>
-        @if (User.IsInRole("Teacher"))
-        {
-            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a><span> | </span>       
-        }
+<div>
+    @if (User.IsInRole("Teacher"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a><span> | </span>
+    }
     <a asp-action="Index">Tillbaka</a>
-    </div>
+</div>
