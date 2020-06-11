@@ -152,23 +152,36 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate,EndDate,Description")] Course course)
+        public async Task<IActionResult> Edit(int id, EditCourseViewModel viewModel)
         {
-            if (id != course.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
+
+            if (viewModel.StartDate >= viewModel.EndDate)
+            {
+                ModelState.AddModelError("EndDate", "Kursen kan inte avsluta innan den börjar");
+            }
+
+            var found = await _context.Courses.AnyAsync(p => (p.Name == viewModel.Name) && (p.Id != viewModel.Id));
+            if (found)
+            {
+                ModelState.AddModelError("Name", "Det finns redan en kurs med denna namn");
+            }
+
+            var model = mapper.Map<Course>(viewModel);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(course);
+                    _context.Update(model);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.Id))
+                    if (!CourseExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -177,12 +190,12 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
-                TempData["SuccessText"] = $"The Course : {course.Name} is updated!";
+                TempData["SuccessText"] = $"Kursen: {model.Name} - är uppdaterad!";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["FailText"] = $"Something Went Wrong! The Course: {course.Name} is not updated!";
+            TempData["FailText"] = $"Något gick fel! Kursen: {model.Name} - är inte uppdaterad!";
 
-            return View(course);
+            return View(viewModel);
         }
 
         // GET: Courses/Delete/5

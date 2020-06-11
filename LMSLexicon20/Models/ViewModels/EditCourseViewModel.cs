@@ -13,7 +13,6 @@ namespace LMSLexicon20.Models.ViewModels
 
         [Required(ErrorMessage = "Fyll i fältet")]
         [Display(Name = "Kursnamn")]
-        [Remote(action: "IsNameUnique", controller: "Courses", ErrorMessage = "Det finns redan en kurs med denna namn")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Välj en datum")]
