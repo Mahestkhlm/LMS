@@ -1,11 +1,13 @@
 ﻿@model IEnumerable<LMSLexicon20.Models.Module>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Modullista";
 }
 
-<h1>Moduler Lista</h1>
-
+<h1>Modullista</h1>
+<div class="text-success blink_me">
+    @TempData["SuccessText"]
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -31,7 +33,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                <a asp-action="Details" asp-route-id="@item.Id"> 
                 @Html.DisplayFor(modelItem => item.Name)
+                </a>
+               
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
@@ -44,11 +49,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Course.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

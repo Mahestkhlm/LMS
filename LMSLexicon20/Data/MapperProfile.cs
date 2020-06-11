@@ -31,6 +31,9 @@ namespace LMSLexicon20.Data
             CreateMap<Course, DeleteCourseViewModel>();
 
             CreateMap<CreateModuleViewModel, Module>();
+            CreateMap<EditModuleViewModel, Module>().ReverseMap();
+            CreateMap<Module, DetailModuleViewModel>();
+
 
 
         }

@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using LMSLexicon20.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace LMSLexicon20
 {
@@ -51,6 +53,23 @@ namespace LMSLexicon20
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddMvc(o =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                o.Filters.Add(new AuthorizeFilter(policy));
+            });
+
+            //services.AddControllers(config =>
+            //{
+            //    // using Microsoft.AspNetCore.Mvc.Authorization;
+            //    // using Microsoft.AspNetCore.Authorization;
+            //    var policy = new AuthorizationPolicyBuilder()
+            //                     .RequireAuthenticatedUser()
+            //                     .Build();
+            //    config.Filters.Add(new AuthorizeFilter(policy));
+            //});
             services.AddAutoMapper(typeof(Startup));
         }
 
