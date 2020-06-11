@@ -1,4 +1,20 @@
 ﻿@model IEnumerable<LMSLexicon20.Models.ViewModels.StudentVM>
+<style>
+    a.btn.a-btn-slide-text:hover {
+        -webkit-transform: scale(1.1);
+        -moz-transform: scale(1.1);
+        -o-transform: scale(1.1);
+    }
+
+    a.btn.a-btn-slide-text {
+        -webkit-transform: scale(0.8);
+        -moz-transform: scale(0.8);
+        -o-transform: scale(0.8);
+        -webkit-transition-duration: 0.5s;
+        -moz-transition-duration: 0.5s;
+        -o-transition-duration: 0.5s;
+    }
+</style>
 <table class="table">
     <thead></thead>
     <tbody>
@@ -10,10 +26,17 @@
                 <td>
                     @if (User.IsInRole("Teacher"))
                     {
-                        @Html.ActionLink("Ta bort", "Delete", "Users", new { id = student.Id }, new { @class = "btn btn-danger" })
-                        @Html.ActionLink("Ändra", "Edit", "Users", new { id = student.Id })
+
+                        <a href="@Url.Action("Delete", "Users", new { id = student.Id })" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                            <span class="fas fa-times" aria-hidden="true"></span>
+                            <span>Ta bort</span>
+                        </a>
+                        <a href="@Url.Action("Edit", "Users", new { id = student.Id })" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                            <span class="fas fa-pencil-square" aria-hidden="true"></span>
+                            <span>Ändra</span>
+                        </a>
                     }
-                    </td>
+                </td>
             </tr>
         }
     </tbody>
