@@ -137,7 +137,8 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await mapper.ProjectTo<EditCourseViewModel>(_context.Courses).FirstOrDefaultAsync(e => e.Id == id);
+
             if (course == null)
             {
                 return NotFound();
