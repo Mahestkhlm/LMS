@@ -46,9 +46,6 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public ActionResult CreateUser(int? courseId = null)
         {
-            //ToDo: testkör (courseid)
-            //courseId sätts inte som /Users/CreateUser/1 men /Users/CreateUser?courseId=1
-            //Den funkar för det andra. Mest jag som ville prova!
             if (courseId != null)
             {
                 var courseExists = _context.Courses.Any(c => c.Id == courseId);
@@ -62,8 +59,6 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        //ToDo: add attributes(phoneNumber, email...)
-        //ToDo: rätt namn?
         public async Task<IActionResult> CreateUser(CreateUserViewModel viewModel, int? id = null)
         {
             //ToDo: fråga Dimitris om att döpa om asp-route-values till nåt annat än id (ex. courseId)
@@ -78,9 +73,6 @@ namespace LMSLexicon20.Controllers
                 //Lägg till kurs om finns (checkat att den finns)
                 if (id != null) model.CourseId = id;
                 //if (courseId != null) model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
-
-                //ToDo: show password in view
-                //TempData och sen in i vy
 
                 //Lägg till användare m. lösen
                 var pw = GeneratePassword();
