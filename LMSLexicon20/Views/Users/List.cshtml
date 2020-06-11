@@ -1,0 +1,67 @@
+﻿@model IEnumerable<UserListViewModel>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>Användarlista</h1>
+<form method="get" asp-controller="Users" asp-action="List" class="text-light border rounded-lg">
+    <div class="input-group">
+        <input type="text" class="form-control" name="filterSearch" placeholder="Sök på namn eller email..." />
+        <div class="input-group-append">
+            <button type="submit" class="btn">&#128270;Sök</button>
+        </div>
+    </div>
+</form>
+<p>
+    @* onödig check? *@
+    @if (User.IsInRole("Teacher"))
+    {
+        <div class="container pb-1">
+            <a asp-action="CreateUser">Lägg till en lärare</a>
+        </div>
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserRole)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserRole)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">@Html.DisplayFor(modelItem => item.CourseName)</a>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Redigera</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Radera</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

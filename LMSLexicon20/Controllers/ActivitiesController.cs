@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LMSLexicon20.Data;
 using LMSLexicon20.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMSLexicon20.Controllers
 {
@@ -47,6 +48,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Activities/Create
+        [Authorize(Roles = "Teacher")]
         public IActionResult Create()
         {
             ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id");
@@ -59,7 +61,8 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,StartDate,EndDate,Description,HasDeadline,ModuleId,ActivityTypeId")] Activity activity)
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Create([Bind("Name,StartDate,EndDate,Description,HasDeadline,ModuleId,ActivityTypeId")] Activity activity)
         {
             if (ModelState.IsValid)
             {
@@ -69,10 +72,12 @@ namespace LMSLexicon20.Controllers
             }
             ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
             ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Id", activity.ModuleId);
+            TempData["SuccessText"] = $":Aktivitet- {activity.Name} - är skapad!";
             return View(activity);
         }
 
         // GET: Activities/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,6 +100,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate,EndDate,Description,HasDeadline,ModuleId,ActivityTypeId")] Activity activity)
         {
             if (id != activity.Id)
@@ -124,10 +130,13 @@ namespace LMSLexicon20.Controllers
             }
             ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
             ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Id", activity.ModuleId);
+            TempData["SuccessText"] = $": Aktivitet-{activity.Name} - Uppdateras!";
+
             return View(activity);
         }
 
         // GET: Activities/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -150,6 +159,7 @@ namespace LMSLexicon20.Controllers
         // POST: Activities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var activity = await _context.Activities.FindAsync(id);

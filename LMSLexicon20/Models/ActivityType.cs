@@ -9,13 +9,8 @@ namespace LMSLexicon20.Models
     public class ActivityType
     {
         public int Id { get; set; }
-
-        [StringLength(50)]
-        [Required]
         public string Name { get; set; }
-
         public bool RequireDocument { get; set; }
-
 
         //Navigation Prop
         public ICollection<Activity> Activities { get; set; }

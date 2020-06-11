@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMSLexicon20", "LMSLexicon20\LMSLexicon20.csproj", "{9C7D0FCC-A3A5-4103-A0E4-8E9A903A39DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LMSLexicon20", "LMSLexicon20\LMSLexicon20.csproj", "{9C7D0FCC-A3A5-4103-A0E4-8E9A903A39DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-﻿@model LMSLexicon20.Models.Course
+﻿@model LMSLexicon20.ViewModels.CourseDetailVM
 
 @{
     ViewData["Title"] = "Details";
@@ -10,33 +10,148 @@
     <h4>Course</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StartDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StartDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.EndDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.EndDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div id="accordion">
+    @foreach (var item in Model.ModuleDetailVM)
+    {
+        <div class="card">
+            <div class="card-header" id="@String.Format($"heading{item.Id}")">
+                <h5 class="mb-0">
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")" aria-expanded="true" aria-controls="@String.Format($"collapse{item.Id}")">
+                            <span>@Html.DisplayFor(modelItem => item.Name)</span>
+                        </button>
+
+                        <div style="padding-top:10px" class="">
+                            <h6 style="font-weight:400">
+                                <span>@Html.DisplayFor(modelItem => item.StartDate)</span>
+                                -
+                                <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
+                            </h6>
+                        </div>
+                        <div class="">
+                            @if (true || User.IsInRole("Teacher"))
+                            {
+                                <div style="display: flex; justify-content: flex-end">
+                                    <div style="font-size:small;font-weight:400">
+                                        <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
+                                        <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
+                                        <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </h5>
+            </div>
+
+
+            <div id="@String.Format($"collapse{item.Id}")" class="collapse show" aria-labelledby="@String.Format($"heading{item.Id}")" data-parent="#accordion">
+                <div class="card-body">
+                    <span>@Html.DisplayFor(modelItem => item.Description)</span>
+                    @*@if (User.IsInRole("Teacher"))
+                        {
+                            <div style="display: flex; justify-content: flex-end">
+                                <div style="">
+                                    <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
+                                    <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
+                                    <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
+                                </div>
+                            </div>
+                        }*@
+                    @if (User.IsInRole("Teacher") && item.ActivityDetailVM.Count() == 0)
+                    {
+                        <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
+                    }
+                    @foreach (var itemActiv in item.ActivityDetailVM)
+                    {
+                        <div id="@String.Format($"accordion{item.Id}")">
+                            <div class="card">
+                                <div class="card-header" id="@String.Format($"heading{item.Id}_{itemActiv.Id}")">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}_{itemActiv.Id}")" aria-expanded="false" aria-controls="@String.Format($"collapse{item.Id}_{itemActiv.Id}")">
+                                            <span>@Html.DisplayFor(modelItem => itemActiv.Name)</span>
+                                            &nbsp;&nbsp;
+                                            <span>@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
+                                            -
+                                            <span>@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
+
+                                        </button>
+                                    </h5>
+                                </div>
+
+                                <div id="@String.Format($"collapse{item.Id}_{itemActiv.Id}")" class="collapse" aria-labelledby="@String.Format($"heading{item.Id}_{itemActiv.Id}")" data-parent="@String.Format($"#accordion{item.Id}")">
+                                    <div class="card-body">
+                                        <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
+                                        @if (User.IsInRole("Teacher"))
+                                        {
+                                            <div style="display: flex; justify-content: flex-end">
+                                                <div style="">
+                                                    <span><a asp-controller="Activities" asp-action="Edit" asp-route-id="@itemActiv.Id">Ändra</a> | </span>
+                                                    <span><a asp-controller="Activities" asp-action="Details" asp-route-id="@itemActiv.Id">Detaljer</a> | </span>
+                                                    <span><a asp-controller="Activities" asp-action="Delete" asp-route-id="@itemActiv.Id">Ta bort</a></span>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if (User.IsInRole("Teacher") && item.ActivityDetailVM.Select(a => a.Id).Last() == itemActiv.Id)
+                        {
+                            <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
+                        }
+
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    @if (User.IsInRole("Teacher"))
+    {
+        <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
+    }
 </div>
+<br />
+<br />
+
+@await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
+<a asp-controller="Users" asp-action="CreateUser" asp-route-Id="@Model.Id">Lägg till Student</a>
+<div>
+    @if (User.IsInRole("Teacher"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a><span> | </span>
+        @* <a class="btn btn-info" asp-action="Index">All Courses</a>*@
+    }
+    <a asp-action="Index">Tillbaka</a>
+</div>
+
+
+
+

@@ -4,31 +4,25 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LMSLexicon20.ViewModel
+namespace LMSLexicon20.Models.ViewModels
 {
-    public class CourseAddViewModel
+    public class CreateModuleViewModel
     {
-
-        //public int Id { get; set; }
-
         [Required]
-        [Display(Name = "Course Name")]
-        public string Name { get; set; } //Course Name
-
-
+        [Display(Name ="Namn")]
+        public string Name { get; set; }
         [Required]
-        [Display(Name = "Start Date")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [Display(Name = "Startdatum")]
         public DateTime StartDate { get; set; }
-
         [Required]
-        [Display(Name = "End Date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [DataType(DataType.Date)]
+        [Display(Name = "Slutdatum")]
         public DateTime EndDate { get; set; }
-
-        [StringLength(200)]
+        [Display(Name = "Beskrivning")]
         public string Description { get; set; }
-
 
 
     }
