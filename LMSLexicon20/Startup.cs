@@ -16,6 +16,7 @@ using LMSLexicon20.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using LMSLexicon20.Services;
 
 namespace LMSLexicon20
 {
@@ -71,6 +72,8 @@ namespace LMSLexicon20
             //    config.Filters.Add(new AuthorizeFilter(policy));
             //});
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddScoped<ITeacherChoiceDropdown, TeacherChoiceDropdown>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
