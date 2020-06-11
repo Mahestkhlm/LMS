@@ -76,27 +76,28 @@
                 <div class="card-body">
                     <span>@Html.DisplayFor(modelItem => item.Description)</span>
                     @*@if (User.IsInRole("Teacher"))
-                        {
-                            <div style="display: flex; justify-content: flex-end">
-                                <div style="">
-                                    <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
-                                    <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
-                                    <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
-                                </div>
-                            </div>
-                        }*@
+        {
+            <div style="display: flex; justify-content: flex-end">
+                <div style="">
+                    <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
+                    <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
+                    <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
+                </div>
+            </div>
+        }*@
                     @if (User.IsInRole("Teacher") && item.ActivityDetailVM.Count() == 0)
                     {
                         <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                     }
+                   
                     @foreach (var itemActiv in item.ActivityDetailVM)
                     {
                         <div id="@String.Format($"accordion{item.Id}")">
                             <div class="card">
-                                <div class="card-header" id="@String.Format($"heading{item.Id}_{itemActiv.Id}")">
+                                <div class="card-header" id="@String.Format($"heading{item.Id}_{itemActiv.Id} Aktivity Name")">
                                     <h5 class="mb-0">
                                         <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}_{itemActiv.Id}")" aria-expanded="false" aria-controls="@String.Format($"collapse{item.Id}_{itemActiv.Id}")">
-                                            <span>@Html.DisplayFor(modelItem => itemActiv.Name)</span>
+                                            <span>@Html.DisplayFor(modelItem => itemActiv.Name) </span>
                                             &nbsp;&nbsp;
                                             <span>@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
                                             -
@@ -146,10 +147,10 @@
 <div>
     @if (User.IsInRole("Teacher"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a><span> | </span>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Ändra</a><span> | </span>
         @* <a class="btn btn-info" asp-action="Index">All Courses</a>*@
     }
-    <a asp-action="Index">Tillbaka</a>
+    <a asp-action="Index">Tillbaka till KursListan </a>
 </div>
 
 
