@@ -99,7 +99,7 @@ namespace LMSLexicon20.Controllers
                 //ToDo: kan man ha FÖR många async?
                 await context.Modules.AddAsync(model);
                 await context.SaveChangesAsync();
-
+                TempData["SuccessText"] = $"Modulen: {model.Name} - är skapad!";
                 return RedirectToAction(nameof(Index));
             }
             return View(viewModel);
@@ -152,6 +152,8 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessText"] = $"Modulen: {model.Name} -  uppdateras!!";
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CourseId"] = new SelectList(context.Courses, "Id", "Id", model.CourseId);
@@ -173,7 +175,6 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
-
             return View(model);
         }
 
