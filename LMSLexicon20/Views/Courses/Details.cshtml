@@ -1,5 +1,24 @@
 ﻿@model LMSLexicon20.ViewModels.CourseDetailVM
+    @*<style>
+        button.btn-link {
+            position: relative;
+        }
 
+            button.btn-link::after {
+                content: "\f107";
+                color: #333;
+                top: -2px;
+                right: 0px;
+                position: absolute;
+                font-family: "FontAwesome"
+            }
+
+        button[aria-expanded="true"]::after {
+            content: "\f106";
+        }
+
+
+    </style>*@
 @{
     ViewData["Title"] = "Details";
 }
@@ -42,9 +61,9 @@
     {
         <div class="card">
             <div class="card-header" id="@String.Format($"heading{item.Id}")">
-                <h5 class="mb-0">
+                <div class="mb-0">
                     <div class="d-flex justify-content-between">
-                        <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")" aria-expanded="true" aria-controls="@String.Format($"collapse{item.Id}")">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")" aria-expanded="@item.ExpandedModule" aria-controls="@String.Format($"collapse{item.Id}")">
                             <span>@Html.DisplayFor(modelItem => item.Name)</span>
                         </button>
 
@@ -56,7 +75,7 @@
                             </h6>
                         </div>
                         <div class="">
-                            @if (true || User.IsInRole("Teacher"))
+                            @if (User.IsInRole("Teacher"))
                             {
                                 <div style="display: flex; justify-content: flex-end">
                                     <div style="font-size:small;font-weight:400">
@@ -68,23 +87,17 @@
                             }
                         </div>
                     </div>
-                </h5>
+                </div>
             </div>
 
+            @{
+                var cls = item.ExpandedModule ? " show" : "";
+            }
 
-            <div id="@String.Format($"collapse{item.Id}")" class="collapse show" aria-labelledby="@String.Format($"heading{item.Id}")" data-parent="#accordion">
+            <div id="@String.Format($"collapse{item.Id}")" class="collapse @cls" aria-labelledby="@String.Format($"heading{item.Id}")" data-parent="#accordion">
                 <div class="card-body">
                     <span>@Html.DisplayFor(modelItem => item.Description)</span>
-                    @*@if (User.IsInRole("Teacher"))
-                        {
-                            <div style="display: flex; justify-content: flex-end">
-                                <div style="">
-                                    <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
-                                    <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
-                                    <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
-                                </div>
-                            </div>
-                        }*@
+                    <br /><br />
                     @if (User.IsInRole("Teacher") && item.ActivityDetailVM.Count() == 0)
                     {
                         <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
@@ -101,7 +114,6 @@
                                             <span>@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
                                             -
                                             <span>@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
-
                                         </button>
                                     </h5>
                                 </div>
@@ -123,26 +135,37 @@
                                 </div>
                             </div>
                         </div>
-                        @if (User.IsInRole("Teacher") && item.ActivityDetailVM.Select(a => a.Id).Last() == itemActiv.Id)
+                        @if ((User.IsInRole("Teacher")) && item.ActivityDetailVM.Select(a => a.Id).Last() == itemActiv.Id)
                         {
                             <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                         }
-
+                    }
+                    @if (( User.IsInRole("Teacher")) && item.ActivityDetailVM.Count() == 0)
+                    {
+                        <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                     }
                 </div>
             </div>
         </div>
+        @if ((User.IsInRole("Teacher")) && Model.ModuleDetailVM.Select(a => a.Id).Last() == item.Id)
+        {
+            <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
+        }
     }
-    @if (User.IsInRole("Teacher"))
+    @if ((User.IsInRole("Teacher")) && Model.ModuleDetailVM.Count() == 0)
     {
         <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
     }
+
 </div>
 <br />
 <br />
 
 @await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
-<a asp-controller="Users" asp-action="CreateUser" asp-route-Id="@Model.Id">Lägg till Student</a>
+@if (User.IsInRole("Teacher"))
+{
+    <a asp-controller="Users" asp-action="CreateUser" asp-route-Id="@Model.Id">Lägg till Student</a>
+}
 <div>
     @if (User.IsInRole("Teacher"))
     {
@@ -151,7 +174,3 @@
     }
     <a asp-action="Index">Tillbaka</a>
 </div>
-
-
-
-
