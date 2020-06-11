@@ -43,6 +43,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Redigera</a> <br />
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">Tillbaka till kurs</a>
 </div>

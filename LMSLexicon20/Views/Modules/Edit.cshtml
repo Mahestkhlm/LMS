@@ -1,52 +1,45 @@
-﻿@model LMSLexicon20.Models.Module
+﻿@model LMSLexicon20.Models.ViewModels.EditModuleViewModel
+@*ToDo:gör viewmodel*@
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>Module</h4>
+<h2>Redigera modul <br /> <span class="text-muted">@Model.Name</span></h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
+                <label class="control-label">Tidsperiod</label>
+                <div class="form-inline">
+                    <input asp-for="StartDate" class="form-control" />
+                    <input asp-for="EndDate" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span><br />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                    @*<label asp-for="EndDate" class="control-label"></label>*@
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" class="form-control" maxlength="500"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Spara" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">Tillbaka till kurs</a>
 </div>
 
 @section Scripts {

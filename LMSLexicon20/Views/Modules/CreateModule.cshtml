@@ -16,7 +16,7 @@
                 <div class="form-inline">
                     <input asp-for="StartDate" class="form-control" />
                     <input asp-for="EndDate" class="form-control" />
-                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                    <span asp-validation-for="StartDate" class="text-danger"></span><br />
                     <span asp-validation-for="EndDate" class="text-danger"></span>
                     @*<label asp-for="EndDate" class="control-label"></label>*@
                 </div>
@@ -34,7 +34,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Courses" asp-action="Details" asp-route-id='@TempData["courseId"]'>Tillbaka till kurs</a>
 </div>
 
 @section Scripts {
