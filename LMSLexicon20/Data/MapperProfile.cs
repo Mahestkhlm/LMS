@@ -22,6 +22,8 @@ namespace LMSLexicon20.Data
                        dest => dest.FullName,
                        from => from.MapFrom(e => $"{e.FirstName} {e.LastName}"));
 
+            CreateMap<User, UserDetailsViewModel>();
+
             CreateMap<Course, CourseIndexViewModel>();
             CreateMap<CreateCourseViewModel, Course>();
 
