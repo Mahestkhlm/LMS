@@ -1,10 +1,10 @@
 ﻿@model LMSLexicon20.ViewModels.CourseDetailVM
-    <style>
-        .panel-title {
+    @*<style>
+        button.btn-link {
             position: relative;
         }
 
-            .panel-title::after {
+            button.btn-link::after {
                 content: "\f107";
                 color: #333;
                 top: -2px;
@@ -13,10 +13,12 @@
                 font-family: "FontAwesome"
             }
 
-            .panel-title[aria-expanded="true"]::after {
-                content: "\f106";
-            }
-    </style>
+        button[aria-expanded="true"]::after {
+            content: "\f106";
+        }
+
+
+    </style>*@
 @{
     ViewData["Title"] = "Details";
 }
@@ -73,7 +75,7 @@
                             </h6>
                         </div>
                         <div class="">
-                            @if (true || User.IsInRole("Teacher"))
+                            @if (User.IsInRole("Teacher"))
                             {
                                 <div style="display: flex; justify-content: flex-end">
                                     <div style="font-size:small;font-weight:400">
@@ -133,24 +135,24 @@
                                 </div>
                             </div>
                         </div>
-                        @if ((true || User.IsInRole("Teacher")) && item.ActivityDetailVM.Select(a => a.Id).Last() == itemActiv.Id)
+                        @if ((User.IsInRole("Teacher")) && item.ActivityDetailVM.Select(a => a.Id).Last() == itemActiv.Id)
                         {
                             <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                         }
                     }
-                    @if ((true || User.IsInRole("Teacher")) && item.ActivityDetailVM.Count() == 0)
+                    @if (( User.IsInRole("Teacher")) && item.ActivityDetailVM.Count() == 0)
                     {
                         <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                     }
                 </div>
             </div>
         </div>
-        @if ((true || User.IsInRole("Teacher")) && Model.ModuleDetailVM.Select(a => a.Id).Last() == item.Id)
+        @if ((User.IsInRole("Teacher")) && Model.ModuleDetailVM.Select(a => a.Id).Last() == item.Id)
         {
             <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
         }
     }
-    @if ((true || User.IsInRole("Teacher")) && Model.ModuleDetailVM.Count() == 0)
+    @if ((User.IsInRole("Teacher")) && Model.ModuleDetailVM.Count() == 0)
     {
         <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
     }
@@ -160,7 +162,7 @@
 <br />
 
 @await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
-@if (true || User.IsInRole("Teacher"))
+@if (User.IsInRole("Teacher"))
 {
     <a asp-controller="Users" asp-action="CreateUser" asp-route-Id="@Model.Id">Lägg till Student</a>
 }
