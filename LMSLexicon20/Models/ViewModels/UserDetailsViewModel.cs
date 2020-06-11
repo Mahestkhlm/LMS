@@ -8,6 +8,7 @@ namespace LMSLexicon20.Models.ViewModels
 {
     public class UserDetailsViewModel
     {
+        public string Id { get; set; }
         [Display(Name = "Roll")]
         public string Role { get; set; }
 
