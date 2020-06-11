@@ -10,6 +10,7 @@ using LMSLexicon20.Models;
 using AutoMapper;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMSLexicon20.Controllers
 {
@@ -50,7 +51,21 @@ namespace LMSLexicon20.Controllers
             return View();
         }
         //Post
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Name,StartDate,EndDate,Description,CourseId")] Module model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        context.Add(model);
+        //        await context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["CourseId"] = new SelectList(context.Courses, "Id", "Id", model.CourseId);
+        //    return View(model);
+        //}
+        ////Post
+        //[HttpPost]
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel viewModel, int id)
         {
@@ -68,7 +83,7 @@ namespace LMSLexicon20.Controllers
                 //ToDo: kan man ha FÖR många async?
                 await context.Modules.AddAsync(model);
                 await context.SaveChangesAsync();
-
+                TempData["SuccessText"] = $"Modulen: {model.Name} - är skapad!";
                 return RedirectToAction(nameof(Details), "Courses", new { id = model.CourseId });
             }
             return View(viewModel);
@@ -118,7 +133,7 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
-                //ToDo: add tempdata success
+                TempData["SuccessText"] = $"Modulen: {model.Name} -  uppdateras!!";
                 return RedirectToAction(nameof(Details),"Courses", new {id= model.CourseId });
             }
             return View(viewModel);
@@ -139,7 +154,6 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
-
             return View(model);
         }
 

@@ -24,5 +24,6 @@ namespace LMSLexicon20.Models.ViewModels
         [Display(Name = "Beskrivning")]
         public string Description { get; set; }
 
+
     }
 }

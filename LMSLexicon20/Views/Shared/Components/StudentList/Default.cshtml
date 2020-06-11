@@ -8,9 +8,12 @@
                 <td><a asp-action="Details" asp-route-id="@student.Id">@student.Email</a></td>
                 <td>@student.FullName</td>
                 <td>
-                    @Html.ActionLink("Ta bort", "Delete", "Users", new { id = student.Id }, new { @class = "btn btn-danger" })
-                    @Html.ActionLink("Ändra", "Edit", "Users", new { id = student.Id })
-                </td>
+                    @if (User.IsInRole("Teacher"))
+                    {
+                        @Html.ActionLink("Ta bort", "Delete", "Users", new { id = student.Id }, new { @class = "btn btn-danger" })
+                        @Html.ActionLink("Ändra", "Edit", "Users", new { id = student.Id })
+                    }
+                    </td>
             </tr>
         }
     </tbody>
