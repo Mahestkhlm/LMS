@@ -17,8 +17,13 @@ namespace LMSLexicon20.Models.ViewModels
 
         [Display(Name = "Efternamn")]
         public string LastName { get; set; }
+        public string Email { get; set; }
+
+        [Display(Name = "Telefonnummer")]
+        public string PhoneNumber { get; set; }
 
         [Display(Name = "Registreringsdatum")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime RegDate { get; set; }
 
         [Display(Name = "Kurs")]
