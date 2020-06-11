@@ -39,7 +39,7 @@
 </div>
 
 <div>
-    <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">Tillbaka till kurs</a>
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@TempData["CourseId"]">Tillbaka till kurs</a>
 </div>
 
 @section Scripts {
