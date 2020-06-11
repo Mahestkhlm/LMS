@@ -42,7 +42,9 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
-            return View(model);
+            var viewModel = mapper.Map<DetailModuleViewModel>(model);
+            viewModel.Id = id;
+            return View(viewModel);
         }
         //Get
         public IActionResult CreateModule(int id)
