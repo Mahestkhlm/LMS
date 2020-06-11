@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LMSLexicon20.Models;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace LMSLexicon20.ViewModels
@@ -25,11 +26,14 @@ namespace LMSLexicon20.ViewModels
         [StringLength(200)]
         public string Description { get; set; }
 
+        public bool HasDeadline { get; set; }
+
         public bool ExpandedActivity { get; set; } = false;
 
         //Foreign Key
         public int ModuleId { get; set; }
-        public int ActivityTypeId { get; set; }
+
+        public ActivityTypeWM ActivityTypeWM { get; set; }
 
     }
 }

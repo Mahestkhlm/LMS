@@ -1,5 +1,5 @@
 ﻿@model LMSLexicon20.ViewModels.CourseDetailVM
-    @*<style>
+@*<style>
         button.btn-link {
             position: relative;
         }
@@ -56,6 +56,15 @@
     </dl>
 </div>
 
+@if (User.IsInRole("Teacher"))@*&& Model.ModuleDetailVM.Count() == 0*@
+{
+    @*<span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>*@
+    <a href="@Url.Action("CreateModule", "Modules", new { id = Model.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+        <span class="fas fa-plus-circle" aria-hidden="true"></span>
+        <span><strong>Lägg till modul</strong></span>
+    </a>
+}
+<br />
 <div id="accordion">
     @foreach (var item in Model.ModuleDetailVM)
     {
@@ -73,15 +82,27 @@
                                 -
                                 <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
                             </h6>
+
                         </div>
                         <div class="">
                             @if (User.IsInRole("Teacher"))
                             {
                                 <div style="display: flex; justify-content: flex-end">
                                     <div style="font-size:small;font-weight:400">
-                                        <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
-                                        <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
-                                        <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
+                                        @*<span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
+                                            <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
+                                            <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>*@
+
+                                        <a href="@Url.Action("Delete", "Modules", new { id = item.Id })" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                                            <span class="fas fa-times" aria-hidden="true"></span>
+                                            <span>Ta bort</span>
+                                        </a>
+                                        <a href="@Url.Action("Edit", "Modules", new { id = item.Id })" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                                            <span class="fas fa-pencil-square-o" aria-hidden="true"></span>
+                                            <span>Ändra</span>
+                                        </a>
+
+
                                     </div>
                                 </div>
                             }
@@ -116,6 +137,14 @@
                                             <span>@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
                                         </button>
                                     </h5>
+                                    <span>@Html.DisplayFor(modelItem => itemActiv.ActivityTypeWM.Name)</span>
+
+                                    @if (itemActiv.ActivityTypeWM.RequireDocument)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-outline-warning">
+                                            Dokument <span class="badge badge-light text-small" style="vertical-align: top">0</span>
+                                        </button>
+                                    }
                                 </div>
 
                                 <div id="@String.Format($"collapse{item.Id}_{itemActiv.Id}")" class="collapse" aria-labelledby="@String.Format($"heading{item.Id}_{itemActiv.Id}")" data-parent="@String.Format($"#accordion{item.Id}")">
@@ -140,23 +169,14 @@
                             <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                         }
                     }
-                    @if (( User.IsInRole("Teacher")) && item.ActivityDetailVM.Count() == 0)
+                    @if ((User.IsInRole("Teacher")) && item.ActivityDetailVM.Count() == 0)
                     {
                         <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                     }
                 </div>
             </div>
         </div>
-        @if ((User.IsInRole("Teacher")) && Model.ModuleDetailVM.Select(a => a.Id).Last() == item.Id)
-        {
-            <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
-        }
     }
-    @if ((User.IsInRole("Teacher")) && Model.ModuleDetailVM.Count() == 0)
-    {
-        <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
-    }
-
 </div>
 <br />
 <br />

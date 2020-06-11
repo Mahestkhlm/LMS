@@ -78,6 +78,14 @@ namespace LMSLexicon20.Controllers
                                                 StartDate = a.StartDate,
                                                 EndDate = a.EndDate,
                                                 Description = a.Description
+                                                ,
+                                                ActivityTypeWM = 
+                                                new ActivityTypeWM
+                                                {
+                                                    Id= a.ActivityType.Id,
+                                                    Name = a.ActivityType.Name,
+                                                    RequireDocument = a.ActivityType.RequireDocument
+                                                }
                                             })
                                    })
                     })
