@@ -1,11 +1,13 @@
-﻿@model IEnumerable<LMSLexicon20.Models.Module>
+﻿@model IEnumerable<LMSLexicon20.Models.ViewModels.IndexModuleViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Modullista";
 }
 
-<h1>Moduler Lista</h1>
-
+<h1>Modullista</h1>
+<div class="text-success blink_me">
+    @TempData["SuccessText"]
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -13,25 +15,38 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Course)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id">
+                    @Html.DisplayFor(modelItem => item.Course.Name)
+                </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
@@ -39,18 +54,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+
+
         </tr>
-}
+        }
     </tbody>
 </table>
