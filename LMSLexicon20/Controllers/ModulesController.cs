@@ -32,13 +32,9 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Modules/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            //ToDo: ta in int eller int?
             var model = await context.Modules
                 .Include(m => m.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -46,80 +42,64 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
-
-            return View(model);
-        }
-
-        // GET: Modules/Create
-        public IActionResult Create()
-        {
-            ViewData["CourseId"] = new SelectList(context.Courses, "Id", "Id");
-            return View();
+            var viewModel = mapper.Map<DetailModuleViewModel>(model);
+            viewModel.Id = id;
+            return View(viewModel);
         }
         //Get
-        public IActionResult CreateModule(int? id)
+        public IActionResult CreateModule(int id)
         {
-            //ToDo: koppla kurs
-
+            TempData["courseId"] = id;
             return View();
         }
-
-        // POST: Modules/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create([Bind("Id,Name,StartDate,EndDate,Description,CourseId")] Module model)
-        {
-            if (ModelState.IsValid)
-            {
-                context.Add(model);
-                await context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CourseId"] = new SelectList(context.Courses, "Id", "Id", model.CourseId);
-            return View(model);
-        }
         //Post
-        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Name,StartDate,EndDate,Description,CourseId")] Module model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        context.Add(model);
+        //        await context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["CourseId"] = new SelectList(context.Courses, "Id", "Id", model.CourseId);
+        //    return View(model);
+        //}
+        ////Post
+        //[HttpPost]
         [Authorize(Roles = "Teacher")]
         [HttpPost]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel viewModel, int id)
         {
+            var nameExists = context.Modules
+                .Where(m => m.CourseId == id)
+                .Any(m => m.Name == viewModel.Name);
+            if (nameExists)
+                ModelState.AddModelError("Name", "Namnet används redan i denna kurs");
+
             if (ModelState.IsValid)
             {
                 var model = mapper.Map<Module>(viewModel);
                 model.CourseId = id;
 
-                //ToDo: kolla eller inte
-                //var moduleExists = await context.Modules.AnyAsync(m => m.id == ?);
-                //if (!module)
-
                 //ToDo: kan man ha FÖR många async?
                 await context.Modules.AddAsync(model);
                 await context.SaveChangesAsync();
                 TempData["SuccessText"] = $"Modulen: {model.Name} - är skapad!";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), "Courses", new { id = model.CourseId });
             }
             return View(viewModel);
         }
 
         // GET: Modules/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            //ToDo: nullcheck?
+            //För att kunna gå tillbaka till kurs
+            var module = await context.Modules.FindAsync(id);
+            TempData["CourseId"] = module.CourseId;
 
-            var model = await context.Modules.FindAsync(id);
-            if (model == null)
-            {
-                return NotFound();
-            }
-            ViewData["CourseId"] = new SelectList(context.Courses, "Id", "Id", model.CourseId);
-            return View(model);
+            return View();
         }
 
         // POST: Modules/Edit/5
@@ -127,15 +107,18 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate,EndDate,Description,CourseId")] Module model)
+        public async Task<IActionResult> Edit(EditModuleViewModel viewModel, int id)
         {
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
+            var nameExists = context.Modules
+               .Where(m => m.CourseId == id)
+               .Any(m => m.Name == viewModel.Name);
+            if (nameExists)
+                ModelState.AddModelError("Name", "Namnet används redan i denna kurs");
 
             if (ModelState.IsValid)
             {
+                var model = await context.Modules.FindAsync(id);
+                //model.CourseId = id;
                 try
                 {
                     context.Update(model);
@@ -153,11 +136,9 @@ namespace LMSLexicon20.Controllers
                     }
                 }
                 TempData["SuccessText"] = $"Modulen: {model.Name} -  uppdateras!!";
-
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details),"Courses", new {id= model.CourseId });
             }
-            ViewData["CourseId"] = new SelectList(context.Courses, "Id", "Id", model.CourseId);
-            return View(model);
+            return View(viewModel);
         }
 
         // GET: Modules/Delete/5
@@ -186,7 +167,9 @@ namespace LMSLexicon20.Controllers
             var model = await context.Modules.FindAsync(id);
             context.Modules.Remove(model);
             await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            //ToDo: add tempdata success / confirmed-page
+            return RedirectToAction(nameof(Details), "Courses", new { id = id });
         }
 
         private bool ModuleExists(int id)

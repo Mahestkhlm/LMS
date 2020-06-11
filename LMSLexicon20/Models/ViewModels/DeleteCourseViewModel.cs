@@ -14,9 +14,11 @@ namespace LMSLexicon20.Models.ViewModels
         public string Name { get; set; }
 
         [Display(Name = "Kursstart")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime StartDate { get; set; }
 
         [Display(Name = "Kursslut")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime EndDate { get; set; }
 
         [Display(Name = "Kursbeskrivning")]
