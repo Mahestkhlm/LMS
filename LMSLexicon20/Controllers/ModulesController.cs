@@ -28,7 +28,10 @@ namespace LMSLexicon20.Controllers
         // GET: Modules
         public async Task<IActionResult> Index()
         {
-            return View(await context.Modules.Include(m => m.Course).ToListAsync());
+            var modules = await context.Modules.Include(m => m.Course).ToListAsync();
+            var viewModel = await mapper.ProjectTo<IndexModuleViewModel>
+                (context.Modules.Include(m => m.Course)).ToListAsync();
+            return View(viewModel);
         }
 
         // GET: Modules/Details/5

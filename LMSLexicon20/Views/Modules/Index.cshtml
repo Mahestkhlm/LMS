@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LMSLexicon20.Models.Module>
+﻿@model IEnumerable<LMSLexicon20.Models.ViewModels.IndexModuleViewModel>
 
 @{
     ViewData["Title"] = "Modullista";
@@ -15,28 +15,38 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Course)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id"> 
-                @Html.DisplayFor(modelItem => item.Name)
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.Name)
                 </a>
-               
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.Course.Id">
+                    @Html.DisplayFor(modelItem => item.Course.Name)
+                </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StartDate)
@@ -44,13 +54,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Course.Id)
-            </td>
+
+
         </tr>
-}
+        }
     </tbody>
 </table>
