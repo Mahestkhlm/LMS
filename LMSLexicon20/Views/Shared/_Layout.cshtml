@@ -11,7 +11,11 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LMSLexicon20</a>
+                <section class="float-left">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="~/Images/logo1.jpg" style="width:110px; height:38px" />
+                    </a>
+                </section>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,7 +26,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="List">Användare</a>
                         </li>
-                      <li>
+                        <li>
                             <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
                         </li>
                     </ul>
@@ -30,8 +34,24 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container" id="sharedLayout">
         <main role="main" class="pb-3">
+            @if (TempData["SuccessText"] != null)
+            {
+                /* var message =(MessageVM)TempData["UserMessage"];*/
+                <div class="alert alert-success" id="message-alert">
+                    <button type="button" class="close" data-dismiss="alert">x</button>
+                    <strong>Confirm! </strong>@TempData["SuccessText"]
+                </div>
+            }
+            @if (TempData["FailText"] != null)
+            {
+                /* var message =(MessageVM)TempData["UserMessage"];*/
+                <div class="alert alert-warning" id="message-alert">
+                    <button type="button" class="close" data-dismiss="alert">x</button>
+                    <strong>Dismiss! </strong>@TempData["FailText"]
+                </div>
+            }
             @RenderBody()
         </main>
     </div>
@@ -44,6 +64,12 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(function () {
+            $("#message-alert").hide();
+            $("#message-alert").fadeTo(3000, 500).slideUp(500, function () { $("#message-alert").slideUp(500); });
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

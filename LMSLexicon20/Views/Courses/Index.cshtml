@@ -6,22 +6,21 @@
 }
 
 <div id="mainbackgroundcolor" class="rounded-lg">
-    <h1 class="text-light rounded-top p-3" id="searchindex">@ViewData["Title"]</h1>
-    <form method="get" asp-controller="Courses" asp-action="Filter" class="text-light border rounded-lg">
+    <h1 class="rounded-top p-3" id="searchindex">@ViewData["Title"]</h1>
+    <form method="get" asp-controller="Courses" asp-action="Index" class="text-light border rounded-lg">
         <div class="input-group">
             <input type="text" class="form-control" name="filterSearch" placeholder="Search On Name" />
             <div class="input-group-append">
-                <button type="submit" class="btn">&#128270;Sök</button>
+                <button type="submit" class="btn btn-primary">&#128270;Sök</button>
             </div>
         </div>
     </form>
 
-    <h1>Index</h1>
 
     <p>
         <div class="container pb-1">
             <a asp-action="Create">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Lägg till kurs" class="btn btn-primary" />
             </a>
         </div>
         <div class="text-success blink_me">

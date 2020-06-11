@@ -26,8 +26,7 @@ namespace LMSLexicon20.ViewModels
         [StringLength(200)]
         public string Description { get; set; }
 
-        public bool OpenModule { get; set; }
-
+        public bool ExpandedModule { get; set; } = true;
 
         //Foreign Key
         public int CourseId { get; set; }

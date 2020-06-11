@@ -6,27 +6,24 @@ using System.Threading.Tasks;
 
 namespace LMSLexicon20.Models.ViewModels
 {
-    public class CourseIndexViewModel
+    public class CreateModuleViewModel
     {
-        public int Id { get; set; }
-
-        [Display(Name = "Course Name")]
+        [Required]
+        [Display(Name ="Namn")]
         public string Name { get; set; }
-
-        [Display(Name = "Start date")]
+        [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [Display(Name = "Startdatum")]
         public DateTime StartDate { get; set; }
-
-        [Display(Name = "End date")]
-        [DataType(DataType.Date)]
+        [Required]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Slutdatum")]
         public DateTime EndDate { get; set; }
-
-        [Display(Name = "Description ")]
+        [Display(Name = "Beskrivning")]
         public string Description { get; set; }
-        //public Module Module { get; set; }
-       // public Course Course { get; set; }
+
 
     }
 }

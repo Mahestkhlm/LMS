@@ -10,32 +10,33 @@ using LMSLexicon20.Models;
 using LMSLexicon20.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using LMSLexicon20.Models.ViewModels;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMSLexicon20.Controllers
 {
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper mapper;
+        private readonly UserManager<User> userManager;
 
-        public CoursesController(ApplicationDbContext context)
+        public CoursesController(ApplicationDbContext context, IMapper mapper, UserManager<User> userManager)
         {
             _context = context;
+            this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filterSearch)
         {
-            var model = _context.Courses
-                   .Select(c => new CourseIndexViewModel
-                   {
-                       Id = c.Id,
-                       Name = c.Name,
-                       Description = c.Description,
-                       StartDate = c.StartDate,
-                       EndDate = c.EndDate
-                   });
+            var viewModel = await mapper.ProjectTo<CourseIndexViewModel>(_context.Courses).ToListAsync();
 
-            return View(await model.ToListAsync());
+            var filter = string.IsNullOrWhiteSpace(filterSearch) ?
+                              viewModel : viewModel.Where(m => m.Name.ToLower().Contains(filterSearch.ToLower())) ;
+                                                                  
+            return View(filter);
         }
 
         // GET: Courses/Details/5
@@ -50,8 +51,8 @@ namespace LMSLexicon20.Controllers
             //_context.Courses.Find(1)
             //await 
             var courseDetailVM = _context.Courses
-                //.Include(c => c.Modules)
-                //.ThenInclude(m => m.Activities)
+                    //.Include(c => c.Modules)
+                    //.ThenInclude(m => m.Activities)
                     .Select(c => new CourseDetailVM
                     {
                         Id = c.Id,
@@ -89,7 +90,7 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            return View(nameof(Details),await courseDetailVM);
+            return View(nameof(Details), await courseDetailVM);
         }
 
         // GET: Courses/Create
@@ -106,23 +107,29 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create([Bind("Id,Name,StartDate,EndDate,Description")] Course course)
+        public async Task<IActionResult> Create(CreateCourseViewModel viewModel)
         {
+            if (viewModel.StartDate >= viewModel.EndDate)
+            {
+                ModelState.AddModelError("EndDate", "Kursen kan inte avsluta innan den börjar");
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(course);
+                var model = mapper.Map<Course>(viewModel);
+
+                _context.Add(model);
                 await _context.SaveChangesAsync();
-                TempData["SuccessText"] = $"The Course: {course.Name} is Created!";
+                TempData["SuccessText"] = $"Kursen: {model.Name} - är skapad!";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["FailText"] = "Try Again! Something Went wrong!!";
-            return View(course);
+            return View(viewModel);
         }
 
 
 
         // GET: Courses/Edit/5
-       [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -169,7 +176,7 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
-                TempData["SuccessText"] = $"The Course : {course.Name}is Updated!";
+                TempData["SuccessText"] = $"The Course : {course.Name} is updated!";
                 return RedirectToAction(nameof(Index));
             }
             TempData["FailText"] = $"Something Went Wrong! The Course: {course.Name} is not updated!";
@@ -187,8 +194,12 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var course = await mapper.ProjectTo<DeleteCourseViewModel>(_context.Courses).FirstOrDefaultAsync(e => e.Id == id);
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
+            course.Teacher = teachers.FirstOrDefault(e => e.CourseId == id);
+            var students = await userManager.GetUsersInRoleAsync("Student");
+            course.Students = students.Where(e => e.CourseId == id).ToList();
+            
             if (course == null)
             {
                 return NotFound();
@@ -204,26 +215,26 @@ namespace LMSLexicon20.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await _context.Courses.FindAsync(id);
+
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
+            var teacher = teachers.FirstOrDefault(e => e.CourseId == id);
+            if (teacher != null) teacher.CourseId = null;
+
+            var students = await userManager.GetUsersInRoleAsync("Student");
+            var courseStudents = students.Where(e => e.CourseId == id).ToList();
+            foreach (var item in courseStudents)
+            {
+                _context.Users.Remove(item);
+            }
+
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
-            TempData["SuccessText"] = $"The Course: {course.Name} is deleted!";
+            TempData["SuccessText"] = $"Kursen: {course.Name} - är raderad!";
             return RedirectToAction(nameof(Index));
         }
-        // Course / Filter
-        public async Task<IActionResult> Filter(string CourseName)
-        {
-            var model = await _context.Courses.ToListAsync();
-
-            model = string.IsNullOrWhiteSpace(CourseName) ?
-                model :
-                model.Where(p => p.Name.ToLower().Contains(CourseName.ToLower())).ToList();
-
-            return View(nameof(Index), model);
-        }
+       
 
 
-
-      
         private bool CourseExists(int id)
         {
             return _context.Courses.Any(e => e.Id == id);
@@ -231,8 +242,14 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         public JsonResult DoesCourseExist(int CourseId)
         {
-            var courseExists = _context.Courses.Any(c => c.Id == CourseId) ;
+            var courseExists = _context.Courses.Any(c => c.Id == CourseId);
             return Json(courseExists);
+        }
+
+        public IActionResult IsNameUnique(string name)
+        {
+            var result = _context.Courses.Any(s => s.Name.ToLower() == name.ToLower());
+            return Json(!result);
         }
 
     }

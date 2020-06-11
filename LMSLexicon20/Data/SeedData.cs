@@ -133,10 +133,6 @@ namespace LMSLexicon20.Data
 
 
 
-
-
-
-
                 //--------SKAPA STUDENT--------
                 //var studentPW = "abc123";
                 studentEmail = "student2@lms.se";

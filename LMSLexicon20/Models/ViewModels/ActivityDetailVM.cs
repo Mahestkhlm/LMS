@@ -25,10 +25,11 @@ namespace LMSLexicon20.ViewModels
         [StringLength(200)]
         public string Description { get; set; }
 
+        public bool ExpandedActivity { get; set; } = false;
+
         //Foreign Key
         public int ModuleId { get; set; }
         public int ActivityTypeId { get; set; }
 
-        public bool OpenModule { get; set; }
     }
 }

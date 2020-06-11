@@ -17,13 +17,19 @@ namespace LMSLexicon20.Data
             CreateMap<CreateUserViewModel, User>()
                 .ForMember(dest => dest.UserName,
                 opt => opt.MapFrom(src => src.Email));
-                //.ForMember(dest => dest.CourseId,
-                //opt => opt.MapFrom(src => src.));
-
             CreateMap<User, UserListViewModel>()
                 .ForMember(
                        dest => dest.FullName,
                        from => from.MapFrom(e => $"{e.FirstName} {e.LastName}"));
+
+            CreateMap<Course, CourseIndexViewModel>();
+            CreateMap<CreateCourseViewModel, Course>();
+
+
+            CreateMap<Course, DeleteCourseViewModel>();
+
+            CreateMap<CreateModuleViewModel, Module>();
+
 
         }
     }

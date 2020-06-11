@@ -46,6 +46,7 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public ActionResult CreateUser(int? courseId = null)
         {
+            //ToDo: testkör (courseid)
             //courseId sätts inte som /Users/CreateUser/1 men /Users/CreateUser?courseId=1
             //Den funkar för det andra. Mest jag som ville prova!
             if (courseId != null)
@@ -63,8 +64,9 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         //ToDo: add attributes(phoneNumber, email...)
         //ToDo: rätt namn?
-        public async Task<IActionResult> CreateUser(CreateUserViewModel viewModel, int? courseId = null)
+        public async Task<IActionResult> CreateUser(CreateUserViewModel viewModel, int? id = null)
         {
+            //ToDo: fråga Dimitris om att döpa om asp-route-values till nåt annat än id (ex. courseId)
             if (ModelState.IsValid)
             {
                 //Hämta användare
@@ -74,27 +76,35 @@ namespace LMSLexicon20.Controllers
                 if (user != null) throw new Exception("Användaren finns redan");
 
                 //Lägg till kurs om finns (checkat att den finns)
-                if (courseId != null) model.CourseId = courseId;
+                if (id != null) model.CourseId = id;
                 //if (courseId != null) model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
 
                 //ToDo: show password in view
+                //TempData och sen in i vy
 
                 //Lägg till användare m. lösen
                 var pw = GeneratePassword();
+                
                 var addUserResult = await _userManager.CreateAsync(model, pw);
                 if (!addUserResult.Succeeded) throw new Exception(string.Join("\n", addUserResult.Errors));
 
                 //Lägg till roll
-                var addRoleResult = courseId == null ?
+                var addRoleResult = id == null ?
                 await _userManager.AddToRoleAsync(model, "Teacher") :        //true=teacher
                 await _userManager.AddToRoleAsync(model, "Student");         //false=student
                 if (!addRoleResult.Succeeded) throw new Exception(string.Join("\n", addRoleResult.Errors));
-
+                
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(List));
+                return RedirectToAction(nameof(CreateUserConfirmed), new { userName=model.UserName, pw = pw });
             }
             return View(viewModel);
 
+        }
+        public IActionResult CreateUserConfirmed(string userName, string pw)
+        {
+            TempData["pw"] = pw;
+            TempData["userName"] = userName;
+            return View();
         }
         static string GeneratePassword()
         {
@@ -116,13 +126,15 @@ namespace LMSLexicon20.Controllers
             }
             return new string(chars);
         }
+
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> List(string filterSearch)
         {
             var viewModel = await _mapper.ProjectTo<UserListViewModel>(_userManager.Users).ToListAsync();
             for (int i = 0; i < viewModel.Count; i++)
             {
-                var role = _userManager.GetRolesAsync(_userManager.FindByIdAsync(viewModel[i].Id).Result).Result[0];
-                viewModel[i].UserRole = role == "Teacher" ? "Lärare" : "Elev";
+                var role = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(viewModel[i].Id));
+                viewModel[i].UserRole = role[0] == "Teacher" ? "Lärare" : "Elev";
             }
 
             var filter = string.IsNullOrWhiteSpace(filterSearch) ?
