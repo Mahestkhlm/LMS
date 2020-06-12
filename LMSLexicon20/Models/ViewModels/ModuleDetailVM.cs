@@ -26,7 +26,13 @@ namespace LMSLexicon20.ViewModels
         [StringLength(200)]
         public string Description { get; set; }
 
-        public bool ExpandedModule { get; set; } = true;
+        public bool StartDateToEarly { get; set; }
+        public bool StartDateToLate { get; set; }
+        public bool EndDateToEarly { get; set; }
+        public bool EndDateToLate { get; set; }
+
+
+        public bool ExpandedModule { get; set; } = false;
 
         //Foreign Key
         public int CourseId { get; set; }

@@ -67,7 +67,13 @@ namespace LMSLexicon20.Controllers
                                        Id = m.Id,
                                        Name = m.Name,
                                        StartDate = m.StartDate,
+                                       StartDateToEarly = (m.StartDate < c.StartDate),
+                                       StartDateToLate = (m.StartDate > c.EndDate),
+
                                        EndDate = m.EndDate,
+                                       EndDateToEarly = (m.EndDate < c.StartDate),
+                                       EndDateToLate = (m.EndDate > c.EndDate),
+
                                        Description = m.Description
                                        ,
                                        ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
@@ -76,7 +82,13 @@ namespace LMSLexicon20.Controllers
                                                 Id = a.Id,
                                                 Name = a.Name,
                                                 StartDate = a.StartDate,
+                                                StartDateToEarly = (m.StartDate < m.StartDate),
+                                                StartDateToLate = (m.StartDate > m.EndDate),
+
                                                 EndDate = a.EndDate,
+                                                EndDateToEarly = (a.EndDate < m.StartDate),
+                                                EndDateToLate = (a.EndDate > m.EndDate),
+
                                                 Description = a.Description
                                                 ,
                                                 ActivityTypeWM = 
