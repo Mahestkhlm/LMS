@@ -177,12 +177,13 @@ namespace LMSLexicon20.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var model = await context.Modules.FindAsync(id);
+            var courseId = model.CourseId;
             var name = model.Name;
             context.Modules.Remove(model);
             await context.SaveChangesAsync();
             //return RedirectToAction(nameof(Index));
             TempData["SuccessText"] = $"Modulen {name} har tagits bort";
-            return RedirectToAction(nameof(Details), "Courses", new { id = id });
+            return RedirectToAction(nameof(Details), "Courses", new { id = courseId });
         }
 
         private bool ModuleExists(int id)
