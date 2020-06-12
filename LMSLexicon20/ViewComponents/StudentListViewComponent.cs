@@ -1,5 +1,7 @@
 ﻿using LMSLexicon20.Data;
+using LMSLexicon20.Models;
 using LMSLexicon20.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -12,11 +14,14 @@ namespace ViewComponentSample.ViewComponents
     public class StudentListViewComponent : ViewComponent
     {
         private readonly ApplicationDbContext db;
+        private UserManager<User> _userManager;
 
-        public StudentListViewComponent(ApplicationDbContext context)
+        public StudentListViewComponent(ApplicationDbContext context, UserManager<User> userManager)
         {
             db = context;
+            _userManager = userManager;
         }
+
 
         public async Task<IViewComponentResult> InvokeAsync(int IdCourse)
         {
@@ -25,9 +30,11 @@ namespace ViewComponentSample.ViewComponents
         }
 
         //
-        private Task<List<StudentVM>> GetItemsAsync(int IdCourse)
+        private async Task<List<StudentVM>> GetItemsAsync(int IdCourse)
         {
-            return db.Users
+            var students = await _userManager.GetUsersInRoleAsync("Student");
+
+            return students  //db.Users
                 .Where(u => u.CourseId == IdCourse)
                 .Select(c => new StudentVM
                 {
@@ -35,7 +42,8 @@ namespace ViewComponentSample.ViewComponents
                     Email = c.Email,
                     FullName = c.FirstName + " " + c.LastName
                 })
-                .ToListAsync();
+                .ToList();
+                //.ToListAsync();
         }
     }
 }
