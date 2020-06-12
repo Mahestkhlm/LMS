@@ -16,7 +16,6 @@ namespace LMSLexicon20.Models.ViewModels
 
         [Display(Name = "Efternamn")]
         public string LastName { get; set; }
-        [Remote(action: "EmailInUse", controller: "Users", HttpMethod = "POST", ErrorMessage = "Emailen används redan")]
         public string Email { get; set; }
 
         [Display(Name = "Telefonnummer")]

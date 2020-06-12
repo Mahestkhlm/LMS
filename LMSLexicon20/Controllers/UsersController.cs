@@ -76,7 +76,7 @@ namespace LMSLexicon20.Controllers
 
                 //Lägg till kurs om finns (checkat att den finns)
                 if (id != null) model.CourseId = id;
-                
+
                 //Lägg till användare m. lösen
                 var pw = GeneratePassword();
 
@@ -119,6 +119,14 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(UserEditViewModel viewModel, string id)
         {
+            var found = await _context.Users
+                .AnyAsync(p => (p.Email == viewModel.Email)
+                && (p.Id != id));
+            if (found)
+            {
+                ModelState.AddModelError("Email", "Emailen används redan!");
+            }
+
             viewModel.Id = id;
             //ToDo: kolla dubletter email
             if (ModelState.IsValid)
@@ -130,7 +138,7 @@ namespace LMSLexicon20.Controllers
                 model.LastName = viewModel.LastName;
                 model.PhoneNumber = viewModel.PhoneNumber;
                 model.Course = await _context.Courses.FindAsync(viewModel.CourseId);
-                
+
                 try
                 {
                     _context.Update(model);
@@ -140,7 +148,7 @@ namespace LMSLexicon20.Controllers
                 {
                     if (!UserExists(model.Id))
                         return NotFound();
-                    else  
+                    else
                         throw;
                 }
                 TempData["SuccessText"] = $"Användare {model.Email} uppdaterats";
@@ -166,7 +174,7 @@ namespace LMSLexicon20.Controllers
             _context.Users.Remove(model);
             await _context.SaveChangesAsync();
             TempData["SuccessText"] = $"Användare {userName} har tagits bort";
-            return RedirectToAction(nameof(List), new { filterSearch=""});
+            return RedirectToAction(nameof(List), new { filterSearch = "" });
         }
         static string GeneratePassword()
         {
@@ -265,7 +273,7 @@ namespace LMSLexicon20.Controllers
             }
 
             var model = await _userManager.FindByIdAsync(viewModel.TeacherId);
-            
+
 
             if (ModelState.IsValid)
             {
@@ -299,10 +307,5 @@ namespace LMSLexicon20.Controllers
             return _context.Users.Any(e => e.Id == id);
         }
 
-        [HttpPost]
-        public JsonResult EmailInUse(string Email)
-        {
-            return Json(_context.Users.Any(u => u.Email == Email) == false);
-        }
     }
 }
