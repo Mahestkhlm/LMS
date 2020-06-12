@@ -23,10 +23,9 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+ <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">KURS ÖVERSIKT</h2>
 
 <div>
-    <h4>Course</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -172,6 +171,7 @@
                     @if ((User.IsInRole("Teacher")) && item.ActivityDetailVM.Count() == 0)
                     {
                         <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
+                        @*<partial name="~/Views/Activity/ActivityListPartial.cshtml" />*@
                     }
                 </div>
             </div>

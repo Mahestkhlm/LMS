@@ -4,11 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Activity Index</h1>
-
+    <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">AKTIVITET LISTA</h2>
 <p>
-    <a class="btn btn-info" asp-action="Create">Create New Activity</a>
-</p>
+    <a class="btn btn-info" asp-action="Create">Create New Activity</a> 
+    </p>
 <div class="text-success blink_me">
     @TempData["SuccessText"]
 </div>
@@ -42,34 +41,42 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EndDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HasDeadline)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Module.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ActivityType.Id)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasDeadline)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Module.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActivityType.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                
+                <a asp-controller="Courses" asp-action="Index" asp-route-id="@item.Name"class=" btn btn-primary mr-3">TillBaka Till Kurs</a>
+                
+
+            </td>
+
+           
+        </tr>
+
+
         }
     </tbody>
 </table>

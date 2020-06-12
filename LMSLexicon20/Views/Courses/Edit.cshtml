@@ -1,10 +1,14 @@
-﻿@model EditCourseViewModel
+﻿@model LMSLexicon20.Models.Course
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Redigera</h1>
+
+<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">REDIGERA KURSEN</h2>
+<div class="text-danger blink_me">
+    @TempData["FailText"]
+</div>
 
 <hr />
 <div class="row">
@@ -29,19 +33,18 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Spara" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Details" asp-route-id="@Model.Id">Tillbaka till kursen</a> |
-    <a asp-action="Index">Tillbaka till kurslistan</a>
+    <a asp-action="Index">Tillbaka till kursListan</a>
 </div>
 
 @section Scripts {
