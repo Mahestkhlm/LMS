@@ -13,6 +13,21 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Teacher)
+            </dt>
+            <dd class="col-sm-10">
+                @if (Model.Teacher != null)
+                {
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+                }
+                else
+                {
+                    <span>Ingen. <a asp-controller="Users" asp-action="AddTeacherToCourse" asp-route-id="@Model.Id">Lägga till en lärare</a></span>
+                }
+            </dd>
+        </dl>
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -44,6 +59,7 @@
 </div>
 
 <div>
+    
     <a asp-action="Details" asp-route-id="@Model.Id">Tillbaka till kursen</a> |
     <a asp-action="Index">Tillbaka till kurslistan</a>
 </div>

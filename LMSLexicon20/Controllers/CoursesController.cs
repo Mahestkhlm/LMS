@@ -146,6 +146,8 @@ namespace LMSLexicon20.Controllers
             }
 
             var course = await mapper.ProjectTo<EditCourseViewModel>(_context.Courses).FirstOrDefaultAsync(e => e.Id == id);
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
+            course.Teacher = teachers.FirstOrDefault(e => e.CourseId == id);
 
             if (course == null)
             {

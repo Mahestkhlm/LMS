@@ -10,6 +10,7 @@ using LMSLexicon20.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -157,6 +158,74 @@ namespace LMSLexicon20.Controllers
             }
 
             return View(user);
+        }
+
+        [Authorize(Roles = "Teacher")]
+        public IActionResult AddTeacherToCourse(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var model = new AddTeacherToCourseViewModel
+            {
+                Id = id
+            };
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+            return View(model);
+        }
+
+        // POST: Courses/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> AddTeacherToCourse(int id, AddTeacherToCourseViewModel viewModel)
+        {
+            if (id != viewModel.Id)
+            {
+                return NotFound();
+            }
+
+            var model = await _userManager.FindByIdAsync(viewModel.TeacherId);
+
+            if (ModelState.IsValid)
+            {
+                model.CourseId = id;
+
+                try
+                {
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(model.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är nu kursens lärare";
+                return RedirectToAction(nameof(Details), "Courses", new { id = model.CourseId });
+            }
+            TempData["FailText"] = $"Något gick fel!";
+
+            return View(viewModel);
+        }
+
+        private bool UserExists(string id)
+        {
+            return _context.Users.Any(e => e.Id == id);
         }
 
         [HttpPost]
