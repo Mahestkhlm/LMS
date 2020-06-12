@@ -17,7 +17,11 @@
             <dd class="col-sm-10">
                 @if (Model.Teacher != null)
                 {
-                    <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+                    <a class="float-left mr-2" asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+                    <form asp-controller="Users" asp-action="RemoveFromCourse" asp-route-id="@Model.Teacher.Id" method="post">
+                        <input type="submit" value="Ta bort från kursen" class="btn btn-outline-danger btn-sm" />
+                    </form>
+
                 }
                 else
                 {
