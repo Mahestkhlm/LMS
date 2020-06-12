@@ -1,56 +1,55 @@
 ﻿@model LMSLexicon20.ViewModels.CourseDetailVM
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.css" integrity="sha256-3SE+Qz2RvIa5gOHSNS50MUTTzRAOYREA5+DOmMNFPYk=" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.min.js" integrity="sha256-fegGeSK7Ez4lvniVEiz1nKMx9pYtlLwPNRPf6uc8d+8=" crossorigin="anonymous"></script>
 
     <style>
-            .course-accordion {
-                /*max-width: 500px;*/
-                margin: 25px auto;
-                box-shadow: 0 0 1px rgba(0,0,0,0.1);
-            }
+        .course-accordion {
+            /*max-width: 500px;*/
+            margin: 25px auto;
+            box-shadow: 0 0 1px rgba(0,0,0,0.1);
+        }
 
-                /*        .course-accordion .card,
+            /*        .course-accordion .card,
                 .course-accordion .card:last-child .card-header {
                     border: none;
                 }*/
 
-                .course-accordion .card-header {
-                    border-bottom-color: #EDEFF0;
-                    /*background: transparent;*/
-                }
+            .course-accordion .card-header {
+                border-bottom-color: #EDEFF0;
+                /*background: transparent;*/
+            }
 
-                .course-accordion .fa-stack {
-                    font-size: 18px;
-                }
+            .course-accordion .fa-stack {
+                font-size: 18px;
+            }
 
-                .course-accordion .btn {
-                    /*            width: 100%;*/
-                    font-weight: bold;
-                    color: #004987;
-                    /*            padding: 0;*/
-                }
+            .course-accordion .btn {
+                /*            width: 100%;*/
+                font-weight: bold;
+                color: #004987;
+                /*            padding: 0;*/
+            }
 
-            /*        .course-accordion .btn-link:hover,
+        /*        .course-accordion .btn-link:hover,
             .course-accordion .btn-link:focus {
                 text-decoration: none;
             }*/
 
-            button > span.fa-stack.fa-sm {
-                opacity: 0.4;
-            }
+        button > span.fa-stack.fa-sm {
+            opacity: 0.4;
+        }
 
-            .course-module-name, .course-activity-name {
-                font-weight: 400;
-            }
+        .course-module-name, .course-activity-name {
+            font-weight: 400;
+        }
 
 
 
-            .warning_to_early, .warning_to_late {
-                text-decoration: underline;
-                text-decoration-color: red;
-            }
+        .warning_to_early, .warning_to_late {
+            text-decoration: underline;
+            text-decoration-color: red;
+        }
 
-            /*
+        /*
         .card-header-module {
             border-left: 4px solid #f38787;
             border-left: 4px solid #65c465;
@@ -62,7 +61,7 @@
         ViewData["Title"] = "Details";
     }
 
- <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">KURS ÖVERSIKT</h2>
+    <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">KURS ÖVERSIKT</h2>
 
     <div>
         <h4><i class="fas fa-university"></i>Course</h4>
@@ -194,7 +193,7 @@
                                         {
                                             <button type="button" data-id="@itemActiv.Id" class="btn btn-sm btn-outline-warning ddzone fileinput-button">
                                                 <span class="fas fa-file-archive"></span>
-                                                Dokument <span  class="badge badge-light text-small " style="vertical-align: top">0</span>
+                                                Dokument <span class="badge badge-light text-small " style="vertical-align: top">0</span>
                                             </button>
                                         }
                                     </div>
@@ -230,6 +229,8 @@
     <br />
     <br />
 
+    <h4><i class="fas fa-user-friends"></i></i>Students</h4>
+    <hr />
     @await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
     @if (User.IsInRole("Teacher"))
     {
@@ -244,7 +245,7 @@
         <a asp-action="Index">Tillbaka</a>
     </div>
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.min.js" integrity="sha256-fegGeSK7Ez4lvniVEiz1nKMx9pYtlLwPNRPf6uc8d+8=" crossorigin="anonymous"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <script>
@@ -275,20 +276,20 @@
             $(".ddzone").each(function () {
 
                 myDropzone = new Dropzone(this,
-                    { 
+                    {
 
-                //$(this).Dropzone({
-                    url: "/uploads/?domain=users&id=" + $(this).data("id"),
-                    acceptedFiles: '.pdf,.doc,.docx,.txt,.xls,.xlsx,.csv",',
-                    //addRemoveLinks: true,
+                        //$(this).Dropzone({
+                        url: "/uploads/?domain=users&id=" + $(this).data("id"),
+                        acceptedFiles: '.pdf,.doc,.docx,.txt,.xls,.xlsx,.csv",',
+                        //addRemoveLinks: true,
                         clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files
-                    success: function (file, response) {
-                        console.log("Successfully uploaded " + file);
-                    },
-                    error: function (file, response) {
-                        console.log("something goes wrong: " + response);
-                    }
-                });
+                        success: function (file, response) {
+                            console.log("Successfully uploaded " + file);
+                        },
+                        error: function (file, response) {
+                            console.log("something goes wrong: " + response);
+                        }
+                    });
             });
 
         });
