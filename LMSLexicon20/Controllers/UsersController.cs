@@ -103,6 +103,7 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(string id)
         {
+            //ToDo: nullcheck?
             var model = await _context.Users.FindAsync(id);
             var viewModel = _mapper.Map<UserEditViewModel>(model);
             ViewData["Course"] = new SelectList(_context.Set<Course>(), "Id", "Name", model.CourseId);

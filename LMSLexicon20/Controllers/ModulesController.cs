@@ -99,10 +99,10 @@ namespace LMSLexicon20.Controllers
         {
             //ToDo: nullcheck?
             //För att kunna gå tillbaka till kurs
-            var module = await context.Modules.FindAsync(id);
-            TempData["CourseId"] = module.CourseId;
-
-            return View();
+            var model = await context.Modules.FindAsync(id);
+            var viewModel = mapper.Map<EditModuleViewModel>(model);
+            TempData["CourseId"] = model.CourseId;
+            return View(viewModel);
         }
 
         // POST: Modules/Edit/5
@@ -112,16 +112,27 @@ namespace LMSLexicon20.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditModuleViewModel viewModel, int id)
         {
+            var model = await context.Modules.FindAsync(id);
+
+            //ToDo: fix check 
             var nameExists = context.Modules
-               .Where(m => m.CourseId == id)
+                .Where(m => m.CourseId == model.CourseId)
                .Any(m => m.Name == viewModel.Name);
+
             if (nameExists)
                 ModelState.AddModelError("Name", "Namnet används redan i denna kurs");
 
             if (ModelState.IsValid)
             {
-                var model = await context.Modules.FindAsync(id);
-                //model.CourseId = id;
+                //courseid, name, start, end, descr
+                model.Name = viewModel.Name;
+                model.StartDate = viewModel.StartDate;
+                model.EndDate = viewModel.EndDate;
+                model.Description = viewModel.Description;
+                //model.Course = await context.Courses.FindAsync(viewModel.CourseId);
+                //ToDo: behövs den?
+                context.Entry(model).Property(p => p.CourseId).IsModified = false;
+
                 try
                 {
                     context.Update(model);
@@ -130,16 +141,12 @@ namespace LMSLexicon20.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ModuleExists(model.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
-                TempData["SuccessText"] = $"Modulen: {model.Name} -  uppdateras!!";
-                return RedirectToAction(nameof(Details),"Courses", new {id= model.CourseId });
+                TempData["SuccessText"] = $"Modulen {model.Name} har uppdaterats";
+                return RedirectToAction(nameof(Details), "Courses", new { id = model.CourseId });
             }
             return View(viewModel);
         }
@@ -159,7 +166,8 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
-            return View(model);
+            var viewModel = mapper.Map<DeleteModuleViewModel>(model);
+            return View(viewModel);
         }
 
         // POST: Modules/Delete/5
@@ -168,10 +176,11 @@ namespace LMSLexicon20.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var model = await context.Modules.FindAsync(id);
+            var name = model.Name;
             context.Modules.Remove(model);
             await context.SaveChangesAsync();
             //return RedirectToAction(nameof(Index));
-            //ToDo: add tempdata success / confirmed-page
+            TempData["SuccessText"] = $"Modulen {name} har tagits bort";
             return RedirectToAction(nameof(Details), "Courses", new { id = id });
         }
 
