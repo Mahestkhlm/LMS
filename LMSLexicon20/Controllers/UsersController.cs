@@ -147,7 +147,26 @@ namespace LMSLexicon20.Controllers
             }
             return View(viewModel);
         }
-
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var model = await _context.Users.FindAsync(id);
+            if (model == null)
+                NotFound();
+            var viewModel = _mapper.Map<UserDeleteViewModel>(model);
+            var role = await _userManager.IsInRoleAsync(await _userManager.FindByIdAsync(id), "Teacher");
+            viewModel.Role = role ? "Lärare" : "Elev";
+            // viewModel.Course = model.Course;
+            return View(viewModel);
+        }
+        public async Task<IActionResult> DeleteUserConfirmed(string id)
+        {
+            var model = await _context.Users.FindAsync(id);
+            var userName = model.UserName;
+            _context.Users.Remove(model);
+            await _context.SaveChangesAsync();
+            TempData["SuccessText"] = $"Användare {userName} har tagits bort";
+            return RedirectToAction(nameof(List), new { filterSearch=""});
+        }
         static string GeneratePassword()
         {
             //ToDo: check final string
@@ -212,6 +231,10 @@ namespace LMSLexicon20.Controllers
         private bool UserExists(string id)
         {
             return _context.Users.Any(u => u.Id == id);
+        }
+        public JsonResult EmailInUse(string Email)
+        {
+            return Json(_context.Users.Any(u => u.Email == Email) == false);
         }
     }
 }
