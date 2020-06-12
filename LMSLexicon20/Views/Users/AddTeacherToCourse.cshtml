@@ -1,0 +1,34 @@
+﻿@model AddTeacherToCourseViewModel
+@inject ITeacherChoiceDropdown dropdown
+
+@{
+    ViewData["Title"] = "LÄGGA TILL LÄRAREN";
+}
+
+<h1>Lägga till en lärare</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddTeacherToCourse">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="from-group mb-3">
+                <select asp-for="TeacherId" asp-items="@await dropdown.GetTeacherList()" class="form-control">
+                    <option selected="selected" value="">Välj en lärare</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Spara" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Courses" asp-action="Edit" asp-route-id="@Model.Id">Tillbaka till redigering</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

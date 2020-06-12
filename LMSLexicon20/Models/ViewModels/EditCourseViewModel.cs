@@ -11,6 +11,9 @@ namespace LMSLexicon20.Models.ViewModels
     {
         public int Id { get; set; }
 
+        [Display(Name = "Lärare")]
+        public User Teacher { get; set; }
+
         [Required(ErrorMessage = "Fyll i fältet")]
         [Display(Name = "Kursnamn")]
         public string Name { get; set; }

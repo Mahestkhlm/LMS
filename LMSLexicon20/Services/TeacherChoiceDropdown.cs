@@ -21,7 +21,7 @@ namespace LMSLexicon20.Services
         public async Task<IEnumerable<SelectListItem>> GetTeacherList()
         {
             var teachers = await userManager.GetUsersInRoleAsync("Teacher");
-            var idleTeachers = teachers.Where(e => e.CourseId == null);
+            var idleTeachers = teachers.Where(e => e.CourseId == null).OrderBy(e => e.FirstName);
 
             return idleTeachers.Select(e => new SelectListItem { Text = $"{e.FirstName} {e.LastName}", Value = e.Id });
         }
