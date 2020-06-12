@@ -1,11 +1,11 @@
 ﻿@model UserDetailsViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Användaröversikt";
 }
 
-<h1>Detaljer</h1>
-
+<h1>@Html.DisplayFor(model => model.FullName)</h1>
+<hr />
 <div>
     <dl class="row">
         <dt class="col-sm-2">
@@ -13,18 +13,6 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Role)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
@@ -52,11 +40,16 @@
             {
                 <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id">@Model.Course.Name</a>
             }
+            else
+            {
+                <div>Ingen kurs tilldelad</div>
+            }
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Delete" asp-route-id="@Model.Id">Radera</a> |
+
     <a asp-action="Edit" asp-route-id="@Model.Id">Redigera</a> |
+    <a asp-action="Delete" asp-route-id="@Model.Id">Ta bort</a> |
     <a asp-action="List">Tillbaka till listan</a>
 </div>
