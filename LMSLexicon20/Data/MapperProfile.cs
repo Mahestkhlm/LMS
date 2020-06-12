@@ -22,7 +22,11 @@ namespace LMSLexicon20.Data
                        dest => dest.FullName,
                        from => from.MapFrom(e => $"{e.FirstName} {e.LastName}"));
 
-            CreateMap<User, UserDetailsViewModel>();
+            CreateMap<User, UserDetailsViewModel>()
+                .ForMember(
+                       dest => dest.FullName,
+                       from => from.MapFrom(e => $"{e.FirstName} {e.LastName}"));
+            CreateMap<User, UserEditViewModel>().ReverseMap();
 
             CreateMap<Course, CourseIndexViewModel>();
             CreateMap<Course, EditCourseViewModel>().ReverseMap();
@@ -30,9 +34,10 @@ namespace LMSLexicon20.Data
             CreateMap<Course, DeleteCourseViewModel>();
 
             CreateMap<CreateModuleViewModel, Module>();
-            CreateMap<EditModuleViewModel, Module>().ReverseMap();
             CreateMap<Module, DetailModuleViewModel>();
-            CreateMap< Module,IndexModuleViewModel > ();
+            CreateMap<Module, DeleteModuleViewModel>();
+            CreateMap<Module, EditModuleViewModel>().ReverseMap();
+            CreateMap<Module, IndexModuleViewModel>();
 
 
             CreateMap<CreateActivityViewModel,Activity>();

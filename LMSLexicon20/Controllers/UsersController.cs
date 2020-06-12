@@ -10,6 +10,7 @@ using LMSLexicon20.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -46,6 +47,8 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public ActionResult CreateUser(int? courseId = null)
         {
+            //TempData["courseId"] = id;
+            //return View();
             if (courseId != null)
             {
                 var courseExists = _context.Courses.Any(c => c.Id == courseId);
@@ -72,11 +75,10 @@ namespace LMSLexicon20.Controllers
 
                 //Lägg till kurs om finns (checkat att den finns)
                 if (id != null) model.CourseId = id;
-                //if (courseId != null) model.Course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
-
+                
                 //Lägg till användare m. lösen
                 var pw = GeneratePassword();
-                
+
                 var addUserResult = await _userManager.CreateAsync(model, pw);
                 if (!addUserResult.Succeeded) throw new Exception(string.Join("\n", addUserResult.Errors));
 
@@ -85,19 +87,67 @@ namespace LMSLexicon20.Controllers
                 await _userManager.AddToRoleAsync(model, "Teacher") :        //true=teacher
                 await _userManager.AddToRoleAsync(model, "Student");         //false=student
                 if (!addRoleResult.Succeeded) throw new Exception(string.Join("\n", addRoleResult.Errors));
-                
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(CreateUserConfirmed), new { userName=model.UserName, pw = pw });
+                return RedirectToAction(nameof(CreateUserConfirmed), new { userName = model.UserName, pw = pw });
             }
             return View(viewModel);
 
         }
+        [Authorize(Roles = "Teacher")]
         public IActionResult CreateUserConfirmed(string userName, string pw)
         {
             TempData["pw"] = pw;
             TempData["userName"] = userName;
             return View();
         }
+        //Get
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Edit(string id)
+        {
+
+            //ToDo: nullcheck?
+            var model = await _context.Users.FindAsync(id);
+            var viewModel = _mapper.Map<UserEditViewModel>(model);
+            ViewData["Course"] = new SelectList(_context.Set<Course>(), "Id", "Name", model.CourseId);
+            return View(viewModel);
+        }
+        //Post
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Edit(UserEditViewModel viewModel, string id)
+        {
+            viewModel.Id = id;
+            //ToDo: kolla dubletter email
+            if (ModelState.IsValid)
+            {
+                var model = await _context.Users.FindAsync(id);
+
+                model.Email = viewModel.Email;
+                model.FirstName = viewModel.FirstName;
+                model.LastName = viewModel.LastName;
+                model.PhoneNumber = viewModel.PhoneNumber;
+                model.Course = await _context.Courses.FindAsync(viewModel.CourseId);
+                
+                try
+                {
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(model.Id))
+                        return NotFound();
+                    else  
+                        throw;
+                }
+                TempData["SuccessText"] = $"Användare {model.Email} uppdaterats";
+                return RedirectToAction(nameof(List));
+            }
+            return View(viewModel);
+        }
+
         static string GeneratePassword()
         {
             //ToDo: check final string
@@ -159,11 +209,9 @@ namespace LMSLexicon20.Controllers
             return View(user);
         }
 
-        [HttpPost]
-        public JsonResult EmailInUse(string Email)
+        private bool UserExists(string id)
         {
-            return Json(_context.Users.Any(u => u.Email == Email) == false);
+            return _context.Users.Any(u => u.Id == id);
         }
-
     }
 }
