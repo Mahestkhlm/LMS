@@ -6,9 +6,6 @@
 
 
 <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">REDIGERA KURSEN</h2>
-<div class="text-danger blink_me">
-    @TempData["FailText"]
-</div>
 
 <hr />
 <div class="row">
@@ -24,7 +21,15 @@
                 }
                 else
                 {
-                    <span>Ingen. <a asp-controller="Users" asp-action="AddTeacherToCourse" asp-route-id="@Model.Id">Lägga till en lärare</a></span>
+                    <p id="createform">
+                        Ingen. <a asp-controller="Users" asp-action="AddTeacherToCourse" asp-route-id="@Model.Id"
+                                  data-ajax="true"
+                                  data-ajax-method="GET"
+                                  data-ajax-mode="replace"
+                                  data-ajax-update="#createform">
+                            Lägga till en lärare
+                        </a>
+                    </p>
                 }
             </dd>
         </dl>

@@ -1,15 +1,10 @@
 {
   "version": "1.0",
-  "defaultProvider": "cdnjs",
+  "defaultProvider": "unpkg",
   "libraries": [
     {
-      "library": "font-awesome@5.12.0-2",
-      "destination": "wwwroot/lib/font-awesome/"
-    },
-    {
-      "provider": "unpkg",
       "library": "jquery-ajax-unobtrusive@3.2.6",
-      "destination": "wwwroot/jquery-ajax-unobtrusive/"
+      "destination": "wwwroot/lib/jquery-ajax-unobtrusive/"
     }
   ]
 }

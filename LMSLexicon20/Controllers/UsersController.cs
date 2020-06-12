@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using LMSLexicon20.Data;
+using LMSLexicon20.Extensions;
 using LMSLexicon20.Models;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -177,6 +178,8 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
+            if (Request.IsAjax())
+                return PartialView("AddTeacherToCoursePartialView");
             return View(model);
         }
 
@@ -194,11 +197,11 @@ namespace LMSLexicon20.Controllers
             }
 
             var model = await _userManager.FindByIdAsync(viewModel.TeacherId);
+            
 
             if (ModelState.IsValid)
             {
                 model.CourseId = id;
-
                 try
                 {
                     _context.Update(model);
@@ -216,11 +219,11 @@ namespace LMSLexicon20.Controllers
                     }
                 }
                 TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är nu kursens lärare";
-                return RedirectToAction(nameof(Details), "Courses", new { id = model.CourseId });
+                return RedirectToAction("Edit", "Courses", new { id = model.CourseId });
             }
-            TempData["FailText"] = $"Något gick fel!";
+            TempData["FailText"] = $"Ingen lärare tilldelades till kursen!";
 
-            return View(viewModel);
+            return RedirectToAction("Edit", "Courses", new { id });
         }
 
         private bool UserExists(string id)
