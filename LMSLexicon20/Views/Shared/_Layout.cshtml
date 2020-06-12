@@ -71,6 +71,8 @@
         $(function () {
             $("#message-alert").hide();
             $("#message-alert").fadeTo(3000, 500).slideUp(500, function () { $("#message-alert").slideUp(500); });
+
+            $('[data-toggle="tooltip"]').tooltip()
         });
     </script>
     @RenderSection("Scripts", required: false)

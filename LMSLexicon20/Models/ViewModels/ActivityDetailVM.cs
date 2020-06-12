@@ -30,6 +30,12 @@ namespace LMSLexicon20.ViewModels
 
         public bool ExpandedActivity { get; set; } = false;
 
+
+        public bool StartDateToEarly { get; set; }
+        public bool StartDateToLate { get; set; }
+        public bool EndDateToEarly { get; set; }
+        public bool EndDateToLate { get; set; }
+
         //Foreign Key
         public int ModuleId { get; set; }
 
