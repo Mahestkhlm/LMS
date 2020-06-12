@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,10 +16,12 @@ namespace LMSLexicon20.Models.ViewModels
 
         [Display(Name = "Efternamn")]
         public string LastName { get; set; }
+        [Remote(action: "EmailInUse", controller: "Users", HttpMethod = "POST", ErrorMessage = "Emailen används redan")]
         public string Email { get; set; }
 
         [Display(Name = "Telefonnummer")]
         public string PhoneNumber { get; set; }
+        [Display(Name = "Kurs")]
         public int CourseId { get; set; }
     }
 }
