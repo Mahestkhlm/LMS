@@ -25,9 +25,8 @@ namespace LMSLexicon20.Data
             CreateMap<User, UserDetailsViewModel>();
 
             CreateMap<Course, CourseIndexViewModel>();
+            CreateMap<Course, EditCourseViewModel>().ReverseMap();
             CreateMap<CreateCourseViewModel, Course>();
-
-
             CreateMap<Course, DeleteCourseViewModel>();
 
             CreateMap<CreateModuleViewModel, Module>();
@@ -35,6 +34,8 @@ namespace LMSLexicon20.Data
             CreateMap<Module, DetailModuleViewModel>();
             CreateMap< Module,IndexModuleViewModel > ();
 
+
+            CreateMap<CreateActivityViewModel,Module>();
 
 
         }

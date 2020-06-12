@@ -2,9 +2,11 @@
 
 
 @{
-    ViewData["Title"] = "Kurs List";
+    ViewData["Title"] = "KURS";
 }
 
+
+<h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">KURS LISTA</h2>
 <div id="mainbackgroundcolor" class="rounded-lg">
     <h1 class="rounded-top p-3" id="searchindex">@ViewData["Title"]</h1>
     <form method="get" asp-controller="Courses" asp-action="Index" class="text-light border rounded-lg">
@@ -48,25 +50,27 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StartDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EndDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Redigera</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Radera</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
