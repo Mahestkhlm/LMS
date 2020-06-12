@@ -44,7 +44,7 @@ namespace LMSLexicon20.Data
             CreateMap<Module, IndexModuleViewModel>();
 
 
-            CreateMap<CreateActivityViewModel,Module>();
+            CreateMap<CreateActivityViewModel,Activity>();
 
 
         }
