@@ -80,6 +80,7 @@ namespace LMSLexicon20.Controllers
             if (nameExists)
                 ModelState.AddModelError("Name", "Namnet används redan i denna kurs");
 
+
             if (ModelState.IsValid)
             {
                 var model = mapper.Map<Module>(viewModel);
@@ -112,24 +113,24 @@ namespace LMSLexicon20.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditModuleViewModel viewModel, int id)
         {
-            var model = await context.Modules.FindAsync(id);
 
-            //ToDo: fix check 
-            var nameExists = context.Modules
-                .Where(m => m.CourseId == model.CourseId)
-               .Any(m => m.Name == viewModel.Name);
-
-            if (nameExists)
+            var found = await context.Modules
+                .Where(m=>m.CourseId==viewModel.CourseId)
+                .AnyAsync(p => (p.Name == viewModel.Name) 
+                && (p.Id != id));
+            if (found)
+            {
                 ModelState.AddModelError("Name", "Namnet används redan i denna kurs");
+            }
 
             if (ModelState.IsValid)
             {
-                //courseid, name, start, end, descr
+                var model = await context.Modules.FindAsync(id);
+               
                 model.Name = viewModel.Name;
                 model.StartDate = viewModel.StartDate;
                 model.EndDate = viewModel.EndDate;
                 model.Description = viewModel.Description;
-                //model.Course = await context.Courses.FindAsync(viewModel.CourseId);
                 //ToDo: behövs den?
                 context.Entry(model).Property(p => p.CourseId).IsModified = false;
 

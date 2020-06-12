@@ -47,6 +47,8 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public ActionResult CreateUser(int? courseId = null)
         {
+            //TempData["courseId"] = id;
+            //return View();
             if (courseId != null)
             {
                 var courseExists = _context.Courses.Any(c => c.Id == courseId);
@@ -103,6 +105,7 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(string id)
         {
+
             //ToDo: nullcheck?
             var model = await _context.Users.FindAsync(id);
             var viewModel = _mapper.Map<UserEditViewModel>(model);
