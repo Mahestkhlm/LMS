@@ -173,10 +173,6 @@
                     <div class="card-body">
                         <span>@Html.DisplayFor(modelItem => itemM.Description)</span>
                         <br /><br />
-                        @if (User.IsInRole("Teacher") && itemM.ActivityDetailVM.Count() == 0)
-                        {
-                            <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@itemM.Id">Lägg till aktivitet</a></span>
-                        }
                         @foreach (var itemActiv in itemM.ActivityDetailVM)
                         {
                             <div id="@String.Format($"accordion{itemM.Id}")">
@@ -196,7 +192,7 @@
 
                                         @if (itemActiv.ActivityTypeWM.RequireDocument)
                                         {
-                                            <button type="button" data-activid="@itemActiv.Id" class="btn btn-sm btn-outline-warning ddzone fileinput-button">
+                                            <button type="button" data-id="@itemActiv.Id" class="btn btn-sm btn-outline-warning ddzone fileinput-button">
                                                 <span class="fas fa-file-archive"></span>
                                                 Dokument <span  class="badge badge-light text-small " style="vertical-align: top">0</span>
                                             </button>
@@ -220,12 +216,9 @@
                                     </div>
                                 </div>
                             </div>
-                            @if ((User.IsInRole("Teacher")) && itemM.ActivityDetailVM.Select(a => a.Id).Last() == itemActiv.Id)
-                            {
-                                <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@itemM.Id">Lägg till aktivitet</a></span>
-                            }
+
                         }
-                        @if ((User.IsInRole("Teacher")) && itemM.ActivityDetailVM.Count() == 0)
+                        @if (User.IsInRole("Teacher"))
                         {
                             <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@itemM.Id">Lägg till aktivitet</a></span>
                         }
@@ -285,7 +278,7 @@
                     { 
 
                 //$(this).Dropzone({
-                    url: "/uploads/" + $(this).data("activid"),
+                    url: "/uploads/?domain=users&id=" + $(this).data("id"),
                     acceptedFiles: '.pdf,.doc,.docx,.txt,.xls,.xlsx,.csv",',
                     //addRemoveLinks: true,
                         clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files

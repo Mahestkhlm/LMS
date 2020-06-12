@@ -21,14 +21,14 @@ namespace LMSLexicon20.Controllers
         }
 
 
-        //public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files, string activid)
+        //public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(IList<IFormFile> files, string activid)
+        public async Task<IActionResult> Index(IList<IFormFile> files,  string domain, string id)
         {
             long size = files.Sum(f => f.Length);
             var filePath="";
-            string[] permittedExtensions = { ".txt", ".pdf" };
+            string[] permittedExtensions = { ".txt", ".pdf", ".doc", ".docx", ".xls" };
             foreach (IFormFile source in files)
             {
 
@@ -37,12 +37,13 @@ namespace LMSLexicon20.Controllers
                 var ext = Path.GetExtension(uploadedFileName).ToLowerInvariant();
                 if (!string.IsNullOrEmpty(ext) && permittedExtensions.Contains(ext))
                 {
-                    var filename = Path.GetTempFileName();
-                    filePath = this.EnsureCorrectFilename(filename);
+                    var filename = untrustedFileName; // Path.GetTempFileName();
+                    filename = this.EnsureCorrectFilename(filename);
+                    filePath =  this.GetPathAndFilename(filename, domain);
 
                     //using (var stream = new FileStream(filePath, FileMode.Create)
-                    using (FileStream output = System.IO.File.Create(this.GetPathAndFilename(filePath)))
-                        await source.CopyToAsync(output);
+                    using FileStream output = System.IO.File.Create(filePath);
+                    await source.CopyToAsync(output);
                 }
             }
 
@@ -59,21 +60,19 @@ namespace LMSLexicon20.Controllers
             return filename;
         }
 
-        private string GetPathAndFilename(string filename)
+        private string GetPathAndFilename(string filename, string domain)
         {
-
             //var path = Path.Combine(_config["StoredFilesPath"],
-            //    Path.GetRandomFileName());
-
             //string path = this.hostingEnvironment.WebRootPath + "\\uploads\\";
-            string path = Path.Combine(this.hostingEnvironment.WebRootPath, "uploads");
 
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string path = Path.Combine(this.hostingEnvironment.WebRootPath, "uploads");
+            path = Path.Combine(path, domain);
+            if (domain=="users") path = Path.Combine(path, User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-            return path + filename;
+            return Path.Combine(path, filename);
         }
     }
 }
