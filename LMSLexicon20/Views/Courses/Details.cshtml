@@ -58,13 +58,13 @@
 
     </style>
     @{
-        ViewData["Title"] = "Details";
+        ViewData["Title"] = "KURS ÖVERSIKT";
     }
 
     <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">KURS ÖVERSIKT</h2>
 
     <div>
-        <h4><i class="fas fa-university"></i>Course</h4>
+        <h4><i class="fas fa-university"></i>Kurs</h4>
         <hr />
         <dl class="row">
             <dt class="col-sm-2">
@@ -229,8 +229,8 @@
     <br />
     <br />
 
-    <h4><i class="fas fa-user-friends"></i></i>Students</h4>
-    <hr />
+    <h4><i class="fas fa-user-friends"></i>Studenter</h4>
+    <br />
     @await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
     @if (User.IsInRole("Teacher"))
     {
