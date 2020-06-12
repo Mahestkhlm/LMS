@@ -67,7 +67,13 @@ namespace LMSLexicon20.Controllers
                                        Id = m.Id,
                                        Name = m.Name,
                                        StartDate = m.StartDate,
+                                       StartDateToEarly = (m.StartDate < c.StartDate),
+                                       StartDateToLate = (m.StartDate > c.EndDate),
+
                                        EndDate = m.EndDate,
+                                       EndDateToEarly = (m.EndDate < c.StartDate),
+                                       EndDateToLate = (m.EndDate > c.EndDate),
+
                                        Description = m.Description
                                        ,
                                        ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
@@ -76,8 +82,22 @@ namespace LMSLexicon20.Controllers
                                                 Id = a.Id,
                                                 Name = a.Name,
                                                 StartDate = a.StartDate,
+                                                StartDateToEarly = (m.StartDate < m.StartDate),
+                                                StartDateToLate = (m.StartDate > m.EndDate),
+
                                                 EndDate = a.EndDate,
+                                                EndDateToEarly = (a.EndDate < m.StartDate),
+                                                EndDateToLate = (a.EndDate > m.EndDate),
+
                                                 Description = a.Description
+                                                ,
+                                                ActivityTypeWM = 
+                                                new ActivityTypeWM
+                                                {
+                                                    Id= a.ActivityType.Id,
+                                                    Name = a.ActivityType.Name,
+                                                    RequireDocument = a.ActivityType.RequireDocument
+                                                }
                                             })
                                    })
                     })
@@ -137,7 +157,8 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await mapper.ProjectTo<EditCourseViewModel>(_context.Courses).FirstOrDefaultAsync(e => e.Id == id);
+
             if (course == null)
             {
                 return NotFound();
@@ -151,23 +172,36 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate,EndDate,Description")] Course course)
+        public async Task<IActionResult> Edit(int id, EditCourseViewModel viewModel)
         {
-            if (id != course.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
+
+            if (viewModel.StartDate >= viewModel.EndDate)
+            {
+                ModelState.AddModelError("EndDate", "Kursen kan inte avsluta innan den börjar");
+            }
+
+            var found = await _context.Courses.AnyAsync(p => (p.Name == viewModel.Name) && (p.Id != viewModel.Id));
+            if (found)
+            {
+                ModelState.AddModelError("Name", "Det finns redan en kurs med denna namn");
+            }
+
+            var model = mapper.Map<Course>(viewModel);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(course);
+                    _context.Update(model);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.Id))
+                    if (!CourseExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -176,12 +210,12 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
-                TempData["SuccessText"] = $"The Course : {course.Name} is updated!";
+                TempData["SuccessText"] = $"Kursen: {model.Name} - är uppdaterad!";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["FailText"] = $"Something Went Wrong! The Course: {course.Name} is not updated!";
+            TempData["FailText"] = $"Något gick fel! Kursen: {model.Name} - är inte uppdaterad!";
 
-            return View(course);
+            return View(viewModel);
         }
 
         // GET: Courses/Delete/5

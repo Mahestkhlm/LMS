@@ -90,6 +90,15 @@ namespace LMSLexicon20.Data
                     ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "e-learningpass").Select(m => m.Id).FirstOrDefault();
                 }
 
+                ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "inlämmningsuppgift").Select(m => m.Id).FirstOrDefault();
+                if (_context.ActivityTypes.Find(ActivityTypeId)?.Id is null)
+                {
+                    _context.ActivityTypes.Add(new ActivityType { Name = "inlämmningsuppgift",RequireDocument=true });
+                    _context.SaveChanges();
+                    ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "e-learningpass").Select(m => m.Id).FirstOrDefault();
+                }
+
+
                 var ActivityId = _context.Activities.Where(a => a.Name == "Environment").Select(m => m.Id).FirstOrDefault();
                 if (_context.Activities.Find(ActivityId)?.Id is null)
                 {
