@@ -31,8 +31,10 @@ namespace LMSLexicon20.ViewModels
         public bool EndDateToEarly { get; set; }
         public bool EndDateToLate { get; set; }
 
+        public bool StartDateOverlap { get; set; }
+        public bool EndDateOverlap { get; set; }
 
-        public bool ExpandedModule { get; set; } = false;
+        public bool Expanded { get; set; } = false;
 
         //Foreign Key
         public int CourseId { get; set; }
