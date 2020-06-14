@@ -1,18 +1,38 @@
-﻿@model LMSLexicon20.Models.Course
+﻿@model EditCourseViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "REDIGERA";
 }
 
 
 <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">REDIGERA KURSEN</h2>
-<div class="text-danger blink_me">
-    @TempData["FailText"]
-</div>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Teacher)
+            </dt>
+            <dd class="col-sm-10">
+                @if (Model.Teacher != null)
+                {
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+                }
+                else
+                {
+                    <p id="createform">
+                        Ingen. <a asp-controller="Users" asp-action="AddTeacherToCourse" asp-route-id="@Model.Id"
+                                  data-ajax="true"
+                                  data-ajax-method="GET"
+                                  data-ajax-mode="replace"
+                                  data-ajax-update="#createform">
+                            Lägga till en lärare
+                        </a>
+                    </p>
+                }
+            </dd>
+        </dl>
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -33,18 +53,20 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Spara" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Tillbaka till kursListan</a>
+    
+    <a asp-action="Details" asp-route-id="@Model.Id">Tillbaka till kursen</a> |
+    <a asp-action="Index">Tillbaka till kurslistan</a>
 </div>
 
 @section Scripts {
