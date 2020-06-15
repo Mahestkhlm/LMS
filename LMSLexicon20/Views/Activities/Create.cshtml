@@ -1,7 +1,7 @@
 ﻿@model LMSLexicon20.Models.Activity
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Skapa aktivitet";
 }
 
 
@@ -44,14 +44,14 @@
                 <select asp-for="ActivityTypeId" class ="form-control" asp-items="ViewBag.ActivityTypeId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Skapa" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Tillbaka till aktiviteter</a>
 </div>
 
 @section Scripts {
