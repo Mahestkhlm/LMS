@@ -10,6 +10,7 @@ namespace LMSLexicon20.Models.ViewModels
     public class UserEditViewModel
     {
         public string Id { get; set; }
+        public bool Student { get; set; }
 
         [Display(Name = "Förnamn")]
         public string FirstName { get; set; }
