@@ -99,7 +99,7 @@
 {
 <div id="accordion" class="course-accordion">
    @foreach (var itemM in Model.ModuleDetailVM)
-    {
+   {
     <div class="card">
         <div class="card-header card-header-module" id="@String.Format($"heading{itemM.Id}")">
             <div class="mb-0">
@@ -116,20 +116,26 @@
 
                         <div style="padding-top:10px" class="col-4">
                             <h6 style="font-weight:400">
-                                @{ var cls = itemM.StartDateOverlap ? "warning_start_overlap" : "";}
-                                @{ var tt = itemM.StartDateOverlap ? "Modulen startdatum överlappar en annan modul" : ""; }
-
-                                @{ cls = itemM.StartDateToEarly ? "warning_to_early" : itemM.StartDateToLate ? "warning_to_late" : cls;}
-                                @{ tt = itemM.StartDateToEarly ? "Modulens startdatum ligger innan kursens startdatum" : itemM.StartDateToLate ? "Modulens startdatum ligger efter kursens slutdatumdatum" : tt;}
+                                @{ var cls = ""}
+                                @{ var tt = ""}
+                                @if (User.IsInRole("Teacher"))
+                                {
+                                    @{ cls = itemM.StartDateOverlap ? "warning_start_overlap" : ""; }
+                                    @{ tt = itemM.StartDateOverlap ? "Modulen startdatum överlappar en annan modul" : ""; }
+                                    @{ cls = itemM.StartDateToEarly ? "warning_to_early" : itemM.StartDateToLate ? "warning_to_late" : cls;}
+                                    @{ tt = itemM.StartDateToEarly ? "Modulens startdatum ligger innan kursens startdatum" : itemM.StartDateToLate ? "Modulens startdatum ligger efter kursens slutdatumdatum" : tt;}
+                                }
                                 <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemM.StartDate)</span>
                                 <span>&nbsp;-&nbsp;</span>
-                                @{ cls = itemM.EndDateOverlap ? "warning_end_overlap" : "";}
-                                @{ tt = itemM.EndDateOverlap ? "Modulen slutdatum överlappar en annan modul" : ""; }
-
-                                @{ cls = itemM.EndDateToEarly ? "warning_to_early" : itemM.EndDateToLate ? "warning_to_late" : cls;}
-                                @{ tt = itemM.EndDateToEarly ? "Modulens slutdatum ligger innan kursens startdatum" : itemM.EndDateToLate ? "Modulens slutdatum ligger efter kursens slutdatumdatum" : tt;}
-                                <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemM.EndDate)</span>
-                            </h6>
+                                @if (User.IsInRole("Teacher"))
+                                {
+                                    @{ cls = itemM.EndDateOverlap ? "warning_end_overlap" : "";}
+                                    @{ tt = itemM.EndDateOverlap ? "Modulen slutdatum överlappar en annan modul" : ""; }
+                                    @{ cls = itemM.EndDateToEarly ? "warning_to_early" : itemM.EndDateToLate ? "warning_to_late" : cls;}
+                                    @{ tt = itemM.EndDateToEarly ? "Modulens slutdatum ligger innan kursens startdatum" : itemM.EndDateToLate ? "Modulens slutdatum ligger efter kursens slutdatumdatum" : tt;}
+                                }
+                                    <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemM.EndDate)</span>
+                                </h6>
                         </div>
 
                         <div class="col-3">
@@ -190,20 +196,24 @@
 
                                             <div style="padding-top:10px" class="col-4">
                                                 <h6 style="font-weight:400">
-                                                    @{ cls = itemActiv.StartDateOverlap ? "warning_start_overlap" : "";}
-                                                    @{ tt = itemActiv.StartDateOverlap ? "Aktivitetens startdatum överlappar en annan modul" : ""; }
-
-                                                    @{ cls = itemActiv.StartDateToEarly ? "warning_to_early" : itemActiv.StartDateToLate ? "warning_to_late" : cls;}
-                                                    @{ tt = itemActiv.StartDateToEarly ? "Aktivitetens startdatum ligger innan kursens startdatum" : itemActiv.StartDateToLate ? "Aktivitetens startdatum ligger efter kursens slutdatumdatum" : tt;}
+                                                    @if (User.IsInRole("Teacher"))
+                                                    {
+                                                        @{ cls = itemActiv.StartDateOverlap ? "warning_start_overlap" : "";}
+                                                        @{ tt = itemActiv.StartDateOverlap ? "Aktivitetens startdatum överlappar en annan aktivitet" : ""; }
+                                                        @{ cls = itemActiv.StartDateToEarly ? "warning_to_early" : itemActiv.StartDateToLate ? "warning_to_late" : cls;}
+                                                        @{ tt = itemActiv.StartDateToEarly ? "Aktivitetens startdatum ligger innan modulens startdatum" : itemActiv.StartDateToLate ? "Aktivitetens startdatum ligger efter modulens slutdatumdatum" : tt;}
+                                                    }
                                                     <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
                                                     <span>&nbsp;-&nbsp;</span>
-                                                    @{ cls = itemActiv.EndDateOverlap ? "warning_end_overlap" : "";}
-                                                    @{ tt = itemActiv.EndDateOverlap ? "Aktivitetens slutdatum överlappar en annan modul" : ""; }
-
-                                                    @{ cls = itemActiv.EndDateToEarly ? "warning_to_early" : itemActiv.EndDateToLate ? "warning_to_late" : cls;}
-                                                    @{ tt = itemActiv.EndDateToEarly ? "Aktivitetens slutdatum ligger innan kursens startdatum" : itemActiv.EndDateToLate ? "Aktivitetens slutdatum ligger efter kursens slutdatumdatum" : tt;}
-                                                    <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
-                                                </h6>
+                                                    @if (User.IsInRole("Teacher"))
+                                                    {
+                                                        @{ cls = itemActiv.EndDateOverlap ? "warning_end_overlap" : "";}
+                                                        @{ tt = itemActiv.EndDateOverlap ? "Aktivitetens slutdatum överlappar en annan aktivitet" : ""; }
+                                                        @{ cls = itemActiv.EndDateToEarly ? "warning_to_early" : itemActiv.EndDateToLate ? "warning_to_late" : cls;}
+                                                        @{ tt = itemActiv.EndDateToEarly ? "Aktivitetens slutdatum ligger innan modulens startdatum" : itemActiv.EndDateToLate ? "Aktivitetens slutdatum ligger efter modulens slutdatumdatum" : tt;}
+                                                     }
+                                                        <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
+                                                    </h6>
                                             </div>
 
                                             <div class="col-3">
