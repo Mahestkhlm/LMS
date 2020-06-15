@@ -53,6 +53,7 @@ namespace LMSLexicon20.Controllers
             var courseDetailVM = _context.Courses
                     //.Include(c => c.Modules)
                     //.ThenInclude(m => m.Activities)
+                    .OrderBy(m => m.StartDate)
                     .Select(c => new CourseDetailVM
                     {
                         Id = c.Id,
@@ -69,14 +70,16 @@ namespace LMSLexicon20.Controllers
                                        StartDate = m.StartDate,
                                        StartDateToEarly = (m.StartDate < c.StartDate),
                                        StartDateToLate = (m.StartDate > c.EndDate),
-
+                                       StartDateOverlap = c.Modules.Where(m2 => m.StartDate > m2.StartDate && m.StartDate < m2.EndDate).Any(),
                                        EndDate = m.EndDate,
                                        EndDateToEarly = (m.EndDate < c.StartDate),
                                        EndDateToLate = (m.EndDate > c.EndDate),
-
-                                       Description = m.Description
+                                       EndDateOverlap = c.Modules.Where(m2 => m.EndDate > m2.StartDate && m.EndDate < m2.EndDate).Any(),
+                                       Description = m.Description,
+                                       Expanded = (DateTime.Now > m.StartDate &&  DateTime.Now<m.EndDate)
                                        ,
                                        ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
+                                            .OrderBy(a => a.StartDate)
                                             .Select(a => new ActivityDetailVM
                                             {
                                                 Id = a.Id,
@@ -84,17 +87,18 @@ namespace LMSLexicon20.Controllers
                                                 StartDate = a.StartDate,
                                                 StartDateToEarly = (m.StartDate < m.StartDate),
                                                 StartDateToLate = (m.StartDate > m.EndDate),
-
+                                                StartDateOverlap = m.Activities.Where(a2 => a.StartDate > a2.StartDate && a.StartDate < a2.EndDate).Any(),
                                                 EndDate = a.EndDate,
                                                 EndDateToEarly = (a.EndDate < m.StartDate),
                                                 EndDateToLate = (a.EndDate > m.EndDate),
-
-                                                Description = a.Description
+                                                EndDateOverlap = m.Activities.Where(a2 => a.EndDate > a2.StartDate && a.EndDate < a2.EndDate).Any(),
+                                                Description = a.Description,
+                                                Expanded = (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate)
                                                 ,
-                                                ActivityTypeWM = 
+                                                ActivityTypeWM =
                                                 new ActivityTypeWM
                                                 {
-                                                    Id= a.ActivityType.Id,
+                                                    Id = a.ActivityType.Id,
                                                     Name = a.ActivityType.Name,
                                                     RequireDocument = a.ActivityType.RequireDocument
                                                 }

@@ -27,14 +27,14 @@ namespace LMSLexicon20.ViewModels
         public string Description { get; set; }
 
         public bool HasDeadline { get; set; }
-
-        public bool ExpandedActivity { get; set; } = false;
-
+        public bool Expanded { get; set; } = false;
 
         public bool StartDateToEarly { get; set; }
         public bool StartDateToLate { get; set; }
         public bool EndDateToEarly { get; set; }
         public bool EndDateToLate { get; set; }
+        public bool StartDateOverlap { get; set; }
+        public bool EndDateOverlap { get; set; }
 
         //Foreign Key
         public int ModuleId { get; set; }

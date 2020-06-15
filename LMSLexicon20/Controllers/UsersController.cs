@@ -306,6 +306,47 @@ namespace LMSLexicon20.Controllers
             return RedirectToAction("Edit", "Courses", new { id });
         }
 
+        [Authorize(Roles = "Teacher")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFromCourse(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var model = await _userManager.FindByIdAsync(id);
+            var courseId = model.CourseId;
+
+            if (ModelState.IsValid)
+            {
+                
+                model.CourseId = null;
+                try
+                {
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UserExists(model.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är inte längre kursens lärare";
+                return RedirectToAction("Edit", "Courses", new { id = courseId });
+            }
+            TempData["FailText"] = $"Något gick fel!";
+
+            return RedirectToAction("Edit", "Courses", new { courseId });
+        }
+
         private bool UserExists(string id)
         {
             return _context.Users.Any(e => e.Id == id);
