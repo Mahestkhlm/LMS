@@ -26,6 +26,10 @@ namespace LMSLexicon20.Data
                 .ForMember(
                        dest => dest.FullName,
                        from => from.MapFrom(e => $"{e.FirstName} {e.LastName}"));
+            CreateMap<User, UserDeleteViewModel>()
+                .ForMember(
+                       dest => dest.FullName,
+                       from => from.MapFrom(e => $"{e.FirstName} {e.LastName}"));
             CreateMap<User, UserEditViewModel>().ReverseMap();
 
             CreateMap<Course, CourseIndexViewModel>();

@@ -1,12 +1,10 @@
 ﻿@model LMSLexicon20.Models.ViewModels.UserEditViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Redigera användare";
 }
 
-<h1>Edit</h1>
-
-<h4>UserEditViewModel</h4>
+<h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">REDIGERA ANVÄNDARE</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -32,20 +30,24 @@
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
+            @if (Model.Student)
+            {
+                <div class="form-group">
+                    <label asp-for="CourseId" class="control-label"></label>
+                    <select asp-for="CourseId" class="form-control" asp-items="ViewBag.Course"></select>
+                    <span asp-validation-for="CourseId" class="text-danger"></span>
+                </div>
+            }
             <div class="form-group">
                 <input type="submit" value="Spara" class="btn btn-primary" />
-            </div>
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.Course"></select>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Details"  asp-route-id="@Model.Id">Tillbaka till översikt</a>
+    <a asp-action="Details" asp-route-id="@Model.Id">Tillbaka till översikt </a>|
+    <a asp-action="List"> Tillbaka till lista</a>
 </div>
 
 @section Scripts {

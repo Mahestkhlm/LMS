@@ -305,14 +305,14 @@
 
 
 
-    <div>
-        @if (User.IsInRole("Teacher") && Model != null)
-        {
-            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a><span> | </span>
-            @* <a class="btn btn-info" asp-action="Index">All Courses</a>*@
-        }
-        <a asp-action="Index">Tillbaka</a>
-    </div>
+<div>
+    @if (User.IsInRole("Teacher")&& Model != null)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id">Redigera kurs</a><span> | </span>
+        @* <a class="btn btn-info" asp-action="Index">All Courses</a>*@
+    }
+    <a asp-action="Index">Tillbaka</a>
+</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.min.js" integrity="sha256-fegGeSK7Ez4lvniVEiz1nKMx9pYtlLwPNRPf6uc8d+8=" crossorigin="anonymous"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

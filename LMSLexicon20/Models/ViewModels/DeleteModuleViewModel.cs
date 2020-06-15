@@ -26,5 +26,7 @@ namespace LMSLexicon20.Models.ViewModels
         public DateTime EndDate { get; set; }
         [Display(Name = "Beskrivning")]
         public string Description { get; set; }
+        [Display(Name = "Aktiviteter")]
+        public ICollection<Activity> Activities { get; set; }
     }
 }
