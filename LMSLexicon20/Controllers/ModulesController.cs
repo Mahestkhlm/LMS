@@ -11,6 +11,7 @@ using AutoMapper;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMSLexicon20.Controllers
 {
@@ -18,11 +19,13 @@ namespace LMSLexicon20.Controllers
     {
         private ApplicationDbContext context;
         private readonly IMapper mapper;
+        private readonly UserManager<User> userManager;
 
-        public ModulesController(ApplicationDbContext context, IMapper mapper)
+        public ModulesController(ApplicationDbContext context, IMapper mapper, UserManager<User> userManager)
         {
             this.context = context;
             this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         // GET: Modules
@@ -115,8 +118,8 @@ namespace LMSLexicon20.Controllers
         {
 
             var found = await context.Modules
-                .Where(m=>m.CourseId==viewModel.CourseId)
-                .AnyAsync(p => (p.Name == viewModel.Name) 
+                .Where(m => m.CourseId == viewModel.CourseId)
+                .AnyAsync(p => (p.Name == viewModel.Name)
                 && (p.Id != id));
             if (found)
             {
@@ -126,7 +129,7 @@ namespace LMSLexicon20.Controllers
             if (ModelState.IsValid)
             {
                 var model = await context.Modules.FindAsync(id);
-               
+
                 model.Name = viewModel.Name;
                 model.StartDate = viewModel.StartDate;
                 model.EndDate = viewModel.EndDate;
@@ -162,12 +165,16 @@ namespace LMSLexicon20.Controllers
 
             var model = await context.Modules
                 .Include(m => m.Course)
+                .Include(m => m.Activities)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (model == null)
             {
                 return NotFound();
             }
             var viewModel = mapper.Map<DeleteModuleViewModel>(model);
+            //viewModel.Activities
+            //viewModel.Activities = model.Activities.ToList() ;
             return View(viewModel);
         }
 
@@ -176,12 +183,17 @@ namespace LMSLexicon20.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var model = await context.Modules.FindAsync(id);
-            var courseId = model.CourseId;
-            var name = model.Name;
-            context.Modules.Remove(model);
+            var module = await context.Modules.FindAsync(id);
+            //var activities = module.Activities;
+            var activities = await context.Activities.Where(a => a.ModuleId == module.Id).ToListAsync();
+            var courseId = module.CourseId;
+            var name = module.Name;
+
+            if (activities != null)
+                foreach (var activity in activities) context.Activities.Remove(activity);
+            context.Modules.Remove(module);
             await context.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index));
+
             TempData["SuccessText"] = $"Modulen {name} har tagits bort";
             return RedirectToAction(nameof(Details), "Courses", new { id = courseId });
         }
