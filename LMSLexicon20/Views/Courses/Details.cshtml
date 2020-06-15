@@ -252,8 +252,9 @@
                                         @{ cls = itemActiv.Expanded ? " show" : ""; }
                                         <div id="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")" class="collapse @cls" aria-labelledby="@String.Format($"heading{itemM.Id}_{itemActiv.Id}")" data-parent="@String.Format($"#accordion{itemM.Id}")">
                                             <div class="card-body">
-
-                                                <span>@Html.DisplayFor(modelItem => itemActiv.ActivityTypeWM.Name)</span>
+                                                <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
+                                                <br /><br />
+                                                <span style="font-weight:bold">@Html.DisplayFor(modelItem => itemActiv.ActivityTypeWM.Name)</span>
 
                                                 @if (itemActiv.ActivityTypeWM.RequireDocument)
                                                 {
@@ -263,7 +264,6 @@
                                                     </button>
                                                 }
                                                 <br />
-                                                <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
 
                                             </div>
                                         </div>

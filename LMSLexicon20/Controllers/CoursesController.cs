@@ -53,6 +53,7 @@ namespace LMSLexicon20.Controllers
             var courseDetailVM = _context.Courses
                     //.Include(c => c.Modules)
                     //.ThenInclude(m => m.Activities)
+                    .OrderBy(m => m.StartDate)
                     .Select(c => new CourseDetailVM
                     {
                         Id = c.Id,
@@ -74,9 +75,11 @@ namespace LMSLexicon20.Controllers
                                        EndDateToEarly = (m.EndDate < c.StartDate),
                                        EndDateToLate = (m.EndDate > c.EndDate),
                                        EndDateOverlap = c.Modules.Where(m2 => m.EndDate > m2.StartDate && m.EndDate < m2.EndDate).Any(),
-                                       Description = m.Description
+                                       Description = m.Description,
+                                       Expanded = (DateTime.Now > m.StartDate &&  DateTime.Now<m.EndDate)
                                        ,
                                        ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
+                                            .OrderBy(a => a.StartDate)
                                             .Select(a => new ActivityDetailVM
                                             {
                                                 Id = a.Id,
@@ -89,7 +92,8 @@ namespace LMSLexicon20.Controllers
                                                 EndDateToEarly = (a.EndDate < m.StartDate),
                                                 EndDateToLate = (a.EndDate > m.EndDate),
                                                 EndDateOverlap = m.Activities.Where(a2 => a.EndDate > a2.StartDate && a.EndDate < a2.EndDate).Any(),
-                                                Description = a.Description
+                                                Description = a.Description,
+                                                Expanded = (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate)
                                                 ,
                                                 ActivityTypeWM =
                                                 new ActivityTypeWM
