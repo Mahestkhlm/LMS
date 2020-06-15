@@ -11,7 +11,6 @@ using AutoMapper;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
 namespace LMSLexicon20.Controllers
 {
@@ -19,13 +18,11 @@ namespace LMSLexicon20.Controllers
     {
         private ApplicationDbContext context;
         private readonly IMapper mapper;
-        private readonly UserManager<User> userManager;
-
-        public ModulesController(ApplicationDbContext context, IMapper mapper, UserManager<User> userManager)
+        
+        public ModulesController(ApplicationDbContext context, IMapper mapper)
         {
             this.context = context;
             this.mapper = mapper;
-            this.userManager = userManager;
         }
 
         // GET: Modules
@@ -173,8 +170,6 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
             var viewModel = mapper.Map<DeleteModuleViewModel>(model);
-            //viewModel.Activities
-            //viewModel.Activities = model.Activities.ToList() ;
             return View(viewModel);
         }
 
