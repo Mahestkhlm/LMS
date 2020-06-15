@@ -4,9 +4,9 @@
     ViewData["Title"] = "Index";
 }
 
-    <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">AKTIVITET LISTA</h2>
+    <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">AKTIVITETSLISTA</h2>
 <p>
-    <a class="btn btn-info" asp-action="Create">Create New Activity</a> 
+    <a class="btn btn-info" asp-action="Create">Skapa ny aktivitet</a> 
     </p>
 <div class="text-success blink_me">
     @TempData["SuccessText"]
@@ -64,11 +64,11 @@
                 @Html.DisplayFor(modelItem => item.ActivityType.Id)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Redigera</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Radera</a>
                 
-                <a asp-controller="Courses" asp-action="Index" asp-route-id="@item.Name"class=" btn btn-primary mr-3">TillBaka Till Kurs</a>
+                <a asp-controller="Courses" asp-action="Index" asp-route-id="@item.Name"class=" btn btn-primary mr-3">Tillbaka till kurs</a>
                 
 
             </td>

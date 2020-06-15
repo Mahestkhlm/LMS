@@ -1,13 +1,13 @@
 ﻿@model LMSLexicon20.Models.Activity
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Översikt aktivitet";
 }
 
 
 
 <div>
-    <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">AKTIVITET ÖVERSIKT</h2> 
+    <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">AKTIVITETSÖVERSIKT</h2> 
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -55,6 +55,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Redigera</a> |
+    <a asp-action="Index">Tillbaka till aktiviteter</a>
 </div>

@@ -6,6 +6,10 @@
 
 <h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">TA BORT ANVÄNDARE</h2>
 <h4>Är du säker på att du vill radera användaren?</h4>
+@*@if (Model.Teacher != null)
+{
+    <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+}*@
 <div>
     <hr />
     <dl class="row">
