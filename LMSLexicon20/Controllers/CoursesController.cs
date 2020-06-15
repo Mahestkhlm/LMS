@@ -46,7 +46,9 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
-            //
+
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
+            var courseTeacher = teachers.FirstOrDefault(e => e.CourseId == id);
 
             //_context.Courses.Find(1)
             //await 
@@ -60,7 +62,8 @@ namespace LMSLexicon20.Controllers
                         Name = c.Name,
                         StartDate = c.StartDate,
                         EndDate = c.EndDate,
-                        Description = c.Description
+                        Description = c.Description,
+                        Teacher = courseTeacher
                         ,
                         ModuleDetailVM = (ICollection<ModuleDetailVM>)c.Modules
                                    .Select(m => new ModuleDetailVM
