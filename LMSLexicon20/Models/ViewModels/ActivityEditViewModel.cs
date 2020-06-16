@@ -29,8 +29,6 @@ namespace LMSLexicon20.Models.ViewModels
         public string Description { get; set; }
         [Display(Name = "Deadline")]
         public string HasDeadline { get; set; }
-
-        [Display(Name = "Tillhör modul")]
         public int ModuleId { get; set; }
         [Display(Name = "Typ av aktivitet")]
         public int ActivityTypeId { get; set; }
