@@ -23,50 +23,51 @@
     }
 </p>
 <div style="height: 55vh; overflow:auto;">
-    <table class="table" id="mainbackgroundcolor">
-        <thead>
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserRole)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FullName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CourseName)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+
+        <table class="table table-striped table-ligth" id="mainbackgroundcolor">
+            <thead class="table-light">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UserRole)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FullName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
-                    <td>
-                        <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">
-                            @Html.DisplayFor(modelItem => item.CourseName)
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Redigera</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
-                        <a asp-action="DeleteUser" asp-route-id="@item.Id">Radera</a>
-                    </td>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserRole)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FullName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CourseName)
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserRole)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">
+                                @Html.DisplayFor(modelItem => item.CourseName)
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Redigera</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
+                            <a asp-action="DeleteUser" asp-route-id="@item.Id">Radera</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 </div>
