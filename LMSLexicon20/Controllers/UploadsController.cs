@@ -11,11 +11,11 @@ using System.Linq;
 
 namespace LMSLexicon20.Controllers
 {
-    public class UploaderController : Controller
+    public class UploadsController : Controller
     {
         private IWebHostEnvironment hostingEnvironment;
 
-        public UploaderController(IWebHostEnvironment hostingEnvironment)
+        public UploadsController(IWebHostEnvironment hostingEnvironment)
         {
             this.hostingEnvironment = hostingEnvironment;
         }
@@ -28,7 +28,7 @@ namespace LMSLexicon20.Controllers
 
         //public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files)
         //[ValidateAntiForgeryToken]
-        //[HttpPost]
+        [HttpPost]
         public async Task<IActionResult>PostDoc(IList<IFormFile> files=null,  string domain="", string id="")
         {
             long size = files.Sum(f => f.Length);

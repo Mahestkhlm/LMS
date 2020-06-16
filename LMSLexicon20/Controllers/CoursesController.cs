@@ -30,13 +30,27 @@ namespace LMSLexicon20.Controllers
 
         // GET: Courses
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Index(string filterSearch)
+        public async Task<IActionResult> Index(string filterSearch, string sortOrder)
         {
             var viewModel = await mapper.ProjectTo<CourseIndexViewModel>(_context.Courses).ToListAsync();
 
             var filter = string.IsNullOrWhiteSpace(filterSearch) ?
-                              viewModel : viewModel.Where(m => m.Name.ToLower().Contains(filterSearch.ToLower())) ;
-                                                                  
+                              viewModel : viewModel.Where(m => m.Name.ToLower().Contains(filterSearch.ToLower()));
+
+            ViewData["OptionOne"] = sortOrder == "name_desc" ? "Name" : "name_desc";
+            ViewData["OptionTwo"] = sortOrder == "EndDate" ? "enddate_desc" : "EndDate";
+            ViewData["OptionThree"] = sortOrder == "StartDate" ? "startdate_desc" : "StartDate";
+
+            filter = sortOrder switch
+            {
+                "EndDate" => filter.OrderBy(s => s.EndDate),
+                "enddate_desc" => filter.OrderByDescending(s => s.EndDate),
+                "StartDate" => filter.OrderBy(s => s.StartDate),
+                "startdate_desc" => filter.OrderByDescending(s => s.StartDate),
+                "name_desc" => filter.OrderByDescending(s => s.Name),
+                _ => filter.OrderBy(s => s.Name),
+            };
+
             return View(filter);
         }
 

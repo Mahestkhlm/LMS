@@ -28,16 +28,16 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserRole)
+                    @Html.DisplayNameFor(model => model.UserRole)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionOne"]" class="text-info">&#8645;</a>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.FullName)
+                    @Html.DisplayNameFor(model => model.FullName)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionTwo"]" class="text-info">&#8645;</a>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Email)
+                    @Html.DisplayNameFor(model => model.Email)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionThree"]" class="text-info">&#8645;</a>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.CourseName)
+                    @Html.DisplayNameFor(model => model.CourseName)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionFour"]" class="text-info">&#8645;</a>
                 </th>
                 <th></th>
             </tr>
