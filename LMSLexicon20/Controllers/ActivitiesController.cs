@@ -60,7 +60,7 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public IActionResult Create(int? id)
         {
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id");
+            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Name");
             //ViewData["ModuleId"] = new SelectList(_context.Set<Module>(),"Id", "Name", ModuleId);
             return View();
         }
