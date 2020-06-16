@@ -47,43 +47,58 @@
             border-left: 4px solid #98b3fa;
         */
 
-</style>
-@{
-    ViewData["Title"] = "KURSÖVERSIKT";
-}
 
-<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">KURSÖVERSIKT</h2>
+    </style>
+    @{
+        ViewData["Title"] = "KURSÖVERSIKT";
+    }
 
-<div>
-    <h4><i class="fas fa-university"></i>Kurs</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-    </dl>
-</div>
+    <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">KURSÖVERSIKT</h2>
+
+    <div>
+        <h4><i class="fas fa-university"></i>Kurs</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.StartDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.EndDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.EndDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Teacher)
+            </dt>
+            <dd class="col-sm-10">
+                @if (Model.Teacher != null)
+                {
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+                }
+                else
+                {
+                    <span>Ingen lärare.</span>
+                }
+            </dd>
+        </dl>
+    </div>
+
 
 @if (User.IsInRole("Teacher") && Model != null)
 {
