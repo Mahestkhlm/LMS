@@ -1,11 +1,11 @@
 ﻿@model DeleteCourseViewModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Ta bort kursen";
 }
 
-<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">RADERA KURSEN</h2>
-<h3>Om du raderar kursen raderas alla elever också</h3>
+<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">TA BORT KURSEN</h2>
+<h4 class="text-danger">Om du raderar kursen raderas alla elever också</h4>
 <div>
     <hr />
     <dl class="row">
@@ -53,8 +53,13 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
-        <input type="submit" value="Radera" class="btn btn-danger" /> |
-        <a asp-action="Index">Tillbaka till listan</a>
+    <form asp-action="Delete" class="form-group btn-group-sm">
+        <button type="submit" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+            <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Ta bort&nbsp;
+        </button>
+        <a href="javascript:history.go(-1)" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+            <i class="fas fa-ban" aria-hidden="true"></i>
+            <span>Avbryt</span>
+        </a>
     </form>
 </div>
