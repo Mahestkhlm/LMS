@@ -19,7 +19,11 @@
                 <div class="dropdown-menu">
                     @if (currentUser.CourseId == null)
                     {
-                        <a class="dropdown-item disabled text-muted">Min Kurs</a>
+                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="right" title="Du är inte kopplad till en kurs än! &#013; Lägg till en lärare i kursredigeraren">
+                            <a class="dropdown-item disabled text-muted">
+                                Min Kurs
+                            </a>
+                        </span>
                     }
                     else
                     {
