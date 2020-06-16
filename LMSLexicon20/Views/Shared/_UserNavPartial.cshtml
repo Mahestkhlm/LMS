@@ -17,7 +17,14 @@
             <li class="nav-item dropdown">
                 <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Kurser</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" asp-area="" asp-controller="Courses" asp-action="Details" asp-route-id="@currentUser.CourseId">Min Kurs</a>
+                    @if (currentUser.CourseId == null)
+                    {
+                        <a class="dropdown-item disabled text-muted">Min Kurs</a>
+                    }
+                    else
+                    {
+                        <a class="dropdown-item" asp-area="" asp-controller="Courses" asp-action="Details" asp-route-id="@currentUser.CourseId">Min Kurs</a>
+                    }
                     <a class="dropdown-item" asp-area="" asp-controller="Courses" asp-action="Index">Alla Kurser</a>
                 </div>
             </li>

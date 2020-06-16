@@ -30,8 +30,7 @@ namespace LMSLexicon20.Models.ViewModels
 
         public bool HasDeadline { get; set; }
 
-        public int ModuleId { get; set; }
-        [Display(Name = "Aktivitet")]
+        [Display(Name = "Aktivitetstyp")]
         public int ActivityTypeId { get; set; }
     }
 }

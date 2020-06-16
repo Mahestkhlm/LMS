@@ -9,6 +9,8 @@ namespace LMSLexicon20.Models
     public class ActivityTypeWM
     {
         public int Id { get; set; }
+
+        [Display(Name = "Aktivitet")]
         public string Name { get; set; }
         public bool RequireDocument { get; set; }
     }

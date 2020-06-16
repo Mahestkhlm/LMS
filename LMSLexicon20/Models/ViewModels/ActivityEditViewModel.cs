@@ -27,10 +27,12 @@ namespace LMSLexicon20.Models.ViewModels
         public DateTime EndDate { get; set; }
         [Display(Name = "Beskrivning")]
         public string Description { get; set; }
+        [Display(Name = "Deadline")]
         public string HasDeadline { get; set; }
 
+        [Display(Name = "Tillhör modul")]
         public int ModuleId { get; set; }
-        [Display(Name = "Aktivitet")]
+        [Display(Name = "Typ av aktivitet")]
         public int ActivityTypeId { get; set; }
     }
 }

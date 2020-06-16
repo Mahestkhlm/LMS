@@ -178,10 +178,16 @@ namespace LMSLexicon20.Controllers
         public async Task<IActionResult> DeleteUserConfirmed(string id)
         {
             var model = await _context.Users.FindAsync(id);
-            var userName = model.UserName;
-            _context.Users.Remove(model);
-            await _context.SaveChangesAsync();
-            TempData["SuccessText"] = $"Användare {userName} har tagits bort";
+            if (User.Identity.Name == model.UserName)
+                throw new Exception("Du kan inte ta bort kontot du använder!");
+            else
+            {
+                var userName = model.UserName;
+                _context.Users.Remove(model);
+                await _context.SaveChangesAsync();
+                TempData["SuccessText"] = $"Användare {userName} har tagits bort";
+            }
+            
             return RedirectToAction(nameof(List), new { filterSearch = "" });
         }
         static string GeneratePassword()
