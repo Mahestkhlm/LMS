@@ -55,7 +55,18 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.EndDate)
                     </td>
-
+                    <td>
+                        <div class="btn-group btn-group-xs">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">
+                                <i class="fas fa-edit"></i>
+                                <span>Ändra</span>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                <i class="fas fa-times"></i>
+                                <span>Ta bort</span>
+                            </a>
+                        </div>
+                    </td>
 
                 </tr>
             }
