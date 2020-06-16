@@ -108,8 +108,8 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Id", activity.ModuleId);
+            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Name", activity.ActivityTypeId);
+            ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Name", activity.ModuleId);
             return View(activity);
         }
 
