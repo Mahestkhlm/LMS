@@ -1,22 +1,4 @@
 ﻿@model IEnumerable<LMSLexicon20.Models.ViewModels.StudentVM>
-<style>
-    a.btn.a-btn-slide-text:hover {
-        -webkit-transform: scale(1.1);
-        -moz-transform: scale(1.1);
-        -o-transform: scale(1.1);
-        opacity: 0.6;
-        color:white;
-    }
-
-    a.btn.a-btn-slide-text {
-        -webkit-transform: scale(0.8);
-        -moz-transform: scale(0.8);
-        -o-transform: scale(0.8);
-        -webkit-transition-duration: 0.5s;
-        -moz-transition-duration: 0.5s;
-        -o-transition-duration: 0.5s;
-    }
-</style>
 <table class="table">
     <thead></thead>
     <tbody>
@@ -26,18 +8,20 @@
                 <td><a asp-action="Details" asp-route-id="@student.Id">@student.Email</a></td>
                 <td>@student.FullName</td>
                 <td>
-                    @if (User.IsInRole("Teacher"))
-                    {
+                    <div  style="float: right" class="btn-group btn-group-xs" role="group">
+                        @if (User.IsInRole("Teacher"))
+                        {
 
-                        <a href="@Url.Action("DeleteUser", "Users", new { id = student.Id })" class="btn btn-sm btn-outline-danger a-btn-slide-text">
-                            <span class="fas fa-times" aria-hidden="true"></span>
-                            <span>Ta bort</span>
-                        </a>
-                        <a href="@Url.Action("Edit", "Users", new { id = student.Id })" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
-                            <span class="fas fa-pencil-square" aria-hidden="true"></span>
-                            <span>Ändra</span>
-                        </a>
-                    }
+                            <a href="@Url.Action("DeleteUser", "Users", new { id = student.Id })" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                                <span class="fas fa-times" aria-hidden="true"></span>
+                                <span>Ta bort</span>
+                            </a>
+                            <a href="@Url.Action("Edit", "Users", new { id = student.Id })" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                                <span class="fas fa-edit" aria-hidden="true"></span>
+                                <span>Ändra</span>
+                            </a>
+                        }
+                    </div>
                 </td>
             </tr>
         }
