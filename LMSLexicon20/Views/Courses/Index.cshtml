@@ -6,14 +6,14 @@
 }
 
 
-<h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">KURS LISTA</h2>
+<h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">KURSLISTA</h2>
 <div id="mainbackgroundcolor" class="rounded-lg">
     <h1 class="rounded-top p-3" id="searchindex">@ViewData["Title"]</h1>
     <form method="get" asp-controller="Courses" asp-action="Index" class="text-light border rounded-lg">
         <div class="input-group">
-            <input type="text" class="form-control" name="filterSearch" placeholder="Search On Name" />
+            <input type="text" class="form-control" name="filterSearch" placeholder="Sök på namn..." />
             <div class="input-group-append">
-                <button type="submit" class="btn btn-primary">&#128270;Sök</button>
+                <button type="submit" class="btn btn-primary">&#128270; Sök</button>
             </div>
         </div>
     </form>

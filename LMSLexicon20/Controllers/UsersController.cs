@@ -76,7 +76,7 @@ namespace LMSLexicon20.Controllers
 
                 //Lägg till kurs om finns (checkat att den finns)
                 if (id != null) model.CourseId = id;
-                
+
                 //Lägg till användare m. lösen
                 var pw = GeneratePassword();
 
@@ -106,11 +106,15 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(string id)
         {
-
             //ToDo: nullcheck?
             var model = await _context.Users.FindAsync(id);
+            var isStudent = await _userManager.IsInRoleAsync(model, "Student");
             var viewModel = _mapper.Map<UserEditViewModel>(model);
-            ViewData["Course"] = new SelectList(_context.Set<Course>(), "Id", "Name", model.CourseId);
+            if (isStudent)
+            {
+                viewModel.Student = isStudent;
+                ViewData["Course"] = new SelectList(_context.Set<Course>(), "Id", "Name", model.CourseId);
+            }
             return View(viewModel);
         }
         //Post
@@ -119,6 +123,14 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(UserEditViewModel viewModel, string id)
         {
+            var found = await _context.Users
+                .AnyAsync(p => (p.Email == viewModel.Email)
+                && (p.Id != id));
+            if (found)
+            {
+                ModelState.AddModelError("Email", "Emailen används redan!");
+            }
+
             viewModel.Id = id;
             //ToDo: kolla dubletter email
             if (ModelState.IsValid)
@@ -130,7 +142,7 @@ namespace LMSLexicon20.Controllers
                 model.LastName = viewModel.LastName;
                 model.PhoneNumber = viewModel.PhoneNumber;
                 model.Course = await _context.Courses.FindAsync(viewModel.CourseId);
-                
+
                 try
                 {
                     _context.Update(model);
@@ -140,15 +152,34 @@ namespace LMSLexicon20.Controllers
                 {
                     if (!UserExists(model.Id))
                         return NotFound();
-                    else  
+                    else
                         throw;
                 }
-                TempData["SuccessText"] = $"Användare {model.Email} uppdaterats";
+                TempData["SuccessText"] = $"Användare {model.Email} har uppdaterats";
                 return RedirectToAction(nameof(List));
             }
             return View(viewModel);
         }
-
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var model = await _context.Users.FindAsync(id);
+            if (model == null)
+                NotFound();
+            var viewModel = _mapper.Map<UserDeleteViewModel>(model);
+            var role = await _userManager.IsInRoleAsync(await _userManager.FindByIdAsync(id), "Teacher");
+            viewModel.Role = role ? "Lärare" : "Elev";
+            // viewModel.Course = model.Course;
+            return View(viewModel);
+        }
+        public async Task<IActionResult> DeleteUserConfirmed(string id)
+        {
+            var model = await _context.Users.FindAsync(id);
+            var userName = model.UserName;
+            _context.Users.Remove(model);
+            await _context.SaveChangesAsync();
+            TempData["SuccessText"] = $"Användare {userName} har tagits bort";
+            return RedirectToAction(nameof(List), new { filterSearch = "" });
+        }
         static string GeneratePassword()
         {
             //ToDo: check final string
@@ -246,7 +277,7 @@ namespace LMSLexicon20.Controllers
             }
 
             var model = await _userManager.FindByIdAsync(viewModel.TeacherId);
-            
+
 
             if (ModelState.IsValid)
             {
@@ -321,11 +352,5 @@ namespace LMSLexicon20.Controllers
             return _context.Users.Any(e => e.Id == id);
         }
 
-        [HttpPost]
-        public JsonResult EmailInUse(string Email)
-        {
-            return Json(_context.Users.Any(u => u.Email == Email) == false);
-        }
-       
     }
 }

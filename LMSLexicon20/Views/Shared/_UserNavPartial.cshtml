@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+}
+
+<ul class="navbar-nav flex-grow-1">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        @if (User.IsInRole("Teacher"))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="List">Användare</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Kurser</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" asp-area="" asp-controller="Courses" asp-action="Details" asp-route-id="@currentUser.CourseId">Min Kurs</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Courses" asp-action="Index">Alla Kurser</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dokument</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" asp-area="" asp-controller="Uploads" asp-action="" asp-route-id="">Mina Dokument</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Uploads" asp-action="" asp-route-id="">Alla Dokument</a>
+                </div>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Details" asp-route-id="@currentUser.CourseId">Min Kurs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Uploads" asp-action="" asp-route-id="">Mina Dokument</a>
+            </li>
+        }
+    }
+</ul>

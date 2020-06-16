@@ -4,7 +4,7 @@
     ViewData["Title"] = "List";
 }
 
- <h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-white p-4">ANVÄNDAR LISTA</h2>
+<h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-white p-4">ANVÄNDAR LISTA</h2>
 <form method="get" asp-controller="Users" asp-action="List" class="text-light border rounded-lg">
     <div class="input-group">
         <input type="text" class="form-control" name="filterSearch" placeholder="Sök på namn eller email..." />
@@ -56,12 +56,14 @@
                         @Html.DisplayFor(modelItem => item.Email)
                     </td>
                     <td>
-                        <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">@Html.DisplayFor(modelItem => item.CourseName)</a>
+                        <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">
+                            @Html.DisplayFor(modelItem => item.CourseName)
+                        </a>
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Redigera</a> |
                         <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Radera</a>
+                        <a asp-action="DeleteUser" asp-route-id="@item.Id">Radera</a>
                     </td>
                 </tr>
             }

@@ -1,11 +1,11 @@
-﻿@model LMSLexicon20.Models.Activity
+﻿@model LMSLexicon20.Models.ViewModels.DeleteActivityViewModel
 
 @{
-    ViewData["Title"] = "";
+    ViewData["Title"] = "Radera aktivitet";
 }
 
 <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">RADERA AKTIVITET</h2>
-<h3>Vill du Ta Borta Aktivitet?</h3>
+<h3>Vill du ta bort aktiviteten?</h3>
 <div>
     <hr />
     <dl class="row">
@@ -56,6 +56,8 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index">Tillbaka till aktiviteter</a>  |
+        <a asp-action="Index" asp-controller=" Courses" >Tillbaka till Kurs Lista</a>  |
+
     </form>
 </div>

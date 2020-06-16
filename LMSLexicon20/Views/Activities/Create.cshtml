@@ -1,7 +1,6 @@
-﻿@model LMSLexicon20.Models.Activity
-
+﻿@model LMSLexicon20.Models.ViewModels.CreateActivityViewModel
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Skapa aktivitet";
 }
 
 
@@ -27,7 +26,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <input asp-for="Description" class="form-control" rows="5" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -44,14 +43,14 @@
                 <select asp-for="ActivityTypeId" class ="form-control" asp-items="ViewBag.ActivityTypeId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Skapa" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Tillbaka till aktiviteter</a>
 </div>
 
 @section Scripts {
