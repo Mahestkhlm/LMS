@@ -60,7 +60,7 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public IActionResult Create(int? id)
         {
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id");
+            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Name");
             //ViewData["ModuleId"] = new SelectList(_context.Set<Module>(),"Id", "Name", ModuleId);
             return View();
         }
@@ -92,9 +92,7 @@ namespace LMSLexicon20.Controllers
                 var CourseId = _context.Modules.Where(m => m.Id == model.ModuleId).Select(m => m.CourseId).FirstOrDefault();
                 return RedirectToAction(nameof(Details), "Courses", new { id = CourseId });
             }
-            
             return View(activity);
-            
         }
 
         // GET: Activities/Edit/5

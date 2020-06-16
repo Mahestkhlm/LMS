@@ -1,27 +1,28 @@
 ﻿@model EditCourseViewModel
 
 @{
-    ViewData["Title"] = "REDIGERA";
+    ViewData["Title"] = "Ändra kursen";
 }
 
 
-<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">REDIGERA KURSEN</h2>
+<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">ÄNDRA KURSEN</h2>
+<br />
 
-<hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-5">
         <dl class="row">
-            <dt class="col-sm-2">
+            <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.Teacher)
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-md-9">
                 @if (Model.Teacher != null)
                 {
                     <a class="float-left mr-2" asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
                     <form asp-controller="Users" asp-action="RemoveFromCourse" asp-route-id="@Model.Teacher.Id" method="post">
-                        <input type="submit" value="Ta bort från kursen" class="btn btn-outline-danger btn-sm" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                            <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Ta bort&nbsp;
+                        </button>
                     </form>
-
                 }
                 else
                 {
@@ -30,9 +31,11 @@
                                   data-ajax="true"
                                   data-ajax-method="GET"
                                   data-ajax-mode="replace"
-                                  data-ajax-update="#createform">
-                            Lägga till en lärare
-                        </a>
+                                  data-ajax-update="#createform"
+                                  class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                                  <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                                  Lägg till&nbsp;<i class="fas fa-user-plus"></i>
+                               </a>
                     </p>
                 }
             </dd>
@@ -60,8 +63,15 @@
                 <textarea asp-for="Description" class="form-control" rows="5"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Spara" class="btn btn-primary" />
+            <div class="form-group btn-group-sm">
+                <button type="submit" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                    <i class="fas fa-check-circle" aria-hidden="true"></i>&nbsp;Spara&nbsp;
+                    <i class="fas fa-university" aria-hidden="true"></i>
+                </button>
+                <a href="javascript:history.go(-1)" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                    <i class="fas fa-ban" aria-hidden="true"></i>
+                    <span>Avbryt</span>
+                </a>
             </div>
         </form>
     </div>
@@ -69,8 +79,7 @@
 
 <div>
     
-    <a asp-action="Details" asp-route-id="@Model.Id">Tillbaka till kursen</a> |
-    <a asp-action="Index">Tillbaka till kurslistan</a>
+    
 </div>
 
 @section Scripts {

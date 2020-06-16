@@ -38,15 +38,15 @@
                 /* var message =(MessageVM)TempData["UserMessage"];*/
                 <div class="alert alert-success" id="message-alert">
                     <button type="button" class="close" data-dismiss="alert">x</button>
-                    <strong>Confirm! </strong>@TempData["SuccessText"]
+                    <strong></strong>@TempData["SuccessText"]
                 </div>
             }
             @if (TempData["FailText"] != null)
             {
                 /* var message =(MessageVM)TempData["UserMessage"];*/
-                <div class="alert alert-warning" id="message-alert">
+                <div class="alert alert-danger" id="message-alert">
                     <button type="button" class="close" data-dismiss="alert">x</button>
-                    <strong>Dismiss! </strong>@TempData["FailText"]
+                    <strong></strong>@TempData["FailText"]
                 </div>
             }
             @RenderBody()
