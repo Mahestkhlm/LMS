@@ -68,10 +68,10 @@
                             @Html.DisplayFor(modelItem => item.Description)
                         </td>
                         <td class="d-inline-flex">
-                            <a asp-action="Edit" asp-route-id="@item.Id">Ändra</a>
+                            <a class="btn btn-secondary"asp-action="Edit" asp-route-id="@item.Id">Ändra</a>
                             <span>&#x2800;|</span>
                             @*<a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |*@
-                            <a asp-action="Delete" asp-route-id="@item.Id">&#x2800;Radera</a>
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">&#x2800;Radera</a>
                         </td>
                     </tr>
                 }
