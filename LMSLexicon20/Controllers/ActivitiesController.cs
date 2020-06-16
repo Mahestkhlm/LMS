@@ -57,10 +57,10 @@ namespace LMSLexicon20.Controllers
 
         // GET: Activities/Create
         [Authorize(Roles = "Teacher")]
-        public IActionResult Create()
+        public IActionResult Create(int? ModuleId)
         {
             ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id");
-            ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Id");
+            ViewData["ModuleId"] = new SelectList(_context.Set<Module>(),"Id", "Name", ModuleId);
             return View();
         }
 
@@ -70,11 +70,8 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(CreateActivityViewModel activity )
+        public async Task<IActionResult> Create(CreateActivityViewModel activity)
         {
-
-
-
             if (activity.EndDate < activity.StartDate)
             {
                 ModelState.AddModelError("EndDate", "Sluttiden kan inte vara tidigare än starttiden");
@@ -87,7 +84,9 @@ namespace LMSLexicon20.Controllers
                 await _context.SaveChangesAsync();
                 TempData["SuccessText"] = $":Aktivitet- {model.Name} - är skapad!";
 
-                return RedirectToAction(nameof(Index));
+                if (model.ModuleId == default) return RedirectToAction(nameof(Index));
+                var CourseId = _context.Modules.Where(m => m.Id == model.ModuleId).Select(m => m.CourseId).FirstOrDefault();
+                return RedirectToAction(nameof(Details), "Courses", new { id = CourseId });
             }
             
             return View(activity);
@@ -185,7 +184,7 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            return View(activity);
+            return View(activity); ;
         }
 
         // POST: Activities/Delete/5
@@ -194,13 +193,15 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var ModuleId = _context.Activities.Where(a => a.Id == id).Select(a => a.ModuleId).FirstOrDefault();
+            var CourseId = _context.Modules.Where(m => m.Id == ModuleId).Select(m => m.CourseId).FirstOrDefault();
+
             var model = await mapper.ProjectTo<DeleteActivityViewModel>(_context.Activities).FirstOrDefaultAsync(t => t.Id == id);
             var activity = await _context.Activities.FindAsync(id);
             _context.Activities.Remove(activity);
             await _context.SaveChangesAsync();
             TempData["SuccessText"] = $"Aktivitet: {activity.Name} - är raderad!";
-
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), "Courses", new { id = CourseId });
         }
 
         private bool ActivityExists(int id)
