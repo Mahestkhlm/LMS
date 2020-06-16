@@ -1,7 +1,7 @@
 ﻿@model LMSLexicon20.Models.ViewModels.DeleteModuleViewModel
 
 @{
-    ViewData["Title"] = "Radera modul";
+    ViewData["Title"] = "Ta bort modul";
 }
 
 <h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">TA BORT MODUL</h2>
@@ -62,7 +62,7 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input class="btn btn-danger" type="submit" value="Radera" />
+        <input class="btn btn-danger" type="submit" value="Ta bort" />
         <a class="btn btn-secondary" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id">Avbryt</a>
     </form>
 </div>

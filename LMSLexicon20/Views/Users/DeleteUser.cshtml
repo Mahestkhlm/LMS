@@ -5,11 +5,11 @@
 }
 
 <h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">TA BORT ANVÄNDARE</h2>
-<h4>Är du säker på att du vill radera användaren?</h4>
+<h4>Är du säker på att du vill ta bort användaren?</h4>
 @*@if (Model.Teacher != null)
-{
-    <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
-}*@
+    {
+        <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+    }*@
 <div>
     <hr />
     <dl class="row">
@@ -47,7 +47,12 @@
 
     <form asp-action="DeleteUserConfirmed">
         <input type="hidden" asp-for="Id" />
-        <input class="btn btn-danger" type="submit" value="Radera" />
+        @if (User.Identity.Name == Model.Email)
+        {
+            <div class="text-danger">Du kan inte ta bort kontot du använder!</div>
+            <button class="btn btn-danger" disabled >Ta bort</button>
+        }
+        else{<input class="btn btn-danger" type="submit" value="Ta bort" />}
         @*<a class="btn btn-secondary" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id">Avbryt</a>*@
         <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.Id">Avbryt</a>
     </form>
