@@ -62,8 +62,49 @@ namespace LMSLexicon20.Data
                     if (!addToRoleResult.Succeeded) throw new Exception(string.Join("\n", addToRoleResult.Errors));
                 }
 
+                var ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "e-learningpass").Select(m => m.Id).FirstOrDefault();
+                if (ActivityTypeId > 0)
+                {
+                    var model = await _context.ActivityTypes.FindAsync(ActivityTypeId);
+                    model.Name = "E-learningpass";
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
+                ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "föreläsningar").Select(m => m.Id).FirstOrDefault();
+                if (ActivityTypeId > 0)
+                {
+                    var model = await _context.ActivityTypes.FindAsync(ActivityTypeId);
+                    model.Name = "Föreläsning";
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
+                ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "övningstillfällen").Select(m => m.Id).FirstOrDefault();
+                if (ActivityTypeId > 0)
+                {
+                    var model = await _context.ActivityTypes.FindAsync(ActivityTypeId);
+                    model.Name = "Övningstillfälle";
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
+                ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "inlämmningsuppgift").Select(m => m.Id).FirstOrDefault();
+                if (ActivityTypeId > 0)
+                {
+                    var model = await _context.ActivityTypes.FindAsync(ActivityTypeId);
+                    model.Name = "Inlämmningsuppgift";
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
+                ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "annat").Select(m => m.Id).FirstOrDefault();
+                if (ActivityTypeId > 0)
+                {
+                    var model = await _context.ActivityTypes.FindAsync(ActivityTypeId);
+                    model.Name = "Annat";
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
 
-                var ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "E-learningpass").Select(m => m.Id).FirstOrDefault();
+
+                ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "E-learningpass").Select(m => m.Id).FirstOrDefault();
                 if (_context.ActivityTypes.Find(ActivityTypeId)?.Id is null)
                 {
                     _context.ActivityTypes.Add(new ActivityType { Name = "E-learningpass" });

@@ -141,7 +141,7 @@
     <div style="display: flex; justify-content: flex-end">
         <a href="@Url.Action("CreateModule", "Modules", new { id = Model.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
             <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
-            <span><strong>Lägg till modul&nbsp;<i class="fas fa-layer-group"></i></strong></span>
+            <span>Lägg till modul&nbsp;<i class="fas fa-layer-group"></i></span>
         </a>
     </div>
 }
@@ -231,7 +231,7 @@
 
                         <span>@Html.DisplayFor(modelItem => itemM.Description)</span>
 
-                        <div class="row" style="display: flex; justify-content: flex-end;">
+                        <div class="row" style="display: flex; justify-content: flex-end; padding-right:20px">
                             @if (User.IsInRole("Teacher"))
                             {
                                 <div class="fileinput" style="display: flex; justify-content: flex-end; padding-top: 10px;">
@@ -247,7 +247,7 @@
                                 <div style="display: flex; justify-content: flex-end; padding-top: 10px;">
                                     <a href="@Url.Action("Create", "Activities", new { id = itemM.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
                                         <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
-                                        <span><strong>Lägg till aktivitet&nbsp;<i class="fas fa-tasks"></i></strong></span>
+                                        <span>Lägg till aktivitet&nbsp;<i class="fas fa-tasks"></i></span>
                                     </a>
                                 </div>
                             }
@@ -304,13 +304,6 @@
                                                                         <i class="fas fa-edit" aria-hidden="true"></i>
                                                                         <span>Ändra</span>
                                                                     </a>
-                                                                    @*<div style="display: flex; justify-content: flex-end; padding-top: 10px;">
-                                                        <a href="@Url.Action("Create", "Activities", new { id = itemM.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
-                                                            <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
-                                                            <span><strong>Lägg till aktivitet&nbsp;<i class="fas fa-tasks"></i></strong></span>
-                                                        </a>
-                                                    </div>*@
-                                                                    @*Details*@
                                                                 </div>
                                                             </div>
                                                         }
@@ -369,7 +362,7 @@
     <div style="display: flex; justify-content: flex-end">
         <a href="@Url.Action("CreateUser", "Users", new { id = Model.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
             <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
-            <span><strong>Lägg till Student&nbsp;<i class="fas fa-user-friends"></i></strong></span>
+            <span>Lägg till Student&nbsp;<i class="fas fa-user-friends"></i></span>
         </a>
     </div>
 }
