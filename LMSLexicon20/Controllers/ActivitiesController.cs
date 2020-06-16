@@ -58,10 +58,10 @@ namespace LMSLexicon20.Controllers
 
         // GET: Activities/Create
         [Authorize(Roles = "Teacher")]
-        public IActionResult Create(int? ModuleId)
+        public IActionResult Create(int? id)
         {
             ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id");
-            ViewData["ModuleId"] = new SelectList(_context.Set<Module>(),"Id", "Name", ModuleId);
+            //ViewData["ModuleId"] = new SelectList(_context.Set<Module>(),"Id", "Name", ModuleId);
             return View();
         }
 
@@ -71,16 +71,19 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create(CreateActivityViewModel activity)
+        public async Task<IActionResult> Create(CreateActivityViewModel activity, int id)
         {
             if (activity.EndDate < activity.StartDate)
             {
                 ModelState.AddModelError("EndDate", "Sluttiden kan inte vara tidigare än starttiden");
             }
 
+
             if (ModelState.IsValid)
             {
                 var model = mapper.Map<Activity>(activity);
+                model.ModuleId = id;
+
                 _context.Add(model);
                 await _context.SaveChangesAsync();
                 TempData["SuccessText"] = $":Aktivitet- {model.Name} - är skapad!";
