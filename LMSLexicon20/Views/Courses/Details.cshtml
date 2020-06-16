@@ -89,7 +89,14 @@
             <dd class="col-sm-10">
                 @if (Model.Teacher != null)
                 {
-                    <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+                    if (User.IsInRole("Teacher"))
+                    {
+                        <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+                    }
+                    else
+                    {
+                        <span>@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</span>
+                    }
                 }
                 else
                 {
@@ -331,9 +338,8 @@
     @if (User.IsInRole("Teacher") && Model != null)
     {
         <a asp-action="Edit" asp-route-id="@Model.Id">Redigera kurs</a><span> | </span>
-        @* <a class="btn btn-info" asp-action="Index">All Courses</a>*@
+        <a asp-action="Index">Tillbaka till kurser</a>
     }
-    <a asp-action="Index">Tillbaka till kurser</a>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.min.js" integrity="sha256-fegGeSK7Ez4lvniVEiz1nKMx9pYtlLwPNRPf6uc8d+8=" crossorigin="anonymous"></script>
