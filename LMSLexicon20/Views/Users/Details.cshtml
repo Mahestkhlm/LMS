@@ -52,7 +52,7 @@
 <div>
     @if (User.IsInRole("Teacher"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Redigera</a><span> | </span>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Ändra</a><span> | </span>
         <a asp-action="DeleteUser" asp-route-id="@Model.Id">Ta bort</a><br />
     }
     <a asp-action="List">Tillbaka till listan</a>
