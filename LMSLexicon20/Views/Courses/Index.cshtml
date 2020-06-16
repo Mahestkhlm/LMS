@@ -33,13 +33,13 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.Name)<span> </span><a asp-action="Index" asp-route-sortOrder="@ViewData["OptionOne"]" class="text-info">&#8645;</a>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.StartDate)
+                    @Html.DisplayNameFor(model => model.StartDate)<span> </span><a asp-action="Index" asp-route-sortOrder="@ViewData["OptionTwo"]" class="text-info">&#8645;</a>
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.EndDate)
+                    @Html.DisplayNameFor(model => model.EndDate)<span> </span><a asp-action="Index" asp-route-sortOrder="@ViewData["OptionThree"]" class="text-info">&#8645;</a>
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Description)
