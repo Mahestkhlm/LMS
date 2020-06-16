@@ -160,6 +160,8 @@ namespace LMSLexicon20.Controllers
             }
             return View(viewModel);
         }
+
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var model = await _context.Users.FindAsync(id);
@@ -171,6 +173,8 @@ namespace LMSLexicon20.Controllers
             // viewModel.Course = model.Course;
             return View(viewModel);
         }
+
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteUserConfirmed(string id)
         {
             var model = await _context.Users.FindAsync(id);
@@ -202,7 +206,7 @@ namespace LMSLexicon20.Controllers
         }
 
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> List(string filterSearch)
+        public async Task<IActionResult> List(string filterSearch, string sortOrder)
         {
             var viewModel = await _mapper.ProjectTo<UserListViewModel>(_userManager.Users).ToListAsync();
             for (int i = 0; i < viewModel.Count; i++)
@@ -216,10 +220,29 @@ namespace LMSLexicon20.Controllers
             var filter = string.IsNullOrWhiteSpace(filterSearch) ?
                             viewModel : viewModel.Where(m => m.FullName.ToLower().Contains(filterSearch.ToLower()) ||
                                                                 m.Email.ToLower().Contains(filterSearch.ToLower()));
+
+            ViewData["OptionOne"] = sortOrder == "Role" ? "role_desc" : "Role";
+            ViewData["OptionTwo"] = sortOrder == "name_desc" ? "Name" : "name_desc";
+            ViewData["OptionThree"] = sortOrder == "Email" ? "email_desc" : "Email";
+            ViewData["OptionFour"] = sortOrder == "Course" ? "course_desc" : "Course";
+
+            filter = sortOrder switch
+            {
+                "Email" => filter.OrderBy(s => s.Email),
+                "email_desc" => filter.OrderByDescending(s => s.Email),
+                "Role" => filter.OrderBy(s => s.UserRole),
+                "role_desc" => filter.OrderByDescending(s => s.UserRole),
+                "Course" => filter.OrderBy(s => s.CourseName),
+                "course_desc" => filter.OrderByDescending(s => s.CourseName),
+                "name_desc" => filter.OrderByDescending(s => s.FullName),
+                _ => filter.OrderBy(s => s.FullName),
+            };
+
             return View(filter);
 
         }
 
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
