@@ -1,5 +1,5 @@
 ﻿@model LMSLexicon20.ViewModels.CourseDetailVM
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.css" integrity="sha256-3SE+Qz2RvIa5gOHSNS50MUTTzRAOYREA5+DOmMNFPYk=" crossorigin="anonymous" />
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.css" integrity="sha256-3SE+Qz2RvIa5gOHSNS50MUTTzRAOYREA5+DOmMNFPYk=" crossorigin="anonymous" />*@
 
     <style>
         .course-accordion {
@@ -47,6 +47,38 @@
             border-left: 4px solid #98b3fa;
         */
 
+/*        #ddzone {
+            background: palegreen;
+            width: 150px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            font-weight: bold;
+        }*/
+
+        .ddzone.in {
+            background: palegreen;
+            border: 2px solid #65c465;
+            opacity: 0.5;
+        }
+
+            .ddzone.hover {
+                background: lawngreen;
+            }
+
+            .ddzone.fade {
+                transition: all 0.3s ease-out;
+                opacity: 1;
+            }
+
+
+        .ddzone {
+            min-height: 25px;
+            border: 0px solid rgba(80,80, 80, 0.3);
+            background: rgba(255,255, 255, 0.1);
+            padding: 0;
+        }
+
     </style>
     @{
         ViewData["Title"] = "KURSÖVERSIKT";
@@ -55,35 +87,54 @@
     <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">KURS ÖVERSIKT</h2>
 
     <div>
-        <h4><i class="fas fa-university"></i>Kurs</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Name)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Name)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.StartDate)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.StartDate)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.EndDate)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.EndDate)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Description)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Description)
-            </dd>
-        </dl>
-    </div>
+        <div class="ddzone" data-domain="course" data-id="@Model.Id">
+            <h4>
+                <i class="fas fa-university"></i>Kurs
+                
+                    <div class="fileinput" style="float:right">
+                        <button type="button" class="btn btn-sm btn-outline-warning">
+                            @*<i class="fas fa-folder-plus"></i>*@
+                            <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
+                            <span>Lägg till dokument&nbsp;<i class="fas fa-file"></i></span>
+
+                        </button>
+                    </div>
+                 
+            </h4>
+        </div>
+
+
+  
+
+
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.StartDate)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.StartDate)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.EndDate)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.EndDate)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Description)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+            </dl>
+        </div>
 
     @if (User.IsInRole("Teacher") && Model != null)
     {
@@ -107,7 +158,7 @@
                             <div class="container">
                                 <div class="row">
 
-                                    <div class="col-4">
+                                    <div class="col-4 ddzone" data-domain="module" data-id="@itemM.Id">
                                         <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}")" aria-expanded="@itemM.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}")">
                                             <i class="fas fa-layer-group"></i>
                                             <span class="course-module-name">@Html.DisplayFor(modelItem => itemM.Name)</span>
@@ -157,11 +208,12 @@
                                     </div>
 
 
+                                    @{ cls = itemM.Expanded ? "fa-caret-down" : "fa-caret-left"; }
                                     <div class="col-1">
                                         <button style="padding:0" class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}")" aria-expanded="@itemM.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}")">
                                             <span class="fa-stack fa-sm">
                                                 <i class="fas fa-circle fa-stack-2x"></i>
-                                                <i class="fas fa-caret-left fa-stack-1x fa-inverse"></i>
+                                                <i class="fas @cls fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </button>
                                     </div>
@@ -186,7 +238,7 @@
                                                 <div class="container">
                                                     <div class="row">
 
-                                                        <div class="col-4">
+                                                        <div class="col-4 ddzone" data-domain="activ" data-id="@itemActiv.Id">
                                                             <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemActiv.Id}")" aria-expanded="@itemActiv.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")">
                                                                 <i class="fas fa-tasks"></i>
                                                                 <span class="course-activity-name">@Html.DisplayFor(modelItem => itemActiv.Name)</span>
@@ -234,11 +286,12 @@
                                                             }
                                                         </div>
 
+                                                        @{ cls = itemActiv.Expanded ? "fa-caret-down" : "fa-caret-left"; }
                                                         <div class="col-1">
                                                             <button style="padding:0" class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemActiv.Id}")" aria-expanded="@itemActiv.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")">
                                                                 <span class="fa-stack fa-sm">
                                                                     <i class="fas fa-circle fa-stack-2x"></i>
-                                                                    <i class="fas fa-caret-left fa-stack-1x fa-inverse"></i>
+                                                                    <i class="fas  @cls fa-stack-1x fa-inverse"></i>
                                                                 </span>
                                                             </button>
                                                         </div>
@@ -258,7 +311,7 @@
 
                                                 @if (itemActiv.ActivityTypeWM.RequireDocument)
                                                 {
-                                                    <button type="button" data-id="@itemActiv.Id" class="btn btn-sm btn-outline-warning ddzone fileinput-button">
+                                                    <button type="button" data-domain="user" data-id="@itemActiv.Id" class="btn btn-sm btn-outline-warning @(User.IsInRole("Teacher")?"":"ddzone")">
                                                         <span class="fas fa-file-archive"></span>
                                                         Dokument <span class="badge badge-light text-small " style="vertical-align: top">0</span>
                                                     </button>
@@ -317,10 +370,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.min.js" integrity="sha256-fegGeSK7Ez4lvniVEiz1nKMx9pYtlLwPNRPf6uc8d+8=" crossorigin="anonymous"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
-
+        Dropzone.autoDiscover = false;
         $(function () {
-
-
             $("#accordion").on("hide.bs.collapse show.bs.collapse", e => {
                 $(e.target)
                     .prev()
@@ -344,26 +395,47 @@
                 );
             });
 
+            $(".ddzone").on({
+                dragover: function (e) {
+                    var $this = $(this);
+                    $this.addClass('in');
+                },
+                dragleave: function (e) {
+                    var $this = $(this);
+                    $this.removeClass('in');
+                }
+            });
+
             var myDropzone;
-            Dropzone.autoDiscover = false;
             $(".ddzone").each(function () {
+                var $this = $(this);
+                var $this_fileinput = $this.find("div.fileinput").get(0);
 
-                myDropzone = new Dropzone(this,
-                    {
+                myDropzone = new Dropzone($this.get(0),
+                {
+                    //$this.Dropzone({
+                    paramName: "files", // The name that will be used to transfer the file
+                    maxFilesize: 2, // MB
 
-                        //$(this).Dropzone({
-                        url: "/uploads/?domain=users&id=" + $(this).data("id"),
-                        acceptedFiles: '.pdf,.doc,.docx,.txt,.xls,.xlsx,.csv",',
-                        //addRemoveLinks: true,
-                        clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files
-                        success: function (file, response) {
-                            console.log("Successfully uploaded " + file);
-                        },
-                        error: function (file, response) {
-                            console.log("something goes wrong: " + response);
-                        }
+                    url: '@Url.Action("PostDoc", "Uploads")',
+                    params: {
+                        domain: $this.data("domain"),
+                        id: $this.data("id")
+                    },
+                    acceptedFiles: '.pdf,.doc,.docx,.txt,.xls,.xlsx,.csv',
+                    //addRemoveLinks: true,
+                    clickable: $this_fileinput, //".ddzone" $this, // ".fileinput-button" Define the element that should be used as click trigger to select files
+
+                    success: function (file, response) {
+                        console.log("Successfully uploaded " + file);
+                    },
+                    error: function (file, response) {
+                        console.log("something goes wrong: " + response);
+                    }
                     });
             });
+
+
 
         });
 

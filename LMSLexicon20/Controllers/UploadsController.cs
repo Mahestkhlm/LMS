@@ -21,10 +21,15 @@ namespace LMSLexicon20.Controllers
         }
 
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         //public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(IList<IFormFile> files,  string domain, string id)
+        //[ValidateAntiForgeryToken]
+        //[HttpPost]
+        public async Task<IActionResult>PostDoc(IList<IFormFile> files=null,  string domain="", string id="")
         {
             long size = files.Sum(f => f.Length);
             var filePath="";
@@ -48,8 +53,9 @@ namespace LMSLexicon20.Controllers
             }
 
 
-            return Ok(new { count = files.Count, size, filePath });
-            //return this.View();
+            //return Ok(new { count = files.Count, size, filePath });
+            return View();
+            //return RedirectToAction("Index");
         }
 
         private string EnsureCorrectFilename(string filename)
