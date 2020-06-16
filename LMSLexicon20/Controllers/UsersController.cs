@@ -178,10 +178,16 @@ namespace LMSLexicon20.Controllers
         public async Task<IActionResult> DeleteUserConfirmed(string id)
         {
             var model = await _context.Users.FindAsync(id);
-            var userName = model.UserName;
-            _context.Users.Remove(model);
-            await _context.SaveChangesAsync();
-            TempData["SuccessText"] = $"Användare {userName} har tagits bort";
+            if (User.Identity.Name == model.UserName)
+                throw new Exception("Du kan inte ta bort kontot du använder!");
+            else
+            {
+                var userName = model.UserName;
+                _context.Users.Remove(model);
+                await _context.SaveChangesAsync();
+                TempData["SuccessText"] = $"Användare {userName} har tagits bort";
+            }
+            
             return RedirectToAction(nameof(List), new { filterSearch = "" });
         }
         static string GeneratePassword()
@@ -206,7 +212,7 @@ namespace LMSLexicon20.Controllers
         }
 
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> List(string filterSearch)
+        public async Task<IActionResult> List(string filterSearch, string sortOrder)
         {
             var viewModel = await _mapper.ProjectTo<UserListViewModel>(_userManager.Users).ToListAsync();
             for (int i = 0; i < viewModel.Count; i++)
@@ -220,6 +226,24 @@ namespace LMSLexicon20.Controllers
             var filter = string.IsNullOrWhiteSpace(filterSearch) ?
                             viewModel : viewModel.Where(m => m.FullName.ToLower().Contains(filterSearch.ToLower()) ||
                                                                 m.Email.ToLower().Contains(filterSearch.ToLower()));
+
+            ViewData["OptionOne"] = sortOrder == "Role" ? "role_desc" : "Role";
+            ViewData["OptionTwo"] = sortOrder == "name_desc" ? "Name" : "name_desc";
+            ViewData["OptionThree"] = sortOrder == "Email" ? "email_desc" : "Email";
+            ViewData["OptionFour"] = sortOrder == "Course" ? "course_desc" : "Course";
+
+            filter = sortOrder switch
+            {
+                "Email" => filter.OrderBy(s => s.Email),
+                "email_desc" => filter.OrderByDescending(s => s.Email),
+                "Role" => filter.OrderBy(s => s.UserRole),
+                "role_desc" => filter.OrderByDescending(s => s.UserRole),
+                "Course" => filter.OrderBy(s => s.CourseName),
+                "course_desc" => filter.OrderByDescending(s => s.CourseName),
+                "name_desc" => filter.OrderByDescending(s => s.FullName),
+                _ => filter.OrderBy(s => s.FullName),
+            };
+
             return View(filter);
 
         }
