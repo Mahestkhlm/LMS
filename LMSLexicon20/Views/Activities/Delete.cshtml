@@ -1,63 +1,65 @@
 ﻿@model LMSLexicon20.Models.ViewModels.DeleteActivityViewModel
 
 @{
-    ViewData["Title"] = "Radera aktivitet";
+    ViewData["Title"] = "Ta Bort Aktivitet";
 }
 
-<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">RADERA AKTIVITET</h2>
-<h3>Vill du ta bort aktiviteten?</h3>
+<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">TA BORT AKTIVITET</h2>
+<h4 class="text-danger">Vill du ta bort aktiviteten?</h4>
 <div>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StartDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StartDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.EndDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.EndDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.HasDeadline)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.HasDeadline)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Module)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Module.Id)
-        </dd class>
-        <dt class = "col-sm-2">
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ActivityType)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ActivityType.Id)
-        </dd class>
+        </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Tillbaka till aktiviteter</a>  |
-        <a asp-action="Index" asp-controller=" Courses" >Tillbaka till Kurs Lista</a>  |
 
-    </form>
+        <form asp-action="Delete" class="form-group btn-group-sm">
+            <button type="submit" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Ta bort&nbsp;
+            </button>
+            <a href="javascript:history.go(-1)" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                <i class="fas fa-ban" aria-hidden="true"></i>
+                <span>Avbryt</span>
+            </a>
+        </form>
 </div>
