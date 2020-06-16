@@ -160,6 +160,8 @@ namespace LMSLexicon20.Controllers
             }
             return View(viewModel);
         }
+
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var model = await _context.Users.FindAsync(id);
@@ -171,6 +173,8 @@ namespace LMSLexicon20.Controllers
             // viewModel.Course = model.Course;
             return View(viewModel);
         }
+
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteUserConfirmed(string id)
         {
             var model = await _context.Users.FindAsync(id);
@@ -220,6 +224,7 @@ namespace LMSLexicon20.Controllers
 
         }
 
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)

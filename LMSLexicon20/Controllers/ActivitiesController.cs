@@ -25,6 +25,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Activities
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
             //var applicationDbContext = _context.Activities.Include(a => a.ActivityType).Include(a => a.Module);

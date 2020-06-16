@@ -29,6 +29,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Courses
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index(string filterSearch)
         {
             var viewModel = await mapper.ProjectTo<CourseIndexViewModel>(_context.Courses).ToListAsync();
@@ -122,7 +123,6 @@ namespace LMSLexicon20.Controllers
 
         // GET: Courses/Create
         [Authorize(Roles = "Teacher")]
-
         public IActionResult Create()
         {
             return View();
@@ -133,7 +133,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Create(CreateCourseViewModel viewModel)
         {
             if (viewModel.StartDate >= viewModel.EndDate)
@@ -229,7 +229,6 @@ namespace LMSLexicon20.Controllers
 
         // GET: Courses/Delete/5
         [Authorize(Roles = "Teacher")]
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
