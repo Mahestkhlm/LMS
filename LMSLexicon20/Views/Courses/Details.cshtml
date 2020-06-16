@@ -230,7 +230,18 @@
                     <div class="card-body">
 
                         <span>@Html.DisplayFor(modelItem => itemM.Description)</span>
-                        <br /><br />
+
+
+                        @if (User.IsInRole("Teacher"))
+                        {
+                            <div style="display: flex; justify-content: flex-end; padding-top: 10px;">
+                                <a href="@Url.Action("Create", "Activities", new { id = itemM.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                                    <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
+                                    <span><strong>Lägg till aktivitet&nbsp;<i class="fas fa-tasks"></i></strong></span>
+                                </a>
+                            </div>
+                        }
+                        <br />
                         @foreach (var itemActiv in itemM.ActivityDetailVM)
                         {
                             <div id="@String.Format($"accordion{itemM.Id}")">
@@ -240,12 +251,12 @@
                                             <div class="container">
                                                 <div class="row">
 
-                                                        <div class="col-4 ddzone" data-domain="activ" data-id="@itemActiv.Id">
-                                                            <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemActiv.Id}")" aria-expanded="@itemActiv.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")">
-                                                                <i class="fas fa-tasks"></i>
-                                                                <span class="course-activity-name">@Html.DisplayFor(modelItem => itemActiv.Name)</span>
-                                                            </button>
-                                                        </div>
+                                                    <div class="col-4 ddzone" data-domain="activ" data-id="@itemActiv.Id">
+                                                        <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemActiv.Id}")" aria-expanded="@itemActiv.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")">
+                                                            <i class="fas fa-tasks"></i>
+                                                            <span class="course-activity-name">@Html.DisplayFor(modelItem => itemActiv.Name)</span>
+                                                        </button>
+                                                    </div>
 
                                                     <div style="padding-top:10px" class="col-4">
                                                         <h6 style="font-weight:400">
@@ -282,27 +293,27 @@
                                                                         <i class="fas fa-edit" aria-hidden="true"></i>
                                                                         <span>Ändra</span>
                                                                     </a>
-                                                                    <div style="display: flex; justify-content: flex-end; padding-top: 10px;">
-                                                                        <a href="@Url.Action("Create", "Activities", new { id = itemM.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
-                                                                            <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
-                                                                            <span><strong>Lägg till aktivitet&nbsp;<i class="fas fa-tasks"></i></strong></span>
-                                                                        </a>
-                                                                    </div>
+                                                                    @*<div style="display: flex; justify-content: flex-end; padding-top: 10px;">
+                                                        <a href="@Url.Action("Create", "Activities", new { id = itemM.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                                                            <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
+                                                            <span><strong>Lägg till aktivitet&nbsp;<i class="fas fa-tasks"></i></strong></span>
+                                                        </a>
+                                                    </div>*@
                                                                     @*Details*@
                                                                 </div>
                                                             </div>
                                                         }
                                                     </div>
 
-                                                        @{ cls = itemActiv.Expanded ? "fa-caret-down" : "fa-caret-left"; }
-                                                        <div class="col-1">
-                                                            <button style="padding:0" class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemActiv.Id}")" aria-expanded="@itemActiv.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")">
-                                                                <span class="fa-stack fa-sm">
-                                                                    <i class="fas fa-circle fa-stack-2x"></i>
-                                                                    <i class="fas  @cls fa-stack-1x fa-inverse"></i>
-                                                                </span>
-                                                            </button>
-                                                        </div>
+                                                    @{ cls = itemActiv.Expanded ? "fa-caret-down" : "fa-caret-left"; }
+                                                    <div class="col-1">
+                                                        <button style="padding:0" class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemActiv.Id}")" aria-expanded="@itemActiv.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")">
+                                                            <span class="fa-stack fa-sm">
+                                                                <i class="fas fa-circle fa-stack-2x"></i>
+                                                                <i class="fas  @cls fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </button>
+                                                    </div>
 
                                                 </div> @*row*@
                                             </div> @*container*@
@@ -317,28 +328,19 @@
                                             <br /><br />
                                             <span style="font-weight:bold">@Html.DisplayFor(modelItem => itemActiv.ActivityTypeWM.Name)</span>
 
-                                                @if (itemActiv.ActivityTypeWM.RequireDocument)
-                                                {
-                                                    <button type="button" data-domain="user" data-id="@itemActiv.Id" class="btn btn-sm btn-outline-warning @(User.IsInRole("Teacher")?"":"ddzone")">
-                                                        <span class="fas fa-file-archive"></span>
-                                                        Dokument <span class="badge badge-light text-small " style="vertical-align: top">0</span>
-                                                    </button>
-                                                }
-                                                <br />
+                                            @if (itemActiv.ActivityTypeWM.RequireDocument)
+                                            {
+                                                <button type="button" data-domain="user" data-id="@itemActiv.Id" class="btn btn-sm btn-outline-warning @(User.IsInRole("Teacher")?"":"ddzone")">
+                                                    <span class="fas fa-file-archive"></span>
+                                                    Dokument <span class="badge badge-light text-small " style="vertical-align: top">0</span>
+                                                </button>
+                                            }
+                                            <br />
 
                                         </div>
                                     </div>
 
                                 </div> @*card*@
-                            </div>
-                        }
-                        @if (User.IsInRole("Teacher"))
-                        {
-                            <div style="display: flex; justify-content: flex-end; padding-top: 10px;">
-                                <a href="@Url.Action("Create", "Activities", new { id = itemM.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
-                                    <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
-                                    <span><strong>Lägg till aktivitet&nbsp;<i class="fas fa-tasks"></i></strong></span>
-                                </a>
                             </div>
                         }
                     </div>
