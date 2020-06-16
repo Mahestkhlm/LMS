@@ -44,7 +44,12 @@ namespace LMSLexicon20.Data
             CreateMap<Module, IndexModuleViewModel>();
 
 
-            CreateMap<CreateActivityViewModel,Activity>();
+            CreateMap<CreateActivityViewModel, Activity>();
+            CreateMap<Activity, ActivityListViewModel>();
+            CreateMap<Activity, DeleteActivityViewModel>();
+            CreateMap<Activity, ActivityEditViewModel>().ReverseMap();
+
+
 
 
         }
