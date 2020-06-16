@@ -26,6 +26,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Modules
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
             var modules = await context.Modules.Include(m => m.Course).ToListAsync();
@@ -50,6 +51,7 @@ namespace LMSLexicon20.Controllers
             return View(viewModel);
         }
         //Get
+        [Authorize(Roles = "Teacher")]
         public IActionResult CreateModule(int id)
         {
             TempData["courseId"] = id;
@@ -96,6 +98,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Modules/Edit/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int id)
         {
             //ToDo: nullcheck?
@@ -111,6 +114,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(EditModuleViewModel viewModel, int id)
         {
 
@@ -153,6 +157,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Modules/Delete/5
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -176,6 +181,7 @@ namespace LMSLexicon20.Controllers
         // POST: Modules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var module = await context.Modules.FindAsync(id);
