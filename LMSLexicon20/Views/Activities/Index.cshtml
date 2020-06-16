@@ -66,11 +66,11 @@
                         @Html.DisplayFor(modelItem => item.ActivityType.Name)
                     </td>
                     <td>
-                        <div class="row-fluid">
-                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Redigera</a>
+                        <div class="container pb-3">
+                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Ändra</a>
                             <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Detaljer</a>
                             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Radera</a>
-                          </div>
+                        </div>
                     </td>
                 </tr>
             }
