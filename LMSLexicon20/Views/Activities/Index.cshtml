@@ -9,7 +9,7 @@
         <a class="btn btn-info" asp-action="Create">SKAPA NY AKTIVITET</a>
     </p>*@
 
-<div id="mainbackgroundcolor" class="rounded-lg">
+
     <div class="text-success blink_me">
         @TempData["SuccessText"]
     </div>
@@ -17,8 +17,8 @@
         @TempData["FailText"]
     </div>
     <div class="bg-dark card">
-        <table class="table table-responsive-md table-light table-striped" id="mainbackgroundcolor">
-            <thead class="table-light">
+        <table class="table table-responsive-md table-light table-striped">
+            <thead class="thead-dark">
                 <tr class="d-flex">
                     <th class="col-md-2">
                         @Html.DisplayNameFor(model => model.Name)
@@ -28,8 +28,7 @@
                     </th>
                     <th class="col-md-2">
                         @Html.DisplayNameFor(model => model.EndDate)
-                    </th>
-
+                    </th>  
                     <th class="col-md-2">
                         @Html.DisplayNameFor(model => model.HasDeadline)
                     </th>
@@ -47,46 +46,38 @@
                 @foreach (var item in Model)
                 {
 
-                    <tr class="d-flex">
-                        <td class="col-md-2">
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td class="col-md-2">
-                            @Html.DisplayFor(modelItem => item.StartDate)
-                        </td>
-                        <td class="col-md-2">
-                            @Html.DisplayFor(modelItem => item.EndDate)
-                        </td>
-
-                        <td class="col-md-2">
-                            @Html.DisplayFor(modelItem => item.HasDeadline)
-                        </td>
-                        <td class="col-md-2">
-                            @Html.DisplayFor(modelItem => item.Module.Name)
-                        </td>
-                        <td class="col-md-2">
-                            @Html.DisplayFor(modelItem => item.ActivityType.Name)
-                        </td>
-
-                        @* <div class="container pb-3">
-                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Ändra</a>
-                            <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Detaljer</a>
-                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Radera</a>
-                            </div>*@
-
-                        <td class="col-md-2">
-                            <div class="row btn-group btn-group-sm">
-                                <a asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger a-btn-slide-text">
-                                    <i class="fas fa-times" aria-hidden="true"></i>
-                                    <span>Ta bort</span>
-                                </a>
-                                <a asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
-                                    <i class="fas fa-edit" aria-hidden="true"></i>
-                                    <span>Ändra</span>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+                  <tr class="d-flex">
+                    <td class="col-md-2">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td class="col-md-2">
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                    <td class="col-md-2">
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    </td>
+                    <td class="col-md-2">
+                        @Html.DisplayFor(modelItem => item.HasDeadline)
+                    </td>
+                    <td class="col-md-2">
+                        @Html.DisplayFor(modelItem => item.Module.Name)
+                    </td>
+                    <td class="col-md-2">
+                        @Html.DisplayFor(modelItem => item.ActivityType.Name)
+                    </td>
+                    <td class="col-md-2">
+                        <div class="row btn-group btn-group-sm">
+                            <a asp-controller="Activities" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                                <span>Ta bort</span>
+                            </a>
+                            <a asp-controller="Activities" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                                <span>Ändra</span>
+                            </a>
+                        </div>
+                    </td>
+            </tr>
                 }
             </tbody>
         </table>
