@@ -17,59 +17,82 @@
     @* onödig check? *@
     @if (User.IsInRole("Teacher"))
     {
-        <div class="container pb-1">
-            <a asp-action="CreateUser">Lägg till en lärare</a>
-        </div>
+    <div class="container pb-1">
+        @*<a asp-action="CreateUser">Lägg till en lärare</a>*@
+        <a asp-action="CreateUser" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+            <i class="fas fa-plus-circle" aria-hidden="true"></i>
+            Lägg till en Lärare&nbsp;<i class="fas fa-university"></i>
+        </a>
+    </div>
     }
 </p>
 
-    <div class="bg-dark card">
-        <table class="table table-borderless table-light table-striped">
-            <thead class="thead-dark">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.UserRole)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionOne"]" class="text-info">&#8645;</a>
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.FullName)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionTwo"]" class="text-info">&#8645;</a>
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Email)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionThree"]" class="text-info">&#8645;</a>
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.CourseName)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionFour"]" class="text-info">&#8645;</a>
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserRole)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FullName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td>
-                            <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">
-                                @Html.DisplayFor(modelItem => item.CourseName)
-                            </a>
-                        </td>
-                        <td>
-                            <div class="container pb-3">
-                                <a class="btn btn-secondary"asp-action="Edit" asp-route-id="@item.Id">Ändra</a> 
-                                <a class="btn btn-primary"asp-action="Details" asp-route-id="@item.Id">Detaljer</a> 
-                                <a class="btn btn-danger"asp-action="DeleteUser" asp-route-id="@item.Id">Ta bort</a>
-                             </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+<div class="bg-dark card">
+    <table class="table table-responsive-md table-light table-striped">
+        <thead>
+            <tr class="d-flex">
+                <th class="col-md-2">
+                    @Html.DisplayNameFor(model => model.UserRole)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionOne"]" class="text-info">&#8645;</a>
+                </th>
+                <th class="col-md-2">
+                    @Html.DisplayNameFor(model => model.FullName)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionTwo"]" class="text-info">&#8645;</a>
+                </th>
+                <th class="col-md-3">
+                    @Html.DisplayNameFor(model => model.Email)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionThree"]" class="text-info">&#8645;</a>
+                </th>
+                <th class="col-md-2">
+                    @Html.DisplayNameFor(model => model.CourseName)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionFour"]" class="text-info">&#8645;</a>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+             <tr class="d-flex">
+                <td class="col-md-2">
+                    @Html.DisplayFor(modelItem => item.UserRole)
+                </td>
+                <td  class="col-md-2">
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td  class="col-md-3">
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td  class="col-md-2">
+                    <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">
+                        @Html.DisplayFor(modelItem => item.CourseName)
+                    </a>
+                </td>
+                <td>
+                    @*<div class="container pb-3">
+                <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Ändra</a>
+                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Detaljer</a>
+                <a class="btn btn-danger" asp-action="DeleteUser" asp-route-id="@item.Id">Ta bort</a>
+            </div>*@
+
+
+
+                <td class="col-md-3">
+                    <div class="row btn-group btn-group-sm">
+                        <a asp-controller="Users" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                            <span>Ändra</span>
+                        </a>
+                        <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                            <span>Detäljer</span>
+                        </a>
+                        <a asp-controller="Users" asp-action="DeleteUser" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <span>Ta bort</span>
+                        </a>
+
+                    </div>
+
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

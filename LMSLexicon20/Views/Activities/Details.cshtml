@@ -64,7 +64,11 @@
             <i class="fas fa-edit" aria-hidden="true"></i>
             <span>Ändra</span>
         </a>
-       @* <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id">Redigera</a><span> | </span>*@
+        <a asp-controller="Activities" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+            <i class="fas fa-edit" aria-hidden="true"></i>
+            <span>Ta bort</span>
+        </a>
+        @* <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id">Redigera</a><span> | </span>*@
     }
     <a asp-action="Index">Tillbaka till aktiviteter</a>
 </div>
