@@ -48,8 +48,18 @@
 </div>
 <div>
     @if (User.IsInRole("Teacher"))
-    {
-        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id">Redigera</a> <br />
+    { 
+        <div class="btn-group btn-group-xs">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-secondary">
+                <i class="fas fa-edit"></i>
+                <span>Ändra</span>
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">
+                <i class="fas fa-times"></i>
+                <span>Ta bort</span>
+            </a>
+        </div><br />
+    @*<a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id">Redigera</a>*@ <br />
     }
     <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id">Tillbaka till kurs</a>
 </div>

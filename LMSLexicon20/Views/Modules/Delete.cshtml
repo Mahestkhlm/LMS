@@ -62,7 +62,15 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input class="btn btn-danger" type="submit" value="Ta bort" />
-        <a class="btn btn-secondary" asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id">Avbryt</a>
+        <div class="btn-group btn-group-xs">
+            <button type="submit" class="btn btn-sm btn-danger">
+                <i class="fas fa-times"></i>
+                <span>Ta bort</span>
+            </button>
+            <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id" class="btn btn-sm btn-secondary">
+                <i class="fas fa-ban"></i>
+                <span>Avbryt</span>
+            </a>
+        </div>
     </form>
 </div>
