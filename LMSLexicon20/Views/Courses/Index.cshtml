@@ -15,7 +15,7 @@
                 <input type="submit" value="Lägg till kurs" class="btn btn-primary" />
             </a>
         </div>*@
-    <form method="get" asp-controller="Courses" asp-action="Index" class="text-light rounded-lg my-3">
+    <form method="get" asp-controller="Courses" asp-action="Index" class="text-light border rounded-lg my-3">
         <div class="input-group">
             <input type="text" class="form-control" name="filterSearch" placeholder="Sök på namn..." />
             <div class="input-group-append">
@@ -41,9 +41,9 @@
                         @Html.DisplayNameFor(model => model.Description)
                     </th>
                     <th class="col-md-2">
-                        <a asp-action="Create" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                        <a asp-action="Create" class="btn btn-sm btn-primary a-btn-slide-text">
                             <i class="fas fa-plus-circle" aria-hidden="true"></i>
-                            Lägg till&nbsp;<i class="fas fa-university"></i>
+                            Lägg till kurs&nbsp;<i class="fas fa-university"></i>
                         </a>
                     </th>
                 </tr>
