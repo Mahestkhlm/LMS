@@ -20,7 +20,7 @@
         <table class="table table-responsive-md table-light table-striped">
             <thead class="thead-dark">
                 <tr class="d-flex">
-                    <th class="col-md-2">
+                    <th class="col-md-1">
                         @Html.DisplayNameFor(model => model.Name)
                     </th>
                     <th class="col-md-2">
@@ -29,7 +29,7 @@
                     <th class="col-md-2">
                         @Html.DisplayNameFor(model => model.EndDate)
                     </th>  
-                    <th class="col-md-2">
+                    <th class="col-md-1">
                         @Html.DisplayNameFor(model => model.HasDeadline)
                     </th>
                     <th class="col-md-2">
@@ -38,7 +38,9 @@
                     <th class="col-md-2">
                         @Html.DisplayNameFor(model => model.ActivityType.Name)
                     </th>
-                    <th></th>
+                    <th class="col-md-2">
+
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -47,7 +49,7 @@
                 {
 
                   <tr class="d-flex">
-                    <td class="col-md-2">
+                    <td class="col-md-1">
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td class="col-md-2">
@@ -56,7 +58,7 @@
                     <td class="col-md-2">
                         @Html.DisplayFor(modelItem => item.EndDate)
                     </td>
-                    <td class="col-md-2">
+                    <td class="col-md-1">
                         @Html.DisplayFor(modelItem => item.HasDeadline)
                     </td>
                     <td class="col-md-2">
@@ -81,5 +83,4 @@
                 }
             </tbody>
         </table>
-        <a asp-controller="Courses" asp-action="Index">Tillbaka till kurs</a>
     </div>
