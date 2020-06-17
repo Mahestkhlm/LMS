@@ -21,9 +21,13 @@ namespace LMSLexicon20.Models.ViewModels
         [Display(Name = "Sluttid")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime EndDate { get; set; }
+        [Display(Name = "Aktivitetbeskrivning")]
         public String Description { get; set; }
         public bool HasDeadline { get; set; }
+        [Display(Name = "Modul")]
         public int ModuleId { get; set; }
+
+        [Display(Name = "Aktivitet")]
         public int ActivityTypeId { get; set; }
         
         [Display(Name = "Module Namn")]
