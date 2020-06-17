@@ -60,7 +60,7 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public IActionResult Create(int? id)
         {
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Name");
+            //ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Name");
             //ViewData["ModuleId"] = new SelectList(_context.Set<Module>(),"Id", "Name", ModuleId);
             return View();
         }
@@ -86,7 +86,7 @@ namespace LMSLexicon20.Controllers
 
                 _context.Add(model);
                 await _context.SaveChangesAsync();
-                TempData["SuccessText"] = $":Aktivitet- {model.Name} - är skapad!";
+                TempData["SuccessText"] = $"Aktivitet- {model.Name} - är skapad!";
 
                 if (model.ModuleId == default) return RedirectToAction(nameof(Index));
                 var CourseId = _context.Modules.Where(m => m.Id == model.ModuleId).Select(m => m.CourseId).FirstOrDefault();

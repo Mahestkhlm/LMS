@@ -74,6 +74,7 @@ namespace LMSLexicon20
             services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<ITeacherChoiceDropdown, TeacherChoiceDropdown>();
+            services.AddScoped<IActivityTypeChoiceDropdown, ActivityTypeChoiceDropdown>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
