@@ -81,8 +81,9 @@ namespace LMSLexicon20.Controllers
                         Teacher = courseTeacher
                         ,
                         ModuleDetailVM = (ICollection<ModuleDetailVM>)c.Modules
-                                   .Select(m => new ModuleDetailVM
-                                   {
+                                    .OrderBy(c => c.StartDate)
+                                    .Select(m => new ModuleDetailVM
+                                    {
                                        Id = m.Id,
                                        Name = m.Name,
                                        StartDate = m.StartDate,
