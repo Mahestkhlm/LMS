@@ -52,9 +52,17 @@
 <div>
     @if (User.IsInRole("Teacher"))
     {
-  <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id" >Ändra</a><span> </span>
-        <a class="btn btn-danger" asp-action="DeleteUser" asp-route-id="@Model.Id">Ta bort</a><br />
+        
+        <a asp-controller="Users" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+            <i class="fas fa-edit" aria-hidden="true"></i>
+            <span>Ändra</span>
+        </a>
+       
+        <a asp-controller="Users" asp-action="DeleteUser" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+            <i class="fas fa-edit" aria-hidden="true"></i>
+            <span>Ta bort</span>
+        </a>
 
     }
-    <a asp-action="List">Tillbaka till listan</a>
+    <a asp-action="List">Tillbaka</a>
 </div>

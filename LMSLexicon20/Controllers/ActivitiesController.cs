@@ -92,9 +92,7 @@ namespace LMSLexicon20.Controllers
                 var CourseId = _context.Modules.Where(m => m.Id == model.ModuleId).Select(m => m.CourseId).FirstOrDefault();
                 return RedirectToAction(nameof(Details), "Courses", new { id = CourseId });
             }
-            
             return View(activity);
-            
         }
 
         // GET: Activities/Edit/5
