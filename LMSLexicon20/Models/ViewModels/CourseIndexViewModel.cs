@@ -15,12 +15,12 @@ namespace LMSLexicon20.Models.ViewModels
 
         [Display(Name = "Startdatum")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime StartDate { get; set; }
 
         [Display(Name = "Slutdatum")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime EndDate { get; set; }
 
         [Display(Name = "Kursbeskrivning")]

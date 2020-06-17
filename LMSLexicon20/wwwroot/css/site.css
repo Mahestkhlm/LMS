@@ -88,7 +88,7 @@ body {
 
 /* Scaling button styles
 -------------------------------------------------- */
-a.btn.a-btn-slide-text:hover {
+.a-btn-slide-text:hover {
     -webkit-transform: scale(1.1);
     -moz-transform: scale(1.1);
     -o-transform: scale(1.1);
@@ -96,7 +96,7 @@ a.btn.a-btn-slide-text:hover {
     color: white;
 }
 
-a.btn.a-btn-slide-text {
+.a-btn-slide-text {
     -webkit-transform: scale(0.8);
     -moz-transform: scale(0.8);
     -o-transform: scale(0.8);
