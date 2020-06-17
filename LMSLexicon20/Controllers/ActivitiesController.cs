@@ -159,7 +159,9 @@ namespace LMSLexicon20.Controllers
                     }
                 }
                 TempData["SuccessText"] = $"Aktivitet: {activity.Name} - är uppdaterad!";
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                var CourseId = _context.Modules.Where(m => m.Id == model.ModuleId).Select(m => m.CourseId).FirstOrDefault();
+                return RedirectToAction(nameof(Details), "Courses", new { id = CourseId});
             }
 
             TempData["FailText"] = $"Något gick fel! Aktivitet: {activity.Name} - är inte uppdaterad!";
