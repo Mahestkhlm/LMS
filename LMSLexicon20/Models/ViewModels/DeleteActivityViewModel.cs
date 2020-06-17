@@ -25,11 +25,12 @@ namespace LMSLexicon20.Models.ViewModels
         [Display(Name = "Aktivitetbeskrivning")]
         public string Description { get; set; }
 
+        [Display(Name = "Deadline")]
         public bool HasDeadline { get; set; }
 
-        [Display(Name = "Modul")]
+        [Display(Name = "Tillhör modul")]
         public Module Module { get; set; }
-        [Display(Name = "Aktivitet")]
+        [Display(Name = "Aktivitetstyp")]
         public ActivityType ActivityType { get; set; }
     }
 }
