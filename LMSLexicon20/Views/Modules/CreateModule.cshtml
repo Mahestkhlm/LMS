@@ -1,7 +1,9 @@
 ﻿@model LMSLexicon20.Models.ViewModels.CreateModuleViewModel
 
-<h2>Skapa ny modul</h2>
-<hr />
+@{
+    ViewData["Title"] = "Skapa Modul";
+}
+    <h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">SKAPA NY MODUL</h2><hr />
 <div class="row">
     <div class="col-md-6 p-3">
         <form asp-action="CreateModule">
@@ -16,7 +18,7 @@
                 <div class="form-inline">
                     <input asp-for="StartDate" class="form-control" />
                     <input asp-for="EndDate" class="form-control" />
-                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                    <span asp-validation-for="StartDate" class="text-danger"></span><br />
                     <span asp-validation-for="EndDate" class="text-danger"></span>
                     @*<label asp-for="EndDate" class="control-label"></label>*@
                 </div>
@@ -27,14 +29,19 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Lägg till" class="btn btn-primary" />
+                <button type="submit" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Lägg till </span>
+                    <i class="fas fa-layer-group"></i>
+                </button>
+
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Courses" asp-action="Details" asp-route-id='@TempData["courseId"]'>Tillbaka till kurs</a>
 </div>
 
 @section Scripts {

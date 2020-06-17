@@ -1,48 +1,65 @@
-﻿@model LMSLexicon20.Models.Module
+﻿@model LMSLexicon20.Models.ViewModels.DetailModuleViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Modulöversikt";
 }
 
-<h1>Details</h1>
-
+    <h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">MODULÖVERSIKT</h2>
 <div>
-    <h4>Module</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Course)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Course.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Course.Name)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        @*<dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Course)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Course.Id)
+            </dd>*@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (User.IsInRole("Teacher"))
+    { 
+        <div class="btn-group btn-group-xs">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-secondary">
+                <i class="fas fa-edit"></i>
+                <span>Ändra</span>
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">
+                <i class="fas fa-times"></i>
+                <span>Ta bort</span>
+            </a>
+        </div><br />
+    @*<a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id">Redigera</a>*@ <br />
+    }
+    <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.Course.Id">Tillbaka till kurs</a>
 </div>

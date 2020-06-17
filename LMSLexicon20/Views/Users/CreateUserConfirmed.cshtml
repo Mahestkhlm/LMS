@@ -1,12 +1,18 @@
 ﻿@model LMSLexicon20.Models.ViewModels.CreateUserViewModel
 
-<div class="py-4">
-    <h3>
-        Användare skapad!
-        <span class="text-muted d-block py-3">@TempData["userName"]</span>
-    </h3>
-    <hr />
-    <p>Följande lösenord har givits till kontot:</p>
-    <h4 class="font-weight-bold">@TempData["pw"]</h4>
-    <p class="text-danger">Be användaren ändra lösenordet vid första inloggningen.</p>
-</div>
+    <div class="py-4">
+        <h3 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">
+            Användare skapad!
+            <span class="text-muted d-block py-3">@TempData["userName"]</span>
+        </h3>
+        <hr />
+        <p>Följande lösenord har givits till kontot:</p>
+        <h4 class="font-weight-bold">@TempData["pw"]</h4>
+        <p class="text-danger">Be användaren ändra lösenordet vid första inloggningen.</p>
+        
+            <a asp-action="List" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                Lägg till AnvänderListan&nbsp;<i class="fas fa-university"></i>
+            </a>
+         
+    </div>

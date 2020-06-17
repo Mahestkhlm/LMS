@@ -8,8 +8,20 @@
                 <td><a asp-action="Details" asp-route-id="@student.Id">@student.Email</a></td>
                 <td>@student.FullName</td>
                 <td>
-                    @Html.ActionLink("Ta bort", "Delete", "Users", new { id = student.Id }, new { @class = "btn btn-danger" })
-                    @Html.ActionLink("Ändra", "Edit", "Users", new { id = student.Id })
+                    <div  style="float: right" class="btn-group btn-group-xs" role="group">
+                        @if (User.IsInRole("Teacher"))
+                        {
+
+                            <a href="@Url.Action("DeleteUser", "Users", new { id = student.Id })" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                                <span class="fas fa-times" aria-hidden="true"></span>
+                                <span>Ta bort</span>
+                            </a>
+                            <a href="@Url.Action("Edit", "Users", new { id = student.Id })" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                                <span class="fas fa-edit" aria-hidden="true"></span>
+                                <span>Ändra</span>
+                            </a>
+                        }
+                    </div>
                 </td>
             </tr>
         }

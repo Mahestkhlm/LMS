@@ -1,14 +1,106 @@
 ﻿@model LMSLexicon20.ViewModels.CourseDetailVM
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.css" integrity="sha256-3SE+Qz2RvIa5gOHSNS50MUTTzRAOYREA5+DOmMNFPYk=" crossorigin="anonymous" />*@
 
+<style>
+    .course-accordion {
+        /*max-width: 500px;*/
+        margin: 25px auto;
+        box-shadow: 0 0 1px rgba(0,0,0,0.1);
+    }
+
+        .course-accordion .card-header {
+            border-bottom-color: #EDEFF0;
+            /*background: transparent;*/
+        }
+
+        .course-accordion .fa-stack {
+            font-size: 18px;
+        }
+
+    button > span.fa-stack.fa-sm {
+        opacity: 0.4;
+    }
+
+    .course-module-name, .course-activity-name {
+        font-weight: 400;
+    }
+
+    .course-activity-deadline-date {
+        color: red;
+    }
+    /*----------------------------------*/
+
+    .warning_to_early, .warning_to_late {
+        color: darkgray;
+        text-decoration: underline;
+        text-decoration-color: red;
+    }
+
+    .warning_start_overlap, .warning_end_overlap {
+        color: darkgray;
+        text-decoration: underline;
+        text-decoration-color: gold;
+    }
+
+    .ddzone.in {
+        background: palegreen;
+        border: 2px solid #65c465;
+        opacity: 0.5;
+    }
+
+    .ddzone.hover {
+        background: lawngreen;
+    }
+
+    .ddzone.fade {
+        transition: all 0.3s ease-out;
+        opacity: 1;
+    }
+
+    .ddzone {
+        min-height: 25px;
+        border: 0px solid rgba(80,80, 80, 0.3);
+        background: rgba(255,255, 255, 0.1);
+        padding: 0;
+    }
+</style>
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "KURSÖVERSIKT";
+    var clsDD = User.IsInRole("Teacher") ? "ddzone" : "";
 }
 
-<h1>Details</h1>
+<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">KURSÖVERSIKT</h2>
 
 <div>
-    <h4>Course</h4>
+    <div class="@clsDD" data-domain="course" data-id="@Model.Id">
+        <div class="row" style="margin-left:0; display: flex">
+            <div class="col">
+                <i class="fas fa-university"></i>Kurs
+            </div>
+            @if (User.IsInRole("Teacher"))
+            {
+                <div class="col" style="display: flex; justify-content: flex-end">
+                    <div class="fileinput">
+                        <button type="button" class="btn btn-sm btn-outline-warning">
+                            <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
+                            <span>Lägg till dokument&nbsp;<i class="fas fa-file"></i></span>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
     <hr />
+    @if (User.IsInRole("Teacher"))
+    {
+        <div style="float:right">
+            <a href="@Url.Action( "Edit", "Courses", new { id=Model.Id })" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                <i class="fas fa-edit" aria-hidden="true"></i>
+                <span>Ändra</span>
+            </a>
+        </div>
+    }
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -34,124 +126,334 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Teacher)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Teacher != null)
+            {
+                if (User.IsInRole("Teacher"))
+                {
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+                }
+                else
+                {
+                    <span>@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</span>
+                }
+            }
+            else
+            {
+                <span>Ingen lärare.</span>
+            }
+        </dd>
     </dl>
 </div>
 
-<div id="accordion">
-    @foreach (var item in Model.ModuleDetailVM)
-    {
-        <div class="card">
-            <div class="card-header" id="@String.Format($"heading{item.Id}")">
-                <h5 class="mb-0">
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")" aria-expanded="true" aria-controls="@String.Format($"collapse{item.Id}")">
-                            <span>@Html.DisplayFor(modelItem => item.Name)</span>
-                        </button>
+@if (User.IsInRole("Teacher") && Model != null)
+{
+    <div style="display: flex; justify-content: flex-end">
+        <a href="@Url.Action("CreateModule", "Modules", new { id = Model.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+            <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
+            <span>Lägg till modul&nbsp;<i class="fas fa-layer-group"></i></span>
+        </a>
+    </div>
+}
 
-                        <div style="padding-top:10px" class="">
-                            <h6 style="font-weight:400">
-                                <span>@Html.DisplayFor(modelItem => item.StartDate)</span>
-                                -
-                                <span>@Html.DisplayFor(modelItem => item.EndDate)</span>
-                            </h6>
-                        </div>
-                        <div class="">
-                            @if (true || User.IsInRole("Teacher"))
+@if (Model != null)
+{
+    <div id="accordion" class="course-accordion">
+        @foreach (var itemM in Model.ModuleDetailVM)
+        {
+            <div class="card">
+                <div class="card-header card-header-module" id="@String.Format($"heading{itemM.Id}")">
+                    <div class="mb-0">
+
+                        <div class="container">
+                            <div class="row">
+
+                                <div class="col-5 @clsDD" data-domain="module" data-id="@itemM.Id">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}")" aria-expanded="@itemM.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}")">
+                                        <i class="fas fa-layer-group"></i>
+                                        <span class="course-module-name">@Html.DisplayFor(modelItem => itemM.Name)</span>
+                                    </button>
+                                </div>
+
+                                <div style="padding-top:10px" class="col-3">
+                                    <h6 style="font-weight:400">
+                                        @{var cls = ""; var tt = "";}
+                                        @if (User.IsInRole("Teacher"))
+                                        {
+                                            cls = itemM.StartDateOverlap ? "warning_start_overlap" : "";
+                                            tt = itemM.StartDateOverlap ? "Modulen startdatum överlappar en annan modul" : "";
+                                            cls = itemM.StartDateToEarly ? "warning_to_early" : itemM.StartDateToLate ? "warning_to_late" : cls;
+                                            tt = itemM.StartDateToEarly ? "Modulens startdatum ligger innan kursens startdatum" : itemM.StartDateToLate ? "Modulens startdatum ligger efter kursens slutdatumdatum" : tt;
+                                        }
+                                        <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemM.StartDate)</span>
+                                        <span>&nbsp;-&nbsp;</span>
+                                        @if (User.IsInRole("Teacher"))
+                                        {
+                                            cls = itemM.EndDateOverlap ? "warning_end_overlap" : "";
+                                            tt = itemM.EndDateOverlap ? "Modulen slutdatum överlappar en annan modul" : "";
+                                            cls = itemM.EndDateToEarly ? "warning_to_early" : itemM.EndDateToLate ? "warning_to_late" : cls;
+                                            tt = itemM.EndDateToEarly ? "Modulens slutdatum ligger innan kursens startdatum" : itemM.EndDateToLate ? "Modulens slutdatum ligger efter kursens slutdatumdatum" : tt;
+                                        }
+                                        <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemM.EndDate)</span>
+                                    </h6>
+                                </div>
+
+                                <div class="col-3">
+                                    @if (User.IsInRole("Teacher"))
+                                    {
+
+                                        <div style="font-size:small;font-weight:400">
+                                            <div style="float: right" class="btn-group btn-group-xs" role="group">
+                                                <a href="@Url.Action("Delete", "Modules", new { id = itemM.Id })" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                                                    <span class="fas fa-times" aria-hidden="true"></span>
+                                                    <span>Ta bort</span>
+                                                </a>
+                                                <a href="@Url.Action("Edit", "Modules", new { id = itemM.Id })" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                                    <span>Ändra</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                @{ cls = itemM.Expanded ? "fa-caret-down" : "fa-caret-left"; }
+                                <div class="col-1">
+                                    <button style="padding:0" class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}")" aria-expanded="@itemM.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}")">
+                                        <span class="fa-stack fa-sm">
+                                            <i class="fas fa-circle fa-stack-2x"></i>
+                                            <i class="fas @cls fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div> @*row*@
+                        </div> @*container*@
+                    </div>
+                </div> @*card-header*@
+
+                @{ cls = itemM.Expanded ? " show" : ""; }
+                <div id="@String.Format($"collapse{itemM.Id}")" class="collapse @cls" aria-labelledby="@String.Format($"heading{itemM.Id}")" data-parent="#accordion">
+                    <div class="card-body">
+
+                        <span>@Html.DisplayFor(modelItem => itemM.Description)</span>
+
+                        <div class="row" style="display: flex; justify-content: flex-end; padding-right:20px">
+                            @if (User.IsInRole("Teacher"))
                             {
-                                <div style="display: flex; justify-content: flex-end">
-                                    <div style="font-size:small;font-weight:400">
-                                        <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
-                                        <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
-                                        <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
-                                    </div>
+                                <div class="fileinput" style="display: flex; justify-content: flex-end; padding-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-outline-warning">
+                                        <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
+                                        <span>Lägg till dokument&nbsp;<i class="fas fa-file"></i></span>
+                                    </button>
+                                </div>
+                            }
+                            &nbsp;
+                            @if (User.IsInRole("Teacher"))
+                            {
+                                <div style="display: flex; justify-content: flex-end; padding-top: 10px;">
+                                    <a href="@Url.Action("Create", "Activities", new { id = itemM.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                                        <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
+                                        <span>Lägg till aktivitet&nbsp;<i class="fas fa-tasks"></i></span>
+                                    </a>
                                 </div>
                             }
                         </div>
-                    </div>
-                </h5>
-            </div>
-
-
-            <div id="@String.Format($"collapse{item.Id}")" class="collapse show" aria-labelledby="@String.Format($"heading{item.Id}")" data-parent="#accordion">
-                <div class="card-body">
-                    <span>@Html.DisplayFor(modelItem => item.Description)</span>
-                    @*@if (User.IsInRole("Teacher"))
+                        <br />
+                        @foreach (var itemActiv in itemM.ActivityDetailVM)
                         {
-                            <div style="display: flex; justify-content: flex-end">
-                                <div style="">
-                                    <span><a asp-controller="Modules" asp-action="Edit" asp-route-id="@item.Id">Ändra</a> | </span>
-                                    <span><a asp-controller="Modules" asp-action="Details" asp-route-id="@item.Id">Detaljer</a> | </span>
-                                    <span><a asp-controller="Modules" asp-action="Delete" asp-route-id="@item.Id">Ta bort</a></span>
-                                </div>
-                            </div>
-                        }*@
-                    @if (User.IsInRole("Teacher") && item.ActivityDetailVM.Count() == 0)
-                    {
-                        <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
-                    }
-                    @foreach (var itemActiv in item.ActivityDetailVM)
-                    {
-                        <div id="@String.Format($"accordion{item.Id}")">
-                            <div class="card">
-                                <div class="card-header" id="@String.Format($"heading{item.Id}_{itemActiv.Id}")">
-                                    <h5 class="mb-0">
-                                        <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}_{itemActiv.Id}")" aria-expanded="false" aria-controls="@String.Format($"collapse{item.Id}_{itemActiv.Id}")">
-                                            <span>@Html.DisplayFor(modelItem => itemActiv.Name)</span>
-                                            &nbsp;&nbsp;
-                                            <span>@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
-                                            -
-                                            <span>@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
+                            <div id="@String.Format($"accordion{itemM.Id}")">
+                                <div class="card">
+                                    <div class="card-header" id="@String.Format($"heading{itemM.Id}_{itemActiv.Id}")">
+                                        <div class="mb-0">
+                                            <div class="container">
+                                                <div class="row">
 
-                                        </button>
-                                    </h5>
-                                </div>
+                                                    <div class="col-5 @clsDD" data-domain="activ" data-id="@itemActiv.Id">
+                                                        <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemActiv.Id}")" aria-expanded="@itemActiv.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")">
+                                                            <i class="fas fa-tasks"></i>
+                                                            <span class="course-activity-name">@Html.DisplayFor(modelItem => itemActiv.Name)</span>
+                                                        </button>
+                                                    </div>
 
-                                <div id="@String.Format($"collapse{item.Id}_{itemActiv.Id}")" class="collapse" aria-labelledby="@String.Format($"heading{item.Id}_{itemActiv.Id}")" data-parent="@String.Format($"#accordion{item.Id}")">
-                                    <div class="card-body">
-                                        <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
-                                        @if (User.IsInRole("Teacher"))
-                                        {
-                                            <div style="display: flex; justify-content: flex-end">
-                                                <div style="">
-                                                    <span><a asp-controller="Activities" asp-action="Edit" asp-route-id="@itemActiv.Id">Ändra</a> | </span>
-                                                    <span><a asp-controller="Activities" asp-action="Details" asp-route-id="@itemActiv.Id">Detaljer</a> | </span>
-                                                    <span><a asp-controller="Activities" asp-action="Delete" asp-route-id="@itemActiv.Id">Ta bort</a></span>
-                                                </div>
-                                            </div>
-                                        }
+                                                    <div style="padding-top:10px" class="col-3">
+                                                        <h6 style="font-weight:400">
+                                                            @if (User.IsInRole("Teacher"))
+                                                            {
+                                                                cls = itemActiv.StartDateOverlap ? "warning_start_overlap" : "";
+                                                                tt = itemActiv.StartDateOverlap ? "Aktivitetens startdatum överlappar en annan aktivitet" : "";
+                                                                cls = itemActiv.StartDateToEarly ? "warning_to_early" : itemActiv.StartDateToLate ? "warning_to_late" : cls;
+                                                                tt = itemActiv.StartDateToEarly ? "Aktivitetens startdatum ligger innan modulens startdatum" : itemActiv.StartDateToLate ? "Aktivitetens startdatum ligger efter modulens slutdatumdatum" : tt;
+                                                            }
+                                                            <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemActiv.StartDate)</span>
+                                                            <span>&nbsp;-&nbsp;</span>
+                                                            @if (User.IsInRole("Teacher"))
+                                                            {
+                                                                cls = itemActiv.EndDateOverlap ? "warning_end_overlap" : "";
+                                                                tt = itemActiv.EndDateOverlap ? "Aktivitetens slutdatum överlappar en annan aktivitet" : "";
+                                                                cls = itemActiv.EndDateToEarly ? "warning_to_early" : itemActiv.EndDateToLate ? "warning_to_late" : cls;
+                                                                tt = itemActiv.EndDateToEarly ? "Aktivitetens slutdatum ligger innan modulens startdatum" : itemActiv.EndDateToLate ? "Aktivitetens slutdatum ligger efter modulens slutdatumdatum" : tt;
+                                                            }
+                                                            <span class="@cls" data-toggle="tooltip" title="@tt">@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
+                                                        </h6>
+                                                    </div>
+
+                                                    <div class="col-3">
+                                                        @if (User.IsInRole("Teacher"))
+                                                        {
+                                                            <div style="font-size:small;font-weight:400">
+                                                                <div style="float: right" class="btn-group btn-group-xs" role="group">
+                                                                    <a href="@Url.Action("Delete", "Activities", new { id = itemActiv.Id })" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                                                                        <span class="fas fa-times" aria-hidden="true"></span>
+                                                                        <span>Ta bort</span>
+                                                                    </a>
+                                                                    <a href="@Url.Action("Edit", "Activities", new { id = itemActiv.Id })" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                                                                        <i class="fas fa-edit" aria-hidden="true"></i>
+                                                                        <span>Ändra</span>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+
+                                                    @{ cls = itemActiv.Expanded ? "fa-caret-down" : "fa-caret-left"; }
+                                                    <div class="col-1">
+                                                        <button style="padding:0" class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemActiv.Id}")" aria-expanded="@itemActiv.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")">
+                                                            <span class="fa-stack fa-sm">
+                                                                <i class="fas fa-circle fa-stack-2x"></i>
+                                                                <i class="fas  @cls fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div> @*row*@
+                                            </div> @*container*@
+                                        </div>
+                                    </div> @*card-header*@
+
+                                    @{ cls = itemActiv.Expanded ? " show" : ""; }
+                                    <div id="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")" class="collapse @cls" aria-labelledby="@String.Format($"heading{itemM.Id}_{itemActiv.Id}")" data-parent="@String.Format($"#accordion{itemM.Id}")">
+                                        <div class="card-body">
+                                            <span>@Html.DisplayFor(modelItem => itemActiv.Description)</span>
+                                            <br /><br />
+                                            <span style="font-weight:bold">@Html.DisplayFor(modelItem => itemActiv.ActivityTypeWM.Name)</span>
+
+                                            @if (itemActiv.ActivityTypeWM.RequireDocument)
+                                            {
+                                                <button type="button" data-domain="user" data-id="@itemActiv.Id" class="btn btn-sm btn-outline-warning @clsDD">
+                                                    <span class="fas fa-file-archive"></span>
+                                                    Dokument <span class="badge badge-light text-small " style="vertical-align: top">0</span>
+                                                </button>
+                                            }
+                                            @if (itemActiv.HasDeadline)
+                                            {
+                                                <span class="course-activity-deadline-date">@Html.DisplayFor(modelItem => itemActiv.EndDate)</span>
+                                            }
+
+                                            <br />
+                                        </div>
                                     </div>
-                                </div>
+                                </div> @*card*@
                             </div>
-                        </div>
-                        @if (User.IsInRole("Teacher") && item.ActivityDetailVM.Select(a => a.Id).Last() == itemActiv.Id)
-                        {
-                            <span><a asp-controller="Activities" asp-action="Create" asp-route-id="@item.Id">Lägg till aktivitet</a></span>
                         }
-
-                    }
+                    </div>
                 </div>
-            </div>
-        </div>
-    }
-    @if (User.IsInRole("Teacher"))
-    {
-        <span><a asp-controller="Modules" asp-action="CreateModule" asp-route-id="@Model.Id">Lägg till modul</a></span>
-    }
-</div>
+            </div> @*card*@
+        }
+    </div>
+}
+
 <br />
+<hr />
+<h4><i class="fas fa-user-friends"></i>Studenter</h4>
+@if (User.IsInRole("Teacher") && Model != null)
+{
+    <div style="display: flex; justify-content: flex-end">
+        <a href="@Url.Action("CreateUser", "Users", new { id = Model.Id })" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+            <span class="fas fa-plus-circle" aria-hidden="true"></span>&nbsp;
+            <span>Lägg till Student&nbsp;<i class="fas fa-user-friends"></i></span>
+        </a>
+    </div>
+}
 <br />
 
-@await Component.InvokeAsync("StudentList", new { IdCourse = Model.Id })
-<a asp-controller="Users" asp-action="CreateUser" asp-route-Id="@Model.Id">Lägg till Student</a>
+@await Component.InvokeAsync("StudentList", new { IdCourse = Model?.Id ?? -1 })
+
 <div>
-    @if (User.IsInRole("Teacher"))
+    @if (User.IsInRole("Teacher") && Model != null)
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a><span> | </span>
-        @* <a class="btn btn-info" asp-action="Index">All Courses</a>*@
+        <a asp-action="Index">Tillbaka</a>
     }
-    <a asp-action="Index">Tillbaka</a>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.min.js" integrity="sha256-fegGeSK7Ez4lvniVEiz1nKMx9pYtlLwPNRPf6uc8d+8=" crossorigin="anonymous"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+        Dropzone.autoDiscover = false;
+        $(function () {
+            $("#accordion").on("hide.bs.collapse show.bs.collapse", e => {
+                $(e.target)
+                    .prev()
+                    .find("i:last-child") //
+                    .toggleClass("fa-caret-left fa-caret-down");
 
+            $(e.target)
+                .prev()
+                .find("svg:last-child") //.fa-inverse
+                .toggleClass("fa-caret-left fa-caret-down");
+        });
 
+        $("#accordion").on("shown.bs.collapse", e => {
+            $("html, body").animate(
+                {
+                    scrollTop: $(e.target)
+                        .prev()
+                        .offset().top
+                },
+                400
+            );
+        });
 
+            $(".ddzone").on({
+                dragover: function (e) {
+                    var $this = $(this);
+                    $this.addClass('in');
+                },
+                dragleave: function (e) {
+                    var $this = $(this);
+                    $this.removeClass('in');
+                }
+            });
+
+            var myDropzone;
+            $(".ddzone").each(function () {
+                var $this = $(this);
+                var $this_fileinput = $this.find("div.fileinput").get(0);
+
+                myDropzone = new Dropzone($this.get(0),
+                {
+                    //$this.Dropzone({
+                    paramName: "files", // The name that will be used to transfer the file
+                    maxFilesize: 2, // MB
+
+                    url: '@Url.Action("PostDoc", "Uploads")',
+                    params: {
+                        domain: $this.data("domain"),
+                        id: $this.data("id")
+                    },
+                    acceptedFiles: '.pdf,.doc,.docx,.txt,.xls,.xlsx,.csv',
+                    //addRemoveLinks: true,
+                    clickable: $this_fileinput, //".ddzone" $this, // ".fileinput-button" Define the element that should be used as click trigger to select files
+
+                    success: function (file, response) {
+                        console.log("Successfully uploaded " + file);
+                    },
+                    error: function (file, response) {
+                        console.log("something goes wrong: " + response);
+                    }
+                    });
+            });
+
+        });
+</script>

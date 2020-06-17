@@ -1,60 +1,74 @@
 ﻿@model LMSLexicon20.Models.Activity
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Översikt aktivitet";
 }
 
-<h1>Details</h1>
+
 
 <div>
-    <h4>Activity</h4>
+    <h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">AKTIVITETSÖVERSIKT</h2>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HasDeadline)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HasDeadline)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Module)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Module.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ActivityType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ActivityType.Id)
-        </dd>
-    </dl>
+    <div class="myDiv">
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.StartDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.EndDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.EndDate)
+            </dd>
+            <dt class="col-sm-12">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-12">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.HasDeadline)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.HasDeadline)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Module)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Module.Id)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ActivityType)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ActivityType.Id)
+            </dd>
+        </dl>
+    </div>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (User.IsInRole("Teacher"))
+    {
+
+        <a asp-controller="Activities" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+            <i class="fas fa-edit" aria-hidden="true"></i>
+            <span>Ändra</span>
+        </a>
+        <a asp-controller="Activities" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+            <i class="fas fa-edit" aria-hidden="true"></i>
+            <span>Ta bort</span>
+        </a>
+        @* <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.Id">Redigera</a><span> | </span>*@
+    }
+    <a asp-action="Index">Tillbaka till aktiviteter</a>
 </div>

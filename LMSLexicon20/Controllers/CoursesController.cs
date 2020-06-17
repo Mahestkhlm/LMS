@@ -26,53 +26,31 @@ namespace LMSLexicon20.Controllers
             _context = context;
             this.mapper = mapper;
             this.userManager = userManager;
-
-            var CourseId = _context.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
-            if (_context.Courses.Find(CourseId)?.Id is null)
-            {
-                _context.Courses.Add(new Course { Name = ".Net", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "I den här självstudien visas hur du skapar en .NET Core-app och ansluter den till SQL Database. När du är klar har du en .NET Core MVC-app som körs i App Service" });
-                _context.Courses.Add(new Course { Name = "Azure", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Automatically deploy and update a static web application and its API from a GitHub repository.\nIn this module, you will:\nChoose an existing web app project with either Angular,\nReact,\nSvelte or Vue\nCreate an API for the app with Azure Functions\nRun the application locally\nPublish the app and its API to Azure Static Web Apps" });
-                _context.SaveChanges();
-                CourseId = _context.Courses.Where(c => c.Name == ".Net").Select(c => c.Id).FirstOrDefault();
-            }
-            var ModuleId = _context.Modules.Where(m => m.Name == "Azure deploy").Select(m => m.Id).FirstOrDefault();
-            if (_context.Modules.Find(ModuleId)?.Id is null)
-            {
-                _context.Modules.Add(new Module { CourseId = CourseId, Name = "Azure deploy", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Deploy a website to Azure with Azure App Service" });
-                _context.Modules.Add(new Module { CourseId = CourseId, Name = "Azure Well", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Build great solutions with the Microsoft Azure Well - Architected Framework" });
-                _context.SaveChanges();
-                ModuleId = _context.Modules.Where(m => m.Name == "Azure deploy").Select(m => m.Id).FirstOrDefault();
-            }
-
-            var ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "e-learningpass").Select(m => m.Id).FirstOrDefault();
-            if (_context.ActivityTypes.Find(ActivityTypeId)?.Id is null)
-            {
-                _context.ActivityTypes.Add(new ActivityType { Name = "e-learningpass" });
-                _context.ActivityTypes.Add(new ActivityType { Name = "föreläsningar" });
-                _context.ActivityTypes.Add(new ActivityType { Name = "övningstillfällen" });
-                _context.ActivityTypes.Add(new ActivityType { Name = "annat" });
-                _context.SaveChanges();
-                ActivityTypeId = _context.ActivityTypes.Where(a => a.Name == "e-learningpass").Select(m => m.Id).FirstOrDefault();
-            }
-
-            var ActivityId = _context.Activities.Where(a => a.Name == "Environment").Select(m => m.Id).FirstOrDefault();
-            if (_context.Activities.Find(ActivityId)?.Id is null)
-            {
-                _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "Environment", StartDate = new DateTime(2020, 6, 27, 20, 0, 0), Description = "Prepare your development environment for Azure development" });
-                _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "App service", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Host a web application with Azure App service" });
-                _context.Activities.Add(new Activity { ModuleId = ModuleId, ActivityTypeId = ActivityTypeId, Name = "Web app platform", StartDate = new DateTime(2020, 5, 27, 20, 0, 0), Description = "Learn how to create a website through the hosted web app platform in Azure App Service" });
-                _context.SaveChanges();
-            }
         }
 
         // GET: Courses
-        public async Task<IActionResult> Index(string filterSearch)
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Index(string filterSearch, string sortOrder)
         {
             var viewModel = await mapper.ProjectTo<CourseIndexViewModel>(_context.Courses).ToListAsync();
 
             var filter = string.IsNullOrWhiteSpace(filterSearch) ?
-                              viewModel : viewModel.Where(m => m.Name.ToLower().Contains(filterSearch.ToLower())) ;
-                                                                  
+                              viewModel : viewModel.Where(m => m.Name.ToLower().Contains(filterSearch.ToLower()));
+
+            ViewData["OptionOne"] = sortOrder == "name_desc" ? "Name" : "name_desc";
+            ViewData["OptionTwo"] = sortOrder == "EndDate" ? "enddate_desc" : "EndDate";
+            ViewData["OptionThree"] = sortOrder == "StartDate" ? "startdate_desc" : "StartDate";
+
+            filter = sortOrder switch
+            {
+                "EndDate" => filter.OrderBy(s => s.EndDate),
+                "enddate_desc" => filter.OrderByDescending(s => s.EndDate),
+                "StartDate" => filter.OrderBy(s => s.StartDate),
+                "startdate_desc" => filter.OrderByDescending(s => s.StartDate),
+                "name_desc" => filter.OrderByDescending(s => s.Name),
+                _ => filter.OrderBy(s => s.Name),
+            };
+
             return View(filter);
         }
 
@@ -83,38 +61,67 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
-            //
+
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
+            var courseTeacher = teachers.FirstOrDefault(e => e.CourseId == id);
 
             //_context.Courses.Find(1)
             //await 
             var courseDetailVM = _context.Courses
                     //.Include(c => c.Modules)
                     //.ThenInclude(m => m.Activities)
+                    .OrderBy(m => m.StartDate)
                     .Select(c => new CourseDetailVM
                     {
                         Id = c.Id,
                         Name = c.Name,
                         StartDate = c.StartDate,
                         EndDate = c.EndDate,
-                        Description = c.Description
+                        Description = c.Description,
+                        Teacher = courseTeacher
                         ,
                         ModuleDetailVM = (ICollection<ModuleDetailVM>)c.Modules
-                                   .Select(m => new ModuleDetailVM
-                                   {
+                                    .OrderBy(c => c.StartDate)
+                                    .Select(m => new ModuleDetailVM
+                                    {
                                        Id = m.Id,
                                        Name = m.Name,
                                        StartDate = m.StartDate,
+                                       StartDateToEarly = (m.StartDate < c.StartDate),
+                                       StartDateToLate = (m.StartDate > c.EndDate),
+                                       StartDateOverlap = c.Modules.Where(m2 => m.StartDate > m2.StartDate && m.StartDate < m2.EndDate).Any(),
                                        EndDate = m.EndDate,
-                                       Description = m.Description
+                                       EndDateToEarly = (m.EndDate < c.StartDate),
+                                       EndDateToLate = (m.EndDate > c.EndDate),
+                                       EndDateOverlap = c.Modules.Where(m2 => m.EndDate > m2.StartDate && m.EndDate < m2.EndDate).Any(),
+                                       Description = m.Description,
+                                       Expanded = (DateTime.Now > m.StartDate &&  DateTime.Now<m.EndDate)
                                        ,
                                        ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
+                                            .OrderBy(a => a.StartDate)
                                             .Select(a => new ActivityDetailVM
                                             {
                                                 Id = a.Id,
                                                 Name = a.Name,
                                                 StartDate = a.StartDate,
+                                                StartDateToEarly = (a.StartDate < m.StartDate),
+                                                StartDateToLate = (a.StartDate > m.EndDate),
+                                                StartDateOverlap = m.Activities.Where(a2 => a.StartDate > a2.StartDate && a.StartDate < a2.EndDate).Any(),
                                                 EndDate = a.EndDate,
-                                                Description = a.Description
+                                                EndDateToEarly = (a.EndDate < m.StartDate),
+                                                EndDateToLate = (a.EndDate > m.EndDate),
+                                                EndDateOverlap = m.Activities.Where(a2 => a.EndDate > a2.StartDate && a.EndDate < a2.EndDate).Any(),
+                                                Description = a.Description,
+                                                Expanded = (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate),
+                                                HasDeadline=a.HasDeadline
+                                                ,
+                                                ActivityTypeWM =
+                                                new ActivityTypeWM
+                                                {
+                                                    Id = a.ActivityType.Id,
+                                                    Name = a.ActivityType.Name,
+                                                    RequireDocument = a.ActivityType.RequireDocument
+                                                }
                                             })
                                    })
                     })
@@ -132,7 +139,6 @@ namespace LMSLexicon20.Controllers
 
         // GET: Courses/Create
         [Authorize(Roles = "Teacher")]
-
         public IActionResult Create()
         {
             return View();
@@ -143,7 +149,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Create(CreateCourseViewModel viewModel)
         {
             if (viewModel.StartDate >= viewModel.EndDate)
@@ -174,7 +180,10 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await mapper.ProjectTo<EditCourseViewModel>(_context.Courses).FirstOrDefaultAsync(e => e.Id == id);
+            var teachers = await userManager.GetUsersInRoleAsync("Teacher");
+            course.Teacher = teachers.FirstOrDefault(e => e.CourseId == id);
+
             if (course == null)
             {
                 return NotFound();
@@ -188,23 +197,36 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate,EndDate,Description")] Course course)
+        public async Task<IActionResult> Edit(int id, EditCourseViewModel viewModel)
         {
-            if (id != course.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
+
+            if (viewModel.StartDate >= viewModel.EndDate)
+            {
+                ModelState.AddModelError("EndDate", "Kursen kan inte avsluta innan den börjar");
+            }
+
+            var found = await _context.Courses.AnyAsync(p => (p.Name == viewModel.Name) && (p.Id != viewModel.Id));
+            if (found)
+            {
+                ModelState.AddModelError("Name", "Det finns redan en kurs med denna namn");
+            }
+
+            var model = mapper.Map<Course>(viewModel);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(course);
+                    _context.Update(model);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.Id))
+                    if (!CourseExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -213,17 +235,16 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
-                TempData["SuccessText"] = $"The Course : {course.Name}is Updated!";
+                TempData["SuccessText"] = $"Kursen: {model.Name} - är uppdaterad!";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["FailText"] = $"Something Went Wrong! The Course: {course.Name} is not updated!";
+            TempData["FailText"] = $"Något gick fel! Kursen: {model.Name} - är inte uppdaterad!";
 
-            return View(course);
+            return View(viewModel);
         }
 
         // GET: Courses/Delete/5
         [Authorize(Roles = "Teacher")]
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

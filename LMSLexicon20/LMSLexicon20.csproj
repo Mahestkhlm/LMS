@@ -7,21 +7,18 @@
 
   <ItemGroup>
     <Compile Remove="Data\Migrations\**" />
-    <Compile Remove="Services\**" />
     <Compile Remove="ViewModel\**" />
     <Content Remove="Data\Migrations\**" />
-    <Content Remove="Services\**" />
     <Content Remove="ViewModel\**" />
     <EmbeddedResource Remove="Data\Migrations\**" />
-    <EmbeddedResource Remove="Services\**" />
     <EmbeddedResource Remove="ViewModel\**" />
     <None Remove="Data\Migrations\**" />
-    <None Remove="Services\**" />
     <None Remove="ViewModel\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Font.Awesome" Version="5.13.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.5" />

@@ -3,9 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - LMSLexicon20</title>
+    <title>@ViewData["Title"] - LMS Lexicon 20</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @*<link href="~/lib/font-awesome/css/fontawesome.min.css" rel="stylesheet" />*@
+    @*<link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/js/all.min.js" integrity="sha256-+Q/z/qVOexByW1Wpv81lTLvntnZQVYppIL1lBdhtIq0=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="~/css/site.css" />
+
 </head>
 <body>
     <header>
@@ -16,38 +20,57 @@
                         <img src="~/Images/logo1.jpg" style="width:110px; height:38px" />
                     </a>
                 </section>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                        <partial name="_LoginPartial" />
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="List">Användare</a>
-                            </li>
-                            <li>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
-                            </li>
-                        </ul>
-                    </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <partial name="_UserNavPartial" />
+                </div>
             </div>
         </nav>
     </header>
     <div class="container" id="sharedLayout">
         <main role="main" class="pb-3">
+            @if (TempData["SuccessText"] != null)
+            {
+                /* var message =(MessageVM)TempData["UserMessage"];*/
+                <div class="alert alert-success" id="message-alert">
+                    <button type="button" class="close" data-dismiss="alert">x</button>
+                    <strong></strong>@TempData["SuccessText"]
+                </div>
+            }
+            @if (TempData["FailText"] != null)
+            {
+                /* var message =(MessageVM)TempData["UserMessage"];*/
+                <div class="alert alert-danger" id="message-alert">
+                    <button type="button" class="close" data-dismiss="alert">x</button>
+                    <strong></strong>@TempData["FailText"]
+                </div>
+            }
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2020 - LMSLexicon20
+        <div class="container text-center">
+            &copy; 2020 - Learning Managment System  <br />
+            Grupp 1: Josefin, Mahe, Olof &amp; Sladjan
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(function () {
+            $("#message-alert").hide();
+            $("#message-alert").fadeTo(3000, 500).slideUp(500, function () { $("#message-alert").slideUp(500); });
+
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

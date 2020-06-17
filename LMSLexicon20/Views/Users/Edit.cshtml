@@ -1,0 +1,62 @@
+﻿@model LMSLexicon20.Models.ViewModels.UserEditViewModel
+
+@{
+    ViewData["Title"] = "Redigera användare";
+}
+
+<h2 class="bg-dark shadow-lg border rounded-lg font-weight-bold text-light p-4">REDIGERA ANVÄNDARE</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-route-id="@Model.Id">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            @if (Model.Student)
+            {
+                <div class="form-group">
+                    <label asp-for="CourseId" class="control-label"></label>
+                    <select asp-for="CourseId" class="form-control" asp-items="ViewBag.Course"></select>
+                    <span asp-validation-for="CourseId" class="text-danger"></span>
+                </div>
+            }
+        <div class="form-group btn-group-sm">
+            <button type="submit" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                <i class="fas fa-check-circle" aria-hidden="true"></i>&nbsp;Spara&nbsp;
+                <i class="fas fa-university" aria-hidden="true"></i>
+            </button>
+            <a href="javascript:history.go(-1)" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                <i class="fas fa-ban" aria-hidden="true"></i>
+                <span>Avbryt</span>
+            </a>
+        </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Details" asp-route-id="@Model.Id">Tillbaka till översikt </a>|
+    <a asp-action="List"> Tillbaka till lista</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

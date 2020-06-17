@@ -1,17 +1,45 @@
-﻿@model LMSLexicon20.Models.Course
+﻿@model EditCourseViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Ändra kursen";
 }
 
-<h1>Edit</h1>
-<div class="text-danger blink_me">
-    @TempData["FailText"]
-</div>
-<h4>Course</h4>
-<hr />
+
+<h2 class="bg-dark shadow-lg rounded-lg font-weight-bold text-light p-4">ÄNDRA KURSEN</h2>
+<br />
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-5">
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.Teacher)
+            </dt>
+            <dd class="col-md-9">
+                @if (Model.Teacher != null)
+                {
+                    <a class="float-left mr-2" asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
+                    <form asp-controller="Users" asp-action="RemoveFromCourse" asp-route-id="@Model.Teacher.Id" method="post">
+                        <button type="submit" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+                            <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Ta bort&nbsp;
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <p id="createform">
+                        Ingen. <a asp-controller="Users" asp-action="AddTeacherToCourse" asp-route-id="@Model.Id"
+                                  data-ajax="true"
+                                  data-ajax-method="GET"
+                                  data-ajax-mode="replace"
+                                  data-ajax-update="#createform"
+                                  class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                                  <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                                  Lägg till&nbsp;<i class="fas fa-user-plus"></i>
+                               </a>
+                    </p>
+                }
+            </dd>
+        </dl>
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -32,18 +60,26 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="form-group btn-group-sm">
+                <button type="submit" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+                    <i class="fas fa-check-circle" aria-hidden="true"></i>&nbsp;Spara&nbsp;
+                    <i class="fas fa-university" aria-hidden="true"></i>
+                </button>
+                <a href="javascript:history.go(-1)" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                    <i class="fas fa-ban" aria-hidden="true"></i>
+                    <span>Avbryt</span>
+                </a>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    
+    
 </div>
 
 @section Scripts {

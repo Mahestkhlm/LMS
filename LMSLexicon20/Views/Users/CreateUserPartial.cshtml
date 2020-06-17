@@ -1,7 +1,7 @@
 ﻿@model LMSLexicon20.Models.ViewModels.CreateUserViewModel
 
 @{
-    ViewData["Title"] = "CreateUser";
+    ViewData["Title"] = "Skapa Anvädaren";
 }
 
     <form asp-action="CreateUser" id="createUser">
@@ -32,7 +32,10 @@
             <input asp-for="CourseId" class="form-control" />
             <span asp-validation-for="CourseId" class="text-danger"></span>
         </div>*@
-        <div class="form-group">
-            <input type="submit" value="Lägg till" class="btn btn-primary" />
-        </div>
-    </form>
+    <div class="form-group btn-group-sm">
+        <button type="submit" class="btn btn-sm btn-outline-primary a-btn-slide-text">
+            <i class="fas fa-plus-circle" aria-hidden="true"></i>&nbsp;Lägg till&nbsp;
+            <i class="fas fa-user-friends" aria-hidden="true"></i>
+        </button>
+    </div>
+</form>

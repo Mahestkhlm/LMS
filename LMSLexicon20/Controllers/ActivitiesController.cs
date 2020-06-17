@@ -8,23 +8,32 @@ using Microsoft.EntityFrameworkCore;
 using LMSLexicon20.Data;
 using LMSLexicon20.Models;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
+using LMSLexicon20.Models.ViewModels;
 
 namespace LMSLexicon20.Controllers
 {
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper mapper;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivitiesController(ApplicationDbContext context ,IMapper mapper )
         {
             _context = context;
+            this.mapper = mapper;
         }
 
         // GET: Activities
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Activities.Include(a => a.ActivityType).Include(a => a.Module);
-            return View(await applicationDbContext.ToListAsync());
+            //var applicationDbContext = _context.Activities.Include(a => a.ActivityType).Include(a => a.Module);
+            //return View(await applicationDbContext.ToListAsync());
+
+            var model = await mapper.ProjectTo<ActivityListViewModel>(_context.Activities).ToListAsync();
+            return View(model);
+
         }
 
         // GET: Activities/Details/5
@@ -49,10 +58,10 @@ namespace LMSLexicon20.Controllers
 
         // GET: Activities/Create
         [Authorize(Roles = "Teacher")]
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id");
-            ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Id");
+            //ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Name");
+            //ViewData["ModuleId"] = new SelectList(_context.Set<Module>(),"Id", "Name", ModuleId);
             return View();
         }
 
@@ -62,17 +71,27 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Create([Bind("Name,StartDate,EndDate,Description,HasDeadline,ModuleId,ActivityTypeId")] Activity activity)
+        public async Task<IActionResult> Create(CreateActivityViewModel activity, int id)
         {
+            if (activity.EndDate < activity.StartDate)
+            {
+                ModelState.AddModelError("EndDate", "Sluttiden kan inte vara tidigare än starttiden");
+            }
+
+
             if (ModelState.IsValid)
             {
-                _context.Add(activity);
+                var model = mapper.Map<Activity>(activity);
+                model.ModuleId = id;
+
+                _context.Add(model);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["SuccessText"] = $"Aktivitet- {model.Name} - är skapad!";
+
+                if (model.ModuleId == default) return RedirectToAction(nameof(Index));
+                var CourseId = _context.Modules.Where(m => m.Id == model.ModuleId).Select(m => m.CourseId).FirstOrDefault();
+                return RedirectToAction(nameof(Details), "Courses", new { id = CourseId });
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Id", activity.ModuleId);
-            TempData["SuccessText"] = $":Aktivitet- {activity.Name} - är skapad!";
             return View(activity);
         }
 
@@ -84,14 +103,14 @@ namespace LMSLexicon20.Controllers
             {
                 return NotFound();
             }
-
-            var activity = await _context.Activities.FindAsync(id);
+            var activity = await mapper.ProjectTo<ActivityEditViewModel>(_context.Activities).FirstOrDefaultAsync(e => e.Id == id);
+            //var activity = await _context.Activities.FindAsync(id);
             if (activity == null)
             {
                 return NotFound();
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Id", activity.ModuleId);
+           // ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Name", activity.ActivityTypeId);
+            //ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Name", activity.ModuleId);
             return View(activity);
         }
 
@@ -101,23 +120,36 @@ namespace LMSLexicon20.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,StartDate,EndDate,Description,HasDeadline,ModuleId,ActivityTypeId")] Activity activity)
+        public async Task<IActionResult> Edit(int id,  ActivityEditViewModel activity)
         {
+            
             if (id != activity.Id)
             {
                 return NotFound();
             }
 
+            if (activity.EndDate < activity.StartDate)
+            {
+                ModelState.AddModelError("EndDate", "Sluttiden kan inte vara tidigare än starttiden");
+            }
+           /* var found = await _context.Courses.AnyAsync(p => (p.Name == activity.Name) && (p.Id != activity.Id));
+            if (found)
+            {
+                ModelState.AddModelError("Name", "Det finns redan en kurs med denna namn");
+            }*/
+
+            var model = mapper.Map<Activity>(activity);
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(activity);
+                    _context.Update(model);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ActivityExists(activity.Id))
+                    if (!ActivityExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -126,11 +158,13 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                TempData["SuccessText"] = $"Aktivitet: {activity.Name} - är uppdaterad!";
+                //return RedirectToAction(nameof(Index));
+                var CourseId = _context.Modules.Where(m => m.Id == model.ModuleId).Select(m => m.CourseId).FirstOrDefault();
+                return RedirectToAction(nameof(Details), "Courses", new { id = CourseId});
             }
-            ViewData["ActivityTypeId"] = new SelectList(_context.Set<ActivityType>(), "Id", "Id", activity.ActivityTypeId);
-            ViewData["ModuleId"] = new SelectList(_context.Set<Module>(), "Id", "Id", activity.ModuleId);
-            TempData["SuccessText"] = $": Aktivitet-{activity.Name} - Uppdateras!";
+
+            TempData["FailText"] = $"Något gick fel! Aktivitet: {activity.Name} - är inte uppdaterad!";
 
             return View(activity);
         }
@@ -144,16 +178,17 @@ namespace LMSLexicon20.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activities
-                .Include(a => a.ActivityType)
-                .Include(a => a.Module)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var activity = await mapper.ProjectTo<DeleteActivityViewModel>(_context.Activities).FirstOrDefaultAsync(t => t.Id == id);
+            //var activity = await _context.Activities
+                //.Include(a => a.ActivityType)
+                //.Include(a => a.Module)
+                //.FirstOrDefaultAsync(m => m.Id == id);
             if (activity == null)
             {
                 return NotFound();
             }
 
-            return View(activity);
+            return View(activity); ;
         }
 
         // POST: Activities/Delete/5
@@ -162,15 +197,27 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var ModuleId = _context.Activities.Where(a => a.Id == id).Select(a => a.ModuleId).FirstOrDefault();
+            var CourseId = _context.Modules.Where(m => m.Id == ModuleId).Select(m => m.CourseId).FirstOrDefault();
+
+            var model = await mapper.ProjectTo<DeleteActivityViewModel>(_context.Activities).FirstOrDefaultAsync(t => t.Id == id);
             var activity = await _context.Activities.FindAsync(id);
             _context.Activities.Remove(activity);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            TempData["SuccessText"] = $"Aktivitet: {activity.Name} - är raderad!";
+            return RedirectToAction(nameof(Details), "Courses", new { id = CourseId });
         }
 
         private bool ActivityExists(int id)
         {
             return _context.Activities.Any(e => e.Id == id);
         }
+
+
+        private bool ModuleNotEmpty()
+        {
+            return (!_context.Modules.Any());
+        }
+
     }
 }
