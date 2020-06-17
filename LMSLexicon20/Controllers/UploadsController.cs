@@ -44,7 +44,7 @@ namespace LMSLexicon20.Controllers
                 {
                     var filename = untrustedFileName; // Path.GetTempFileName();
                     filename = this.EnsureCorrectFilename(filename);
-                    filePath =  this.GetPathAndFilename(filename, domain);
+                    filePath =  this.GetPathAndFilename(filename, domain,id);
 
                     //using (var stream = new FileStream(filePath, FileMode.Create)
                     using FileStream output = System.IO.File.Create(filePath);
@@ -66,14 +66,14 @@ namespace LMSLexicon20.Controllers
             return filename;
         }
 
-        private string GetPathAndFilename(string filename, string domain)
+        private string GetPathAndFilename(string filename, string domain, string id)
         {
             //var path = Path.Combine(_config["StoredFilesPath"],
             //string path = this.hostingEnvironment.WebRootPath + "\\uploads\\";
 
             string path = Path.Combine(this.hostingEnvironment.WebRootPath, "uploads");
             path = Path.Combine(path, domain);
-            if (domain=="users") path = Path.Combine(path, User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (domain=="users") path = Path.Combine(path,id ); //ägare => db User.FindFirstValue(ClaimTypes.NameIdentifier)
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);

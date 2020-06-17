@@ -112,7 +112,8 @@ namespace LMSLexicon20.Controllers
                                                 EndDateToLate = (a.EndDate > m.EndDate),
                                                 EndDateOverlap = m.Activities.Where(a2 => a.EndDate > a2.StartDate && a.EndDate < a2.EndDate).Any(),
                                                 Description = a.Description,
-                                                Expanded = (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate)
+                                                Expanded = (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate),
+                                                HasDeadline=a.HasDeadline
                                                 ,
                                                 ActivityTypeWM =
                                                 new ActivityTypeWM
