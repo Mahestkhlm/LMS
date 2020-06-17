@@ -16,7 +16,7 @@ namespace LMSLexicon20.Services
             this.context = context;
         }
 
-        public IEnumerable<SelectListItem> GetSelectList()
+        public IEnumerable<SelectListItem> GetActivityTypeList()
         {
             return context.ActivityTypes.Select(e => new SelectListItem { Text = e.Name, Value = e.Id.ToString() });
         }

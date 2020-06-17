@@ -5,6 +5,6 @@ namespace LMSLexicon20.Services
 {
     public interface IActivityTypeChoiceDropdown
     {
-        IEnumerable<SelectListItem> GetSelectList();
+        IEnumerable<SelectListItem> GetActivityTypeList();
     }
 }
