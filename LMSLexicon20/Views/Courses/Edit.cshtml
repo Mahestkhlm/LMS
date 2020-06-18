@@ -14,7 +14,7 @@
             <dt class="col-md-3">
                 @Html.DisplayNameFor(model => model.Teacher)
             </dt>
-            <dd class="col-md-9">
+            <dd class="col-md-9" id="createform">
                 @if (Model.Teacher != null)
                 {
                     <a class="float-left mr-2" asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
@@ -26,7 +26,7 @@
                 }
                 else
                 {
-                    <p id="createform">
+                    <p>
                         Ingen. <a asp-controller="Users" asp-action="AddTeacherToCourse" asp-route-id="@Model.Id"
                                   data-ajax="true"
                                   data-ajax-method="GET"

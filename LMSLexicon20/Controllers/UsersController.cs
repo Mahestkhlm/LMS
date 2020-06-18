@@ -338,11 +338,25 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new AddTeacherToCourseSuccessViewModel
+                    {
+                        TeacherId = viewModel.TeacherId
+                    };
+
+                    return PartialView("AddTeacherSuccessPartialView", ajaxModel);
+                }
                 TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är nu kursens lärare";
                 return RedirectToAction("Edit", "Courses", new { id = model.CourseId });
             }
-            TempData["FailText"] = $"Ingen lärare tilldelades till kursen!";
 
+            if (Request.IsAjax())
+            {
+                return PartialView("AddTeacherToCoursePartialView", viewModel);
+            }
+            TempData["FailText"] = $"Ingen lärare tilldelades till kursen!";
             return RedirectToAction("Edit", "Courses", new { id });
         }
 

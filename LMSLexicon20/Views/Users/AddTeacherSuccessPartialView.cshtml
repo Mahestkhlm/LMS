@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model AddTeacherToCourseSuccessViewModel
+@inject UserManager<User> UserManager
+
+@{
+    var teacher = await UserManager.FindByIdAsync(Model.TeacherId);
+}
+
+<a class="float-left mr-2" asp-controller="Users" asp-action="Details" asp-route-id="@Model.TeacherId">@($"{teacher.FirstName} {teacher.LastName}")</a>
+<form asp-controller="Users" asp-action="RemoveFromCourse" asp-route-id="@Model.TeacherId" method="post">
+    <button type="submit" class="btn btn-sm btn-outline-danger a-btn-slide-text">
+        <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Ta bort&nbsp;
+    </button>
+</form>
