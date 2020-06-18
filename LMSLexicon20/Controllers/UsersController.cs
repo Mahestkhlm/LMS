@@ -38,11 +38,18 @@ namespace LMSLexicon20.Controllers
             return View();
         }
 
-        public IActionResult Start()
+        public IActionResult Start(string id)
+        {
+            if(User.IsInRole("Teacher"))
+            {
+                RedirectToAction(nameof(TeacherIndex), new { id = id });
+            }
+            return View();
+        }
+        public async Task<IActionResult> TeacherIndex(string id)
         {
             return View();
         }
-
 
         // GET: User/Create
         [Authorize(Roles = "Teacher")]
