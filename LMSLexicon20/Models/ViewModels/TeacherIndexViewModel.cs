@@ -12,13 +12,9 @@ namespace LMSLexicon20.Models.ViewModels
         //public string Id { get; set; }
         [Display(Name = "Namn")]
         public string FullName { get; set; }
-        //public string Email { get; set; }
-
-        //[Display(Name = "Telefonnummer")]
-        //public string PhoneNumber { get; set; }
-        [Display(Name = "Kurs")]
-        public Course Course { get; set; }
         public ICollection<Document> Documents { get; set; }
+        public ICollection<Activity> Assignments { get; set; }
+        public ICollection<Activity> WeeklyActivities { get; set; }
         public int GetWeekNumber()
         {
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
