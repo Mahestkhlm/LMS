@@ -38,17 +38,21 @@ namespace LMSLexicon20.Controllers
             return View();
         }
 
-        public IActionResult Start(string id)
+        public IActionResult Start()
         {
+            var id = _userManager.GetUserId(User);
             if(User.IsInRole("Teacher"))
             {
-                RedirectToAction(nameof(TeacherIndex), new { id = id });
+                return RedirectToAction(nameof(TeacherIndex), new { id = id });
             }
             return View();
         }
         public async Task<IActionResult> TeacherIndex(string id)
         {
-            return View();
+            var user = await _context.Users.FindAsync(id);
+            //var user = _userManager.FindByIdAsync(id);
+            var viewModel = _mapper.Map<TeacherIndexViewModel>(user);
+            return View(viewModel);
         }
 
         // GET: User/Create
