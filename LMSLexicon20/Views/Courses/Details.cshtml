@@ -271,7 +271,7 @@
                                             <div class="container">
                                                 <div class="row">
 
-                                                    <div class="col-5 @clsDD" data-domain="activ" data-id="@itemActiv.Id">
+                                                    <div class="col-5 @clsDD" data-domain="activity" data-id="@itemActiv.Id">
                                                         <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemActiv.Id}")" aria-expanded="@itemActiv.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemActiv.Id}")">
                                                             <i class="fas fa-tasks"></i>
                                                             <span class="course-activity-name">@Html.DisplayFor(modelItem => itemActiv.Name)</span>
@@ -341,7 +341,7 @@
 
                                             @if (itemActiv.ActivityTypeWM.RequireDocument)
                                             {
-                                                <button type="button" data-domain="user" data-id="@itemActiv.Id" class="btn btn-sm btn-outline-warning @clsDD">
+                                                <button type="button" data-domain="assignment" data-id="@itemActiv.Id" class="btn btn-sm btn-outline-warning @clsDD">
                                                     <span class="fas fa-file-archive"></span>
                                                     Dokument <span class="badge badge-light text-small " style="vertical-align: top">0</span>
                                                 </button>
