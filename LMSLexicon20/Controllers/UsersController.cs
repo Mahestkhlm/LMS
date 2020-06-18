@@ -45,8 +45,15 @@ namespace LMSLexicon20.Controllers
             {
                 return RedirectToAction(nameof(TeacherIndex), new { id = id });
             }
+            else if(User.IsInRole("Student"))
+            {
+                return RedirectToAction(nameof(StudentIndex), new { id = id });
+            }
             return View();
         }
+
+
+
         public async Task<IActionResult> TeacherIndex(string id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -73,6 +80,13 @@ namespace LMSLexicon20.Controllers
             return View(viewModel);
         }
 
+        public async Task<IActionResult> StudentIndex(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            //var user = _userManager.FindByIdAsync(id);
+            var viewModel = _mapper.Map<StudentIndexViewModel>(user);
+            return View(viewModel);
+        }
         // GET: User/Create
         [Authorize(Roles = "Teacher")]
         public ActionResult CreateUser(int? courseId = null)
