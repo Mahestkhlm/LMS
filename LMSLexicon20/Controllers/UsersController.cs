@@ -41,7 +41,7 @@ namespace LMSLexicon20.Controllers
         public IActionResult Start()
         {
             var id = _userManager.GetUserId(User);
-            if(User.IsInRole("Teacher"))
+            if (User.IsInRole("Teacher"))
             {
                 return RedirectToAction(nameof(TeacherIndex), new { id = id });
             }
@@ -51,7 +51,25 @@ namespace LMSLexicon20.Controllers
         {
             var user = await _context.Users.FindAsync(id);
             //var user = _userManager.FindByIdAsync(id);
+
             var viewModel = _mapper.Map<TeacherIndexViewModel>(user);
+
+            viewModel.Assignments = await _context.Activities
+                .Where(a => a.Module.CourseId == user.CourseId)
+                .Where(a => a.HasDeadline == true)
+                .ToListAsync();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+            var now = DateTime.Now;
+
+            //alla activities i kursen
+            viewModel.WeeklyActivities = await _context.Activities
+               .Where(a => a.Module.CourseId == user.CourseId)
+               //alla som startar innan sjunde dagen och slutar efter första dagen i veckan
+               .Where(a =>
+                    now.AddDays(6) > a.StartDate
+                    && now < a.EndDate)
+               .ToListAsync();
+
             return View(viewModel);
         }
 
@@ -198,7 +216,7 @@ namespace LMSLexicon20.Controllers
                 await _context.SaveChangesAsync();
                 TempData["SuccessText"] = $"Användare {userName} har tagits bort";
             }
-            
+
             return RedirectToAction(nameof(List), new { filterSearch = "" });
         }
         static string GeneratePassword()
@@ -361,7 +379,7 @@ namespace LMSLexicon20.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 model.CourseId = null;
                 try
                 {
