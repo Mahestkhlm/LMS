@@ -3,5 +3,31 @@
     ViewData["Title"] = "Start";
 }
 
-<h1>Välkommen @Model.FullName!</h1>
+
+
+<div class="container">
+    <div class="row pt-4">
+        <div class="col-md">
+            <div id="teacherHeader" class="media rounded p-4">
+                <img class="mr-3 rounded" src="~/Images/loginavatar.png" width="100" />
+                <div class="media-body">
+                    <h3>Välkommen @Model.FullName!</h3>
+                    <p>Det här är din profil där dina senaste aktiviteter och inlämningar visas.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row my-3"></div>
+    <div class="row px-5">
+        <div class="col-md-6">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">Senaste inlämningar</div>
+                <div class="card-body">body</div>
+            </div>
+        </div>
+        <div class="col-md-6"></div>
+    </div>
+    
+</div>
+
 
