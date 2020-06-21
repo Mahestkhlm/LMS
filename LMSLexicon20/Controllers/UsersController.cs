@@ -6,6 +6,7 @@ using AutoMapper;
 
 using LMSLexicon20.Data;
 using LMSLexicon20.Extensions;
+using LMSLexicon20.Filters;
 using LMSLexicon20.Models;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -308,6 +309,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateAjax]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddTeacherToCourse(int id, AddTeacherToCourseViewModel viewModel)
         {
