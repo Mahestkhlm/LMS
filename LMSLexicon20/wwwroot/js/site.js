@@ -6,3 +6,7 @@
 function DisplayAddTeacherSuccess() {
     $("#addteachersuccess").html("En lärare har tilldelats").fadeOut(3000);
 }
+
+function DisplayRemoveTeacherSuccess() {
+    $("#removeteachersuccess").html("Läraren har tagits bort").fadeOut(3000);
+}

@@ -364,6 +364,7 @@ namespace LMSLexicon20.Controllers
 
         [Authorize(Roles = "Teacher")]
         [HttpPost]
+        [ValidateAjax]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromCourse(string id)
         {
@@ -395,6 +396,17 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new RemoveTeacherFromCourseSuccessViewModel
+                    {
+                        CourseId = courseId
+                    };
+
+                    return PartialView("RemoveTeacherSuccessPartialView", ajaxModel);
+                }
+
                 TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är inte längre kursens lärare";
                 return RedirectToAction("Edit", "Courses", new { id = courseId });
             }
