@@ -10,3 +10,8 @@ function DisplayAddTeacherSuccess() {
 function DisplayRemoveTeacherSuccess() {
     $("#removeteachersuccess").html("Läraren har tagits bort").fadeOut(3000);
 }
+
+function DisplayCreateModuleSuccess() {
+    $("#createmodule").children().remove();
+    $("#modulesuccess").show().html("Modulen har skapats").fadeOut(3000);
+};
