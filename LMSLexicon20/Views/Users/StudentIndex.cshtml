@@ -3,82 +3,198 @@
 @{
     ViewData["Title"] = "Student StartPage";
 }
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/js/all.min.js" integrity="sha256-+Q/z/qVOexByW1Wpv81lTLvntnZQVYppIL1lBdhtIq0=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="~/css/StyleSheet.css" />
+    </head>
+    <body style="background-color:ThreeDHighlight powderblue">
 
-<body style="background-color:ThreeDHighlight powderblue">
 
-
-    <div class="container">
-        <div class="row pt-4">
-            <div class="col-md">
-                <div id="StudentHeader" class="media rounded p-4">
-                    <img class="mr-3 rounded" src="~/Images/loginavatar.png" width="100" />
-                    <div class="media-body">
-                        <h3>VÄLKOMMEN @Model.FullName!</h3>
-                        <p>Det här är din profil där dina senaste aktiviteter och inlämningar visas.</p>
+        <div class="container">
+            <div class="row pt-4">
+                <div class="col-md">
+                    <div id="StudentHeader" class="media rounded p-4">
+                        <img class="mr-3 rounded" src="~/Images/loginavatar.png" width="100" />
+                        <div class="media-body">
+                            <h3>VÄLKOMMEN @Model.FullName</h3>
+                            <p>Det här är din profil där dina senaste aktiviteter och inlämningar visas.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row my-3"></div>
-        <div class="row px-5">
-            <div class="col-md-6">
-                <div class="card border-dark rounded">
-                    <div class="card-header bg-secondary text-white">Senaste inlämningar</div>
-                    <div class="card-body">body</div>
+            <div class="row my-3"></div>
+
+            <div class="row px-5">
+                <div id="carduppgifter" class="media rounded p-4">
+                    <h5 class="mb-5">KURS: @Model.CourseName</h5>
+                    <div class="card-body  card-border-dark rounded">
+                        <h4 class="card-header bg-info text-black">EJ INLÄMNADE UPPGIFTER</h4>
+                        <span class="badge badge-pill indigo"><i class="fas fa-bullhorn" aria-hidden="true"></i></span>
+                        <button class="badge badge-pill btn-lg btn-warning" type="button" data-toggle="collapse" data-target="#EjActivity1collapse" aria-expanded="false" aria-controls="EjActivitycollapse">
+                            EJ INLÄMNAD
+                        </button>
+                        <div class="collapse" id="EjActivity1collapse">
+                            <div class="card card-body">
+                                <ul>
+                                    @if (Model != null)
+                                    {
+
+                                        @if (Model.LateAssignments.Count() > 0)
+                                        {
+
+                                            @foreach (var assignment in Model.LateAssignments)
+                                            {
+                                                <li>
+                                                    <h5> <a asp-controller="Activities" asp-action="Details" asp-route-courseId="@Model.CourseId" asp-route-id="@assignment.Id">@assignment.Name</a> <span class="float-right">SISTA INLÄMNINGSDATUM: @assignment.EndDate</span></h5>
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li>INGEN SEN INLÄMNINGSUPPGIFTER!</li>
+                                        }
+                                    }
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="col-md-6"></div>
         </div>
-    </div>
 
-    <div class="row my-3"></div>
-
-    <div class="container list-inline-item bg-border-dark text-black">
-        <h1>AKTUELL VECKA</h1>
-        <div class="card">
-            <h6 class="card-header bg-secondary text-black list-group-item list-group-item-action active">AKTIVITET</h6>
-            <div class="card-body card-border-dark rounded">
-                <button class=" badge badge-pill btn-lg btn-success" type="button" data-toggle="collapse" data-target="#Activitycollapse" aria-expanded="false" aria-controls="Activitycollapse">
-                    INLÄMNAD
-                </button>
-                <div class="collapse" id="Activitycollapse">
-                    <div class="card card-body">
-                        WE MUST INCLUDE THE RESPECTIVE ACTIVITY NAME /LINKS
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row my-3"></div>
-        <div class="card">
-            <div class="card-body  card-border-dark rounded">
-                <button class="badge badge-pill btn-lg btn-warning" type="button" data-toggle="collapse" data-target="#EjActivitycollapse" aria-expanded="false" aria-controls="EjActivitycollapse">
-                    EJ INLÄMNAD
-                </button>
-                <div class="collapse" id="EjActivitycollapse">
-                    <div class="card card-body">
-                        WE MUST INCLUDE THE ICOMPLETE AKTIVITY NAME/LINKS
+
+        <div class="container list-inline-item bg-border-dark text-black">
+           
+                <div id="cardvecka" class="card-body  card-border-dark rounded">
+                    <h4 class="card-header bg-info text-black">AKTUELL VECKA</h4>
+                    <div class="card-body card-border-dark rounded">
+                        <button class=" badge badge-pill btn-lg btn-success" type="button" data-toggle="collapse" data-target="#Actcollapse" aria-expanded="false" aria-controls="Activitycollapse">
+                            INLÄMNAD
+                        </button>
+                        <div class="collapse" id="Actcollapse">
+                            <div class="card card-body">
+                                <div class="backcard border-success">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    KURS NAMN
+                                                </th>
+                                                <th>
+                                                    MODUL
+                                                </th>
+                                                <th>
+                                                    AKTIVITET
+                                                </th>
+                                                <th>
+                                                    INLÄMNINGSTID
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <br />
+                    <div id="cardvecka" class="card-body  card-border-dark rounded">
+                        <div class="card-body  card-border-dark rounded">
+                            <button class="badge badge-pill btn-lg btn-danger" type="button" data-toggle="collapse" data-target="#EjActcoll" aria-expanded="false" aria-controls="EjActivitycollapse">
+                                EJ INLÄMNAD
+                            </button>
+                            <div class="collapse" id="EjActcoll">
+                                <div class="card card-body">
+                                    <ul>
+                                        @if (Model != null)
+                                        {
+
+                                            @if (Model.LateAssignments.Count() > 0)
+                                            {
+
+                                                @foreach (var assignment in Model.LateAssignments)
+                                                {
+                                                    <li>
+                                                        <h5> <a asp-controller="Activities" asp-action="Details" asp-route-courseId="@Model.CourseId" asp-route-id="@assignment.Id">@assignment.Name</a> <span class="float-right">SISTA INLÄMNINGSDATUM: @assignment.EndDate</span></h5>
+                                                    </li>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <li>INGEN SEN INLÄMNINGSUPPGIFTER!</li>
+                                            }
+                                        }
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+       
 
-    </div>
-
-    <div class="row my-3"></div>
-    <div class="card">
-        <h5 class="card-header bg-secondary text-black">UPLOADS</h5>
         <div class="card-body  card-border-dark rounded">
-            <button class="badge badge-pill btn-lg btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Documents
+            <button class="badge badge-pill btn-lg btn-warning" type="button" data-toggle="collapse" data-target="#EjActivitycol" aria-expanded="false" aria-controls="EjActivitycollapse">
+                ANKOMMANDE AKTIVITETER
             </button>
-            <div class="collapse" id="collapseExample">
+            <div class="collapse" id="EjActivitycol">
                 <div class="card card-body">
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                    <ul>
+                        @*//@{int i = 0; }*@
+                        @if (Model != null)
+                        {
+                            @if (Model.CurrentAssignments.Count() > 0)
+                            {
+
+                                @foreach (var activity in Model.CurrentAssignments)
+                                {
+
+                                    <li>
+                                        <h5> <a asp-controller="Activities" asp-action="Details" asp-route-courseId="@Model.CourseId" asp-route-id="@activity.Id">@activity.Name</a> <span class="float-right">SISTA INLÄMNINGSDATUM: @activity.EndDate</span></h5>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li>INGEN ANKOMMANDE AKTIVITET</li>
+                            }
+                        }
+
+                    </ul>
                 </div>
             </div>
+
+            <div class="row my-3"></div>
+            <div class="card">
+                <h5 class="card-header bg-secondary text-black">UPLOADS</h5>
+                <div class="card-body  card-border-dark rounded">
+                    <button class="badge badge-pill btn-lg btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        Documents
+                    </button>
+                    <div class="collapse" id="collapseExample">
+                        <div class="card card-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </div>
 
 
-
-   </body>
+    </body>
+</html>
