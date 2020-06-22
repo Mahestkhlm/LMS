@@ -3,7 +3,7 @@
     ViewData["Title"] = "Välkommen";
 }
 
-<div class="container">
+<div class="container teacher">
     <div class="row pt-4">
         <div class="col-md">
             <div id="teacherHeader" class="media rounded p-4">
@@ -16,8 +16,50 @@
         </div>
     </div>
     <div class="row my-3"></div>
-    <div class="row px-5">
-        <div class="col-md-6">
+    <div class="row px-4">
+        <div class="col-md">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">Schema vecka @Model.GetWeekNumber()</div>
+                <div class="card-body py-2">
+                    <ul  class="list-group list-group-flush">
+                        @for (int i = 0; i < 7; i++)
+                        {
+                            <li class="list-group-item px-2">
+                                <b class="d-flex  justify-content-between align-items-center">
+                                    <span>
+                                    @DateTime.Now.AddDays(i).DayOfWeek
+
+                                    </span>
+                                    <span>
+                                    @DateTime.Now.AddDays(i).ToString("dd'/'M")
+
+                                    </span>
+                                </b>
+                                <ul class="list-group">
+                                    @foreach (var item in Model.WeeklyActivities)
+                                    {
+                                        //om gällande datum är >= än enddate - skriv ut
+                                        //måste jämföra bara dag inte tid
+                                        //ToDo: testa
+                                        @if (DateTime.Now.AddDays(i).Day <= item.EndDate.Day
+                                          && DateTime.Now.AddDays(i) >= item.StartDate)
+                                        {
+                                            <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
+                                                @Html.DisplayFor(modelItem => item.Name)
+                                                @*@Html.DisplayFor(modelItem => item.StartDate)
+                                                    @Html.DisplayFor(modelItem => item.EndDate)*@
+                                            </li>
+                                          }
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md">
             <div class="card border-primary">
                 <div class="card-header bg-primary text-white">Aktiviteter i denna kurs med deadline (så länge)</div>
                 <div class="card-body">
@@ -29,45 +71,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6"></div>
-    </div>
-    <div class="row my-3"></div>
-    <div class="row px-5">
-        <div class="col-md-6">
-            <div class="card border-primary">
-                <div class="card-header bg-primary text-white">Schema vecka @Model.GetWeekNumber()</div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        @for (int i = 0; i < 7; i++)
-                        {
-                            <li class="list-group-item">
-                                <b>
-                                    @DateTime.Now.AddDays(i).DayOfWeek
-                                    @DateTime.Now.AddDays(i).ToString("dd'/'M")
-                                </b>
-                                <ul class="list-group">
-                                    @foreach (var item in Model.WeeklyActivities)
-                                    {
-                                        //om gällande datum är >= än enddate - skriv ut
-                                        //slutar en dag för tidigt!
-                                        @if (DateTime.Now.AddDays(i).Day <= item.EndDate.Day
-                                          && DateTime.Now.AddDays(i).Day >= item.StartDate.Day)
-                                        {
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                @Html.DisplayFor(modelItem => item.Name)
-                                                @*@Html.DisplayFor(modelItem => item.StartDate)
-                                                    @Html.DisplayFor(modelItem => item.EndDate)*@
-                                            </li>
-                                        }
-                                    }
-                                </ul>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6"></div>
     </div>
 </div>
 
