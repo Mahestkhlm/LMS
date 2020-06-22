@@ -68,7 +68,7 @@
                                         @*@if (DateTime.Now.AddDays(i) <= item.EndDate
                                             && DateTime.Now.AddDays(i) >= item.StartDate)*@
                                         @if (DateTime.Now.AddDays(i).Date <= item.EndDate
-                       && DateTime.Now.AddDays(i).Date >= item.StartDate)
+                      && DateTime.Now.AddDays(i).Date >= item.StartDate)
                                         {
                                             <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
                                                 @Html.DisplayFor(modelItem => item.Name)
@@ -95,34 +95,34 @@
                         <span>Deadline</span>
                     </b>
                     @* assignments-accordion *@
-                <div class="accordion d-flex  justify-content-between align-items-center" id="accordion">
-                    @foreach (var item in Model.Assignments)
-                    {
-                        //card for item
-                        <div class="card">
-                            @*header/collapse-button*@
-                            <div class="card-header" id="@String.Format($"heading{item.Id}")">
-                                <h2 class="mb-0">
-                                    <button class="btn btn-link btn-block text-left" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")">
-                                        @Html.DisplayFor(Model => item.Name)
-                                    </button>
-                                </h2>
-                                <span>
-                                    @item.EndDate.ToString("dd'/'M")
-                                </span>
-                            </div>
-                            @*content*@
-                            <div id="@String.Format($"#collapse{item.Id}")" class="collapse" data-parent="#@String.Format($"#collapse{item.Id}")">
-                                <div class="card-body">
-                                    Student
+                    <div class="accordion" id="accordion">
+                        @foreach (var item in Model.Assignments)
+                        {
+                            //card for item
+                            <div class="card border-0 m-0">
+                                @*header/collapse-button*@
+                                <div class="d-flex  justify-content-between align-items-center" id="@String.Format($"heading{item.Id}")">
+                                    <h2 class="mb-0">
+                                        <a href="#" class="btn btn-link btn-block text-left px-0" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")">
+                                            @Html.DisplayFor(Model => item.Name)
+                                        </a>
+                                    </h2>
+                                    <span>
+                                        @item.EndDate.ToString("dd'/'M")
+                                    </span>
+                                </div>
+                                @*content*@
+                                <div id="@String.Format($"collapse{item.Id}")" class="collapse" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Student
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        @*<a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">
-                @Html.DisplayFor(Model => item.Name)
-            </a>*@
-                    }
-                </div>
+                            @*<a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">
+                                    @Html.DisplayFor(Model => item.Name)
+                                </a>*@
+                        }
+                    </div>
                 </div>
             </div>
         </div>
