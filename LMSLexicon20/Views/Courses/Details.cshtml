@@ -165,7 +165,8 @@
     </dl>
 </div>
 
-@if (User.IsInRole("Teacher"))
+<<<<<<<<< Temporary merge branch 1
+@if (User.IsInRole("Teacher") && Model != null)
 {
     <div class="col" style="display: flex; justify-content: flex-end">
         <div class="@clsDD" data-domain="course" data-id="@Model.Id">
