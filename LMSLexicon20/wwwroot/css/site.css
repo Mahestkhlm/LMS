@@ -104,7 +104,6 @@ body {
     -moz-transition-duration: 0.5s;
     -o-transition-duration: 0.5s;
 }
-
-#teacherHeader {
-    background-color: white;
+.teacher-container{
+    background-color:white;
 }

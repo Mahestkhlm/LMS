@@ -12,7 +12,12 @@ namespace LMSLexicon20.Models.ViewModels
         //public string Id { get; set; }
         [Display(Name = "Namn")]
         public string FullName { get; set; }
+        public int? CourseId { get; set; }
+        public Course Course { get; set; }
+        [Display(Name = "Dokument")]
         public ICollection<Document> Documents { get; set; }
+
+        [Display(Name = "Inlämningar")]
         public ICollection<Activity> Assignments { get; set; }
         public ICollection<Activity> WeeklyActivities { get; set; }
         public int GetWeekNumber()
