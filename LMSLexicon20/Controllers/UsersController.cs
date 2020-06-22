@@ -38,7 +38,7 @@ namespace LMSLexicon20.Controllers
         {
             return View();
         }
-
+        [Authorize]
         public IActionResult Start()
         {
             var id = _userManager.GetUserId(User);
@@ -52,14 +52,16 @@ namespace LMSLexicon20.Controllers
             }
             return View();
         }
-
-
-
+        //ToDo: roles
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> TeacherIndex(string id)
         {
-            var user = await _context.Users.FindAsync(id);
-            //var user = _userManager.FindByIdAsync(id);
 
+            var user = await _context.Users.FindAsync(id);
+            if (user ==null)
+            {
+                NotFound();
+            }
             var viewModel = _mapper.Map<TeacherIndexViewModel>(user);
 
             viewModel.Assignments = await _context.Activities
