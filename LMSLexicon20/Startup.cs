@@ -106,7 +106,7 @@ namespace LMSLexicon20
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Users}/{action=Start}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

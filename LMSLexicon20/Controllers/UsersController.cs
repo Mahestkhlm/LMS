@@ -6,6 +6,7 @@ using AutoMapper;
 
 using LMSLexicon20.Data;
 using LMSLexicon20.Extensions;
+using LMSLexicon20.Filters;
 using LMSLexicon20.Models;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -40,10 +41,53 @@ namespace LMSLexicon20.Controllers
 
         public IActionResult Start()
         {
+            var id = _userManager.GetUserId(User);
+            if (User.IsInRole("Teacher"))
+            {
+                return RedirectToAction(nameof(TeacherIndex), new { id = id });
+            }
+            else if(User.IsInRole("Student"))
+            {
+                return RedirectToAction(nameof(StudentIndex), new { id = id });
+            }
             return View();
         }
 
 
+
+        public async Task<IActionResult> TeacherIndex(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            //var user = _userManager.FindByIdAsync(id);
+
+            var viewModel = _mapper.Map<TeacherIndexViewModel>(user);
+
+            viewModel.Assignments = await _context.Activities
+                .Where(a => a.Module.CourseId == user.CourseId)
+                .Where(a => a.HasDeadline == true)
+                .ToListAsync();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+            var now = DateTime.Now;
+
+            //alla activities i kursen
+            viewModel.WeeklyActivities = await _context.Activities
+               .Where(a => a.Module.CourseId == user.CourseId)
+               //alla som startar innan sjunde dagen och slutar efter första dagen i veckan
+               .Where(a =>
+                    now.AddDays(6) > a.StartDate
+                    && now < a.EndDate)
+               .ToListAsync();
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> StudentIndex(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            //var user = _userManager.FindByIdAsync(id);
+            var viewModel = _mapper.Map<StudentIndexViewModel>(user);
+            return View(viewModel);
+        }
         // GET: User/Create
         [Authorize(Roles = "Teacher")]
         public ActionResult CreateUser(int? courseId = null)
@@ -187,7 +231,7 @@ namespace LMSLexicon20.Controllers
                 await _context.SaveChangesAsync();
                 TempData["SuccessText"] = $"Användare {userName} har tagits bort";
             }
-            
+
             return RedirectToAction(nameof(List), new { filterSearch = "" });
         }
         static string GeneratePassword()
@@ -297,6 +341,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateAjax]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddTeacherToCourse(int id, AddTeacherToCourseViewModel viewModel)
         {
@@ -327,16 +372,31 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new AddTeacherToCourseSuccessViewModel
+                    {
+                        TeacherId = viewModel.TeacherId
+                    };
+
+                    return PartialView("AddTeacherSuccessPartialView", ajaxModel);
+                }
                 TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är nu kursens lärare";
                 return RedirectToAction("Edit", "Courses", new { id = model.CourseId });
             }
-            TempData["FailText"] = $"Ingen lärare tilldelades till kursen!";
 
+            if (Request.IsAjax())
+            {
+                return PartialView("AddTeacherToCoursePartialView", viewModel);
+            }
+            TempData["FailText"] = $"Ingen lärare tilldelades till kursen!";
             return RedirectToAction("Edit", "Courses", new { id });
         }
 
         [Authorize(Roles = "Teacher")]
         [HttpPost]
+        [ValidateAjax]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromCourse(string id)
         {
@@ -350,7 +410,7 @@ namespace LMSLexicon20.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 model.CourseId = null;
                 try
                 {
@@ -368,6 +428,17 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new RemoveTeacherFromCourseSuccessViewModel
+                    {
+                        CourseId = courseId
+                    };
+
+                    return PartialView("RemoveTeacherSuccessPartialView", ajaxModel);
+                }
+
                 TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är inte längre kursens lärare";
                 return RedirectToAction("Edit", "Courses", new { id = courseId });
             }

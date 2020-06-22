@@ -11,6 +11,9 @@ using AutoMapper;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authorization;
+using LMSLexicon20.Extensions;
+using LMSLexicon20.Filters;
+using LMSLexicon20.ViewModels;
 
 namespace LMSLexicon20.Controllers
 {
@@ -55,6 +58,8 @@ namespace LMSLexicon20.Controllers
         public IActionResult CreateModule(int id)
         {
             TempData["courseId"] = id;
+            if (Request.IsAjax())
+                return PartialView("CreateModulePartialView");
             return View();
         }
         //Post
@@ -73,6 +78,7 @@ namespace LMSLexicon20.Controllers
         ////Post
         //[HttpPost]
         [Authorize(Roles = "Teacher")]
+        [ValidateAjax]
         [HttpPost]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel viewModel, int id)
         {
@@ -91,9 +97,31 @@ namespace LMSLexicon20.Controllers
                 //ToDo: kan man ha FÖR många async?
                 await context.Modules.AddAsync(model);
                 await context.SaveChangesAsync();
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new ModuleDetailVM
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        StartDate = model.StartDate,
+                        EndDate = model.EndDate,
+                        Description = model.Description,
+                        CourseId = model.CourseId,
+                        Expanded = false
+                    };
+                    
+                    return PartialView("CreateModuleSuccessPartialView", ajaxModel);
+                }
+
                 TempData["SuccessText"] = $"Modulen: {model.Name} - är skapad!";
                 return RedirectToAction(nameof(Details), "Courses", new { id = model.CourseId });
             }
+            if (Request.IsAjax())
+            {
+                return PartialView("CreateModulePartialView", viewModel);
+            }
+
             return View(viewModel);
         }
 

@@ -11,14 +11,19 @@
 <div class="row">
     <div class="col-md-5">
         <dl class="row">
-            <dt class="col-md-3">
+            <dt class="col-md-2">
                 @Html.DisplayNameFor(model => model.Teacher)
             </dt>
-            <dd class="col-md-9">
+            <dd class="col-md-10" id="createform">
                 @if (Model.Teacher != null)
                 {
                     <a class="float-left mr-2" asp-controller="Users" asp-action="Details" asp-route-id="@Model.Teacher.Id">@($"{Model.Teacher.FirstName} {Model.Teacher.LastName}")</a>
-                    <form asp-controller="Users" asp-action="RemoveFromCourse" asp-route-id="@Model.Teacher.Id" method="post">
+                    <form asp-controller="Users" asp-action="RemoveFromCourse" asp-route-id="@Model.Teacher.Id"
+                          data-ajax="true"
+                          data-ajax-method="POST"
+                          data-ajax-mode="replace"
+                          data-ajax-success="DisplayRemoveTeacherSuccess"
+                          data-ajax-update="#createform">
                         <button type="submit" class="btn btn-sm btn-outline-danger a-btn-slide-text">
                             <i class="fas fa-times" aria-hidden="true"></i>&nbsp;Ta bort&nbsp;
                         </button>
@@ -26,7 +31,7 @@
                 }
                 else
                 {
-                    <p id="createform">
+                    <p>
                         Ingen. <a asp-controller="Users" asp-action="AddTeacherToCourse" asp-route-id="@Model.Id"
                                   data-ajax="true"
                                   data-ajax-method="GET"
