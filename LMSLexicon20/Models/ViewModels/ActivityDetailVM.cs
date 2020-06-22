@@ -43,6 +43,6 @@ namespace LMSLexicon20.ViewModels
         public ICollection<Document> Documents { get; set; }
 
         public ActivityTypeWM ActivityTypeWM { get; set; }
-
+        public int NrOfAssignments { get; internal set; }
     }
 }

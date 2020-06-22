@@ -116,7 +116,8 @@ namespace LMSLexicon20.Controllers
                                                 Description = a.Description,
                                                 Expanded = (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate),
                                                 HasDeadline=a.HasDeadline,
-                                                Documents = a.Documents
+                                                Documents = a.Documents.Where(d => d.UserId == null).ToList(),
+                                                NrOfAssignments= a.Documents.Where(d => d.UserId != null).Count()
                                                 ,
                                                 ActivityTypeWM =
                                                 new ActivityTypeWM
