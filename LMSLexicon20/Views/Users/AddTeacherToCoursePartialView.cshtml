@@ -6,7 +6,12 @@
 }
 <div class="row">
     <div class="col">
-        <form asp-action="AddTeacherToCourse">
+        <form asp-action="AddTeacherToCourse"
+              data-ajax="true"
+              data-ajax-method="POST"
+              data-ajax-mode="replace"
+              data-ajax-success="DisplayAddTeacherSuccess"
+              data-ajax-update="#createform">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="from-group mb-3">
@@ -19,7 +24,7 @@
                     <i class="fas fa-plus-circle" aria-hidden="true"></i>&nbsp;Lägg till Läraren&nbsp;
                     <i class="fas fa-user-plus" aria-hidden="true"></i>
                 </button>
-                <a onclick="location.reload()" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
+                <a href="javascript:history.go(0)" class="btn btn-sm btn-outline-secondary a-btn-slide-text">
                     <i class="fas fa-ban" aria-hidden="true"></i>
                     <span>Avbryt</span>
                 </a>

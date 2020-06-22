@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LMSLexicon20.Migrations
 {
-    public partial class Init : Migration
+    public partial class _22 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ActivityType",
+                name: "ActivityTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -18,7 +18,7 @@ namespace LMSLexicon20.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ActivityType", x => x.Id);
+                    table.PrimaryKey("PK_ActivityTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,7 +108,7 @@ namespace LMSLexicon20.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Module",
+                name: "Modules",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -121,9 +121,9 @@ namespace LMSLexicon20.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Module", x => x.Id);
+                    table.PrimaryKey("PK_Modules", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Module_Courses_CourseId",
+                        name: "FK_Modules_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
@@ -233,21 +233,21 @@ namespace LMSLexicon20.Migrations
                 {
                     table.PrimaryKey("PK_Activities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Activities_ActivityType_ActivityTypeId",
+                        name: "FK_Activities_ActivityTypes_ActivityTypeId",
                         column: x => x.ActivityTypeId,
-                        principalTable: "ActivityType",
+                        principalTable: "ActivityTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Activities_Module_ModuleId",
+                        name: "FK_Activities_Modules_ModuleId",
                         column: x => x.ModuleId,
-                        principalTable: "Module",
+                        principalTable: "Modules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Document",
+                name: "Documents",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -263,27 +263,27 @@ namespace LMSLexicon20.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Document", x => x.Id);
+                    table.PrimaryKey("PK_Documents", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Document_Activities_ActivityId",
+                        name: "FK_Documents_Activities_ActivityId",
                         column: x => x.ActivityId,
                         principalTable: "Activities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Document_Courses_CourseId",
+                        name: "FK_Documents_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Document_Module_ModuleId",
+                        name: "FK_Documents_Modules_ModuleId",
                         column: x => x.ModuleId,
-                        principalTable: "Module",
+                        principalTable: "Modules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Document_AspNetUsers_UserId",
+                        name: "FK_Documents_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -345,28 +345,28 @@ namespace LMSLexicon20.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_ActivityId",
-                table: "Document",
+                name: "IX_Documents_ActivityId",
+                table: "Documents",
                 column: "ActivityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_CourseId",
-                table: "Document",
+                name: "IX_Documents_CourseId",
+                table: "Documents",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_ModuleId",
-                table: "Document",
+                name: "IX_Documents_ModuleId",
+                table: "Documents",
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_UserId",
-                table: "Document",
+                name: "IX_Documents_UserId",
+                table: "Documents",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Module_CourseId",
-                table: "Module",
+                name: "IX_Modules_CourseId",
+                table: "Modules",
                 column: "CourseId");
         }
 
@@ -388,7 +388,7 @@ namespace LMSLexicon20.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Document");
+                name: "Documents");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -400,10 +400,10 @@ namespace LMSLexicon20.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "ActivityType");
+                name: "ActivityTypes");
 
             migrationBuilder.DropTable(
-                name: "Module");
+                name: "Modules");
 
             migrationBuilder.DropTable(
                 name: "Courses");
