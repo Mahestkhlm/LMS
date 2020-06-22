@@ -35,7 +35,7 @@ namespace ViewComponentSample.ViewComponents
             var students = await _userManager.GetUsersInRoleAsync("Student");
 
             return students  //db.Users
-                .Where(u => u.CourseId == IdCourse)
+                .Where(u => u.CourseId == IdCourse) //not needed anymore!
                 .Select(c => new StudentVM
                 {
                     Id = c.Id,
