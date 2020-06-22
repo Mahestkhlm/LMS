@@ -6,11 +6,35 @@
 <div class="container teacher">
     <div class="row pt-4">
         <div class="col-md">
-            <div id="teacherHeader" class="media rounded p-4">
+            <div id="teacherHeader" class="media rounded p-4 teacher-container">
                 <img class="mr-3 rounded" src="~/Images/loginavatar.png" width="100" />
                 <div class="media-body">
                     <h3>Välkommen @Model.FullName!</h3>
                     <p>Det här är din profil där dina senaste aktiviteter och inlämningar visas.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row my-3">
+        <div class="col-md">
+            <div class="container rounded p-4 teacher-container">
+                <div class="media-body">
+                    <b>Din kurs:</b>
+                    @if (Model.CourseId != null)
+                    {
+                        <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">
+                            @Html.DisplayFor(Model => Model.Course.Name)
+                        </a>
+                    }
+                    else
+                    {
+                        <span>Du har ingen kurs än. </span>
+                        <a asp-controller="Courses" asp-action="Index" asp-route-id="@Model.CourseId">
+                            Välj en kurs i kursredigeraren.
+                        </a>
+                    }
+
+
                 </div>
             </div>
         </div>
@@ -21,17 +45,17 @@
             <div class="card border-primary">
                 <div class="card-header bg-primary text-white">Schema vecka @Model.GetWeekNumber()</div>
                 <div class="card-body py-2">
-                    <ul  class="list-group list-group-flush">
+                    <ul class="list-group list-group-flush">
                         @for (int i = 0; i < 7; i++)
                         {
                             <li class="list-group-item px-2">
                                 <b class="d-flex  justify-content-between align-items-center">
                                     <span>
-                                    @DateTime.Now.AddDays(i).DayOfWeek
+                                        @DateTime.Now.AddDays(i).DayOfWeek
 
                                     </span>
                                     <span>
-                                    @DateTime.Now.AddDays(i).ToString("dd'/'M")
+                                        @DateTime.Now.AddDays(i).ToString("dd'/'M")
 
                                     </span>
                                 </b>
@@ -41,15 +65,17 @@
                                         //om gällande datum är >= än enddate - skriv ut
                                         //måste jämföra bara dag inte tid
                                         //ToDo: testa
-                                        @if (DateTime.Now.AddDays(i).Day <= item.EndDate.Day
-                                          && DateTime.Now.AddDays(i) >= item.StartDate)
+                                        @*@if (DateTime.Now.AddDays(i) <= item.EndDate
+                                            && DateTime.Now.AddDays(i) >= item.StartDate)*@
+                                        @if (DateTime.Now.AddDays(i).Date <= item.EndDate
+                      && DateTime.Now.AddDays(i).Date >= item.StartDate)
                                         {
                                             <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
                                                 @Html.DisplayFor(modelItem => item.Name)
                                                 @*@Html.DisplayFor(modelItem => item.StartDate)
                                                     @Html.DisplayFor(modelItem => item.EndDate)*@
                                             </li>
-                                          }
+                                        }
                                     }
                                 </ul>
                             </li>
@@ -58,20 +84,48 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-1"></div>
         <div class="col-md">
             <div class="card border-primary">
                 <div class="card-header bg-primary text-white">Aktiviteter i denna kurs med deadline (så länge)</div>
                 <div class="card-body">
-                    @foreach (var item in Model.Assignments)
-                    {
-                        //if item har dokument uppladdade
-                        <div>@Html.DisplayFor(Model => item.Name)</div>
-                    }
+                    <b class="d-flex  justify-content-between align-items-center">
+                        <span>@Html.DisplayNameFor(Model => Model.Assignments)</span>
+                        <span>Deadline</span>
+                    </b>
+                    @* assignments-accordion *@
+                    <div class="accordion" id="accordion">
+                        @foreach (var item in Model.Assignments)
+                        {
+                            //card for item
+                            <div class="card border-0 m-0">
+                                @*header/collapse-button*@
+                                <div class="d-flex  justify-content-between align-items-center" id="@String.Format($"heading{item.Id}")">
+                                    <h2 class="mb-0">
+                                        <a href="#" class="btn btn-link btn-block text-left px-0" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")">
+                                            @Html.DisplayFor(Model => item.Name)
+                                        </a>
+                                    </h2>
+                                    <span>
+                                        @item.EndDate.ToString("dd'/'M")
+                                    </span>
+                                </div>
+                                @*content*@
+                                <div id="@String.Format($"collapse{item.Id}")" class="collapse" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Student
+                                    </div>
+                                </div>
+                            </div>
+                            @*<a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">
+                                    @Html.DisplayFor(Model => item.Name)
+                                </a>*@
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 

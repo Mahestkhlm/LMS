@@ -46,7 +46,7 @@ namespace LMSLexicon20.Controllers
             {
                 return RedirectToAction(nameof(TeacherIndex), new { id = id });
             }
-            else if(User.IsInRole("Student"))
+            else if (User.IsInRole("Student"))
             {
                 return RedirectToAction(nameof(StudentIndex), new { id = id });
             }
@@ -58,17 +58,19 @@ namespace LMSLexicon20.Controllers
         {
 
             var user = await _context.Users.FindAsync(id);
-            if (user ==null)
+            if (user == null)
             {
                 NotFound();
             }
             var viewModel = _mapper.Map<TeacherIndexViewModel>(user);
+            //ToDo: annat sätt?
+            if (user.CourseId != null) viewModel.Course = await _context.Courses.FindAsync(user.CourseId);
 
             viewModel.Assignments = await _context.Activities
                 .Where(a => a.Module.CourseId == user.CourseId)
                 .Where(a => a.HasDeadline == true)
+                .OrderBy(a=>a.EndDate)
                 .ToListAsync();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
             var now = DateTime.Now;
 
             //alla activities i kursen
