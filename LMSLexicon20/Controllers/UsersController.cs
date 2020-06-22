@@ -6,6 +6,7 @@ using AutoMapper;
 
 using LMSLexicon20.Data;
 using LMSLexicon20.Extensions;
+using LMSLexicon20.Filters;
 using LMSLexicon20.Models;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -340,6 +341,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateAjax]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddTeacherToCourse(int id, AddTeacherToCourseViewModel viewModel)
         {
@@ -370,16 +372,31 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new AddTeacherToCourseSuccessViewModel
+                    {
+                        TeacherId = viewModel.TeacherId
+                    };
+
+                    return PartialView("AddTeacherSuccessPartialView", ajaxModel);
+                }
                 TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är nu kursens lärare";
                 return RedirectToAction("Edit", "Courses", new { id = model.CourseId });
             }
-            TempData["FailText"] = $"Ingen lärare tilldelades till kursen!";
 
+            if (Request.IsAjax())
+            {
+                return PartialView("AddTeacherToCoursePartialView", viewModel);
+            }
+            TempData["FailText"] = $"Ingen lärare tilldelades till kursen!";
             return RedirectToAction("Edit", "Courses", new { id });
         }
 
         [Authorize(Roles = "Teacher")]
         [HttpPost]
+        [ValidateAjax]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromCourse(string id)
         {
@@ -411,6 +428,17 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new RemoveTeacherFromCourseSuccessViewModel
+                    {
+                        CourseId = courseId
+                    };
+
+                    return PartialView("RemoveTeacherSuccessPartialView", ajaxModel);
+                }
+
                 TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är inte längre kursens lärare";
                 return RedirectToAction("Edit", "Courses", new { id = courseId });
             }
