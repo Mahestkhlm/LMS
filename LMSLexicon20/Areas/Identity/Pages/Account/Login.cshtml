@@ -8,26 +8,26 @@
 <div class="container">
     <div style=" margin-top : 10px; margin-top: 35px;">
         <section style="border: 3px solid; background-color:darkseagreen; padding: 50px ">
-            <h1 style="margin-top: 80px auto">Login  to Your Account</h1>          
+            <h1 style="margin-top: 80px auto">LOGGA IN PÅ DITT KONTO</h1>          
                 <img src="~/Images/loginavatar.png" alt="Avatar" class="avatar" width="80" height="80" align="middle">
                 <form id="account" method="post">
                     @*<div asp-validation-summary="All" class="text-danger"></div>*@
                     <div class="row form-group">
                         <div class="ml-auto mr-lg-10">
-                            <label asp-for="Input.Email">EMAIL ADDRESS</label>
+                            <label asp-for="Input.Email">E-POSTADRESS</label>
                         </div>
                         <div class="ml-4 mr-lg-10">
-                            <input asp-for="Input.Email" placeholder="Enter Email Address" />
+                            <input asp-for="Input.Email" placeholder="Skriv i E-Postadress" />
                         </div>
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
                     <div class="form-group text-center row">
                         <div class="ml-auto mr-lg-10">
-                            <label asp-for="Input.Password">PASSWORD</label>
+                            <label asp-for="Input.Password">LÖSENORD</label>
 
                         </div>
                         <div class="ml-4 mr-lg-10">
-                            <input asp-for="Input.Password" placeholder="Enter Password" />
+                            <input asp-for="Input.Password" placeholder="Skriv i lösenord" />
                         </div>
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
@@ -38,10 +38,15 @@
                                 @Html.DisplayNameFor(m => m.Input.RememberMe)
                             </label>
 
-                            <button type="submit" class="btn btn-primary float-right" Display="block" style="width:auto;">LOGIN</button>
+                            <button type="submit" asp-route-returnUrl="/Users/Start" class="btn btn-primary float-right" Display="block" style="width:auto;">LOGGA IN</button>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <p>
+                            <a id="forgot-password" asp-page="./ForgotPassword">Glömt Ditt Lösenord?</a>
+                        </p>
 
+                    </div>
                 </form>
         </section>
     </div>

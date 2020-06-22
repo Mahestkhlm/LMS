@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LMSLexicon20.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -38,7 +39,7 @@ namespace LMSLexicon20.ViewModels
 
         //Foreign Key
         public int CourseId { get; set; }
-
+        public ICollection<Document> Documents { get; set; }
         public ICollection<ActivityDetailVM> ActivityDetailVM { get; set; }
     }
 }

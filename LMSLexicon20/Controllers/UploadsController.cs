@@ -17,12 +17,12 @@ namespace LMSLexicon20.Controllers
 {
     public class UploadsController : Controller
     {
-        private IWebHostEnvironment hostingEnvironment;
+        private IWebHostEnvironment _env;
         private readonly ApplicationDbContext _context;
 
-        public UploadsController(IWebHostEnvironment hostingEnvironment, ApplicationDbContext context)
+        public UploadsController(IWebHostEnvironment hostingEnvironments, ApplicationDbContext context)
         {
-            this.hostingEnvironment = hostingEnvironment;
+            _env = hostingEnvironments;
             _context = context;
         }
 
@@ -58,6 +58,11 @@ namespace LMSLexicon20.Controllers
                         //using (var stream = new FileStream(filePath, FileMode.Create)
                         using FileStream output = System.IO.File.Create(filePath);
                         await source.CopyToAsync(output);
+                        filePath = Path.GetRelativePath(_env.ContentRootPath, filePath);
+                        filePath=filePath.Replace("wwwroot\\", ""); //Directory.GetCurrentDirectory()  HttpRuntime.AppDomainAppPath
+
+
+
                         if (!await LinkDocToDomainAsync(filePath, domain, id))
                         {
                             TempData["FailText"] = $"Kunde inte koppla {domain} / {id} till filen {filePath}. Upladdning avbryts";
@@ -73,8 +78,8 @@ namespace LMSLexicon20.Controllers
 
             }
 
-            //return Ok(new { count = files.Count, files.size, filePath });
-            return View();
+            return Ok(new { count = files.Count, size= size });
+            //return View();
         }
 
         private async Task<bool> LinkDocToDomainAsync(string filepath, string domain, string id)
@@ -126,9 +131,9 @@ namespace LMSLexicon20.Controllers
         private string GetPathAndFilename(string filename, string domain, string id)
         {
             //var path = Path.Combine(_config["StoredFilesPath"],
-            //string path = this.hostingEnvironment.WebRootPath + "\\uploads\\";
+            //string path = _env.WebRootPath + "\\uploads\\";
 
-            string path = Path.Combine(this.hostingEnvironment.WebRootPath, "uploads");
+            string path = Path.Combine(_env.WebRootPath, "uploads");
             path = Path.Combine(path, domain);
             path = Path.Combine(path, id);
             if (domain == "assignment") path = Path.Combine(path, User.FindFirstValue(ClaimTypes.NameIdentifier));
