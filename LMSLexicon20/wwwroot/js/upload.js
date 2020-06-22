@@ -45,7 +45,7 @@ $(function () {
                 paramName: "files", // The name that will be used to transfer the file
                 maxFilesize: 2, // MB
 
-                url: '@Url.Action("PostDoc", "Uploads")',
+                url: url_action,
                 params: {
                     domain: $this.data("domain"),
                     id: $this.data("id")
