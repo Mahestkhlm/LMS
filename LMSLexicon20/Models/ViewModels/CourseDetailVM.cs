@@ -34,6 +34,8 @@ namespace LMSLexicon20.ViewModels
         [Display(Name = "Lärare")]
         public User Teacher { get; set; }
 
+        public ICollection<Document> Documents { get; set; }
+
         public ICollection<ModuleDetailVM> ModuleDetailVM { get; set; }
 
 
