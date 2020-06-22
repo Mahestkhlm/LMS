@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -15,24 +16,25 @@ namespace LMSLexicon20.Models.ViewModels
         
         [Display(Name = "Kurs")]
         public Course Course { get; set; }
-        public Activity Activity { get; set; }
         public int CourseId { get; set; }
         public string CourseName { get; set; }
-        public ICollection <Activity>Activities { get; set; }
-        public ICollection<Activity> Assignments { get; set; }
-  
-        public IEnumerable<Activity> CurrentActivites { get; set; }
-        public List<Activity> NextActivites { get; set; }
-        public List<Activity> PrevActivities { get; set; }
+
+        public ICollection<Activity> Activities { get; set; }
+        public ICollection<Activity> WeeklyActivities { get; set; }
+
+        public ICollection<Activity> Assignments { get; set; } //activitytype == inlämmningsuppgifter
         public IEnumerable<Activity> CurrentAssignments { get; set; }
         public IEnumerable<Activity> LateAssignments { get; set; }
 
 
+        public DateTime GetWeekDay(int offset)
+        {
+            var today = DateTime.Today;
+            var monday = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+            return monday.AddDays(offset);
+        }
 
 
-
-
-        public ICollection<Activity> WeeklyActivities { get; set; }
         public int GetWeekNumber()
         {
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
@@ -42,7 +44,7 @@ namespace LMSLexicon20.Models.ViewModels
 
             return cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
         }
-        public string[] WeekDays { get { return new string[] { "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag" }; } set { } }
+        //public string[] WeekDays { get { return new string[] { "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag" }; } set { } }
         //public int CurrentWeek { get { return DateTime.Now.DayOfYear / 7; } set { } }
     }
 
