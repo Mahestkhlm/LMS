@@ -56,7 +56,8 @@
 
 <div>
     <div class="@clsDD" data-domain="course" data-id="@Model.Id">
-        <div>  @*class="fileinput"*@
+        <div>
+            @*class="fileinput"*@
             <div class="row" style="margin-left:0; display: flex">
                 <div class="col">
                     <i class="fas fa-university"></i>Kurs
@@ -136,6 +137,35 @@
                 {
                     first = false;
                 }
+
+                switch (itemD.Ext)
+                {
+                    case ".pdf":
+                        <i class="far fa-file-pdf" style="color:red"></i>
+                        break;
+                    case ".doc":
+                    case ".docx":
+                        <i class="fas fa-file-word" style="color:blue"></i>
+                        break;
+
+                    case ".js":
+                    case ".html":
+                    case ".htm":
+                    case ".cshtml":
+                        <i class="far fa-file-code" style="color:blueviolet"></i>
+                        break;
+
+                    case ".zip":
+                    case ".rar":
+                        <i class="fas fa-file-archive"></i>
+                        break;
+
+
+                    default:
+                        <i class="fas fa-file" style="color:darkgrey"></i>
+                        break;
+                }
+
                 <a target="_new" href="@itemD.Path">@itemD.Name</a>
 
                 @*<a href="@Url.Content(itemD.Path)">@itemD.Name</a>*@
@@ -190,7 +220,8 @@
                             <div class="row">
 
                                 <div class="col-5 @clsDD" data-domain="module" data-id="@itemM.Id">
-                                    <div> @*class="fileinput"*@
+                                    <div>
+                                        @*class="fileinput"*@
                                         <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}")" aria-expanded="@itemM.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}")">
                                             <i class="fas fa-layer-group"></i>
                                             <span class="course-module-name">@Html.DisplayFor(modelItem => itemM.Name)</span>
@@ -281,6 +312,32 @@
                                     {
                                         first = false;
                                     }
+                                    switch (itemD.Ext)
+                                    {
+                                        case ".pdf":
+                                            <i class="far fa-file-pdf" style="color:red"></i>
+                                            break;
+                                        case ".doc":
+                                        case ".docx":
+                                            <i class="fas fa-file-word" style="color:blue"></i>
+                                            break;
+
+                                        case ".js":
+                                        case ".html":
+                                        case ".htm":
+                                        case ".cshtml":
+                                            <i class="far fa-file-code" style="color:blueviolet"></i>
+                                            break;
+
+                                        case ".zip":
+                                        case ".rar":
+                                            <i class="fas fa-file-archive"></i>
+                                            break;
+
+                                        default:
+                                            <i class="fas fa-file" style="color:darkgrey"></i>
+                                            break;
+                                    }
                                     <a target="_new" href="@itemD.Path">@itemD.Name</a>
                                 }
                             </dd>
@@ -320,7 +377,8 @@
                                                 <div class="row">
 
                                                     <div class="col-5 @clsDD" data-domain="activity" data-id="@itemA.Id">
-                                                        <div> @*class="fileinput"*@
+                                                        <div>
+                                                            @*class="fileinput"*@
                                                             <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemA.Id}")" aria-expanded="@itemA.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemA.Id}")">
                                                                 <i class="fas fa-tasks"></i>
                                                                 <span class="course-activity-name">@Html.DisplayFor(modelItem => itemA.Name)</span>
@@ -410,6 +468,32 @@
                                                         {
                                                             first = false;
                                                         }
+                                                        switch (itemD.Ext)
+                                                        {
+                                                            case ".pdf":
+                                                                <i class="far fa-file-pdf" style="color:red"></i>
+                                                                break;
+                                                            case ".doc":
+                                                            case ".docx":
+                                                                <i class="fas fa-file-word" style="color:blue"></i>
+                                                                break;
+
+                                                            case ".js":
+                                                            case ".html":
+                                                            case ".htm":
+                                                            case ".cshtml":
+                                                                <i class="far fa-file-code" style="color:blueviolet"></i>
+                                                                break;
+
+                                                            case ".zip":
+                                                            case ".rar":
+                                                                <i class="fas fa-file-archive"></i>
+                                                                break;
+
+                                                            default:
+                                                                <i class="fas fa-file" style="color:darkgrey"></i>
+                                                                break;
+                                                        }
                                                         <a target="_new" href="@itemD.Path">@itemD.Name</a>
                                                     }
                                                 </dd>
@@ -455,12 +539,38 @@
                                                 {
                                                     first = false;
                                                 }
+                                                switch (itemD.Ext)
+                                                {
+                                                    case ".pdf":
+                                                        <i class="far fa-file-pdf" style="color:red"></i>
+                                                        break;
+                                                    case ".doc":
+                                                    case ".docx":
+                                                        <i class="fas fa-file-word" style="color:blue"></i>
+                                                        break;
+
+                                                    case ".js":
+                                                    case ".html":
+                                                    case ".htm":
+                                                    case ".cshtml":
+                                                        <i class="far fa-file-code" style="color:blueviolet"></i>
+                                                        break;
+
+                                                    case ".zip":
+                                                    case ".rar":
+                                                        <i class="fas fa-file-archive"></i>
+                                                        break;
+
+                                                    default:
+                                                        <i class="fas fa-file" style="color:darkgrey"></i>
+                                                        break;
+                                                }
                                                 <a target="_new" href="@itemD.Path">@itemD.Name</a>
                                             }
 
                                             <br />
                                         </div>
-                                        </div>
+                                    </div>
                                 </div> @*card*@
                             </div>
                         }
@@ -523,7 +633,6 @@
                 400
             );
         });
-
 
     });
 </script>

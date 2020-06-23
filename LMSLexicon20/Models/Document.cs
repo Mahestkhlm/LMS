@@ -14,6 +14,8 @@ namespace LMSLexicon20.Models
         public DateTime Date { get; set; }
         public string Path { get; set; }
 
+        public string Ext => System.IO.Path.GetExtension(this.Path);
+
         //Foreign Key
         public string UserId { get; set; }
         public int? CourseId { get; set; }

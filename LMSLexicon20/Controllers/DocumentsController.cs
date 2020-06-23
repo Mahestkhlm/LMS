@@ -253,6 +253,7 @@ namespace LMSLexicon20.Controllers
 
             var path = Path.Combine( "wwwroot",document.Path);
             System.IO.File.Delete(Path.GetFullPath(path));
+            TempData["SuccessText"] = $"Dokumentet: {path} raderades.";
             return RedirectToAction(nameof(Index));
         }
 
