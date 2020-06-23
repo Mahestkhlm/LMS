@@ -13,6 +13,7 @@ namespace LMSLexicon20.Models.ViewModels
         [Display(Name = "Namn")]
         public string FullName { get; set; }
         public int? CourseId { get; set; }
+        public int? StudentsInCourse { get; set; }
         public Course Course { get; set; }
         [Display(Name = "Dokument")]
         public ICollection<Document> Documents { get; set; }
