@@ -3,41 +3,36 @@
 @{
     ViewData["Title"] = "Student StartPage";
 }
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/js/all.min.js" integrity="sha256-+Q/z/qVOexByW1Wpv81lTLvntnZQVYppIL1lBdhtIq0=" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="~/css/StyleSheet.css" />
-    </head>
-    <body style="background-color:ThreeDHighlight powderblue">
 
 
-        <div class="container">
-            <div class="row pt-4">
-                <div class="col-md">
-                    <div id="StudentHeader" class="media rounded p-4">
-                        <img class="mr-3 rounded" src="~/Images/loginavatar.png" width="100" />
-                        <div class="media-body">
-                            <h3>VÄLKOMMEN @Model.FullName</h3>
-                            <p>Det här är din profil där dina senaste aktiviteter och inlämningar visas.</p>
-                        </div>
+
+<div style="background-color:ThreeDHighlight powderblue">
+
+
+    <div class="container">
+        <div class="row pt-4">
+            <div class="col-md">
+                <div id="StudentHeader" class="media rounded p-4">
+                    <img class="mr-3 rounded" src="~/Images/loginavatar.png" width="100" />
+                    <div class="media-body">
+                        <h3>VÄLKOMMEN @Model.FullName</h3>
+                        <p>Det här är din profil där dina senaste aktiviteter och inlämningar visas.</p>
                     </div>
                 </div>
             </div>
-            <div class="row my-3"></div>
+        </div>
+        <div class="row my-3"></div>
 
-            <div class="row px-5">
-                <div id="carduppgifter" class="media rounded p-4">
-                    <h5 class="mb-5">KURS: @Model.CourseName</h5>
-                    <div class="card-body  card-border-dark rounded">
-                        <h4 class="card-header bg-info text-black">EJ INLÄMNADE UPPGIFTER</h4>
-                        <span class="badge badge-pill indigo"><i class="fas fa-bullhorn" aria-hidden="true"></i></span>
-                        <button class="badge badge-pill btn-lg btn-warning" type="button" data-toggle="collapse" data-target="#EjActivity1collapse" aria-expanded="false" aria-controls="EjActivitycollapse">
-                            EJ INLÄMNAD
-                        </button>
-                        @*<div class="collapse" id="EjActivity1collapse">
+        <div class="row px-5">
+            <div id="carduppgifter" class="media rounded p-4">
+                <h5 class="mb-5">KURS: @Model.CourseName</h5>
+                <div class="card-body  card-border-dark rounded">
+                    <h4 class="card-header bg-info text-black">EJ INLÄMNADE UPPGIFTER</h4>
+                    <span class="badge badge-pill indigo"><i class="fas fa-bullhorn" aria-hidden="true"></i></span>
+                    <button class="badge badge-pill btn-lg btn-warning" type="button" data-toggle="collapse" data-target="#EjActivity1collapse" aria-expanded="false" aria-controls="EjActivitycollapse">
+                        EJ INLÄMNAD
+                    </button>
+                    @*<div class="collapse" id="EjActivity1collapse">
                             <div class="card card-body">
                                 <ul>
                                     @if (Model != null)
@@ -62,133 +57,93 @@
 
                             </div>
                         </div>*@
-                    </div>
-
                 </div>
+
             </div>
-            <div class="col-md-6"></div>
         </div>
+        <div class="col-md-6"></div>
+    </div>
+
+    <div class="row my-3"></div>
+
+    <div class="container list-inline-item bg-border-dark text-black">
+
+        <div id="cardvecka" class="card card-border-dark rounded">
+            <h4 class="card-header bg-info text-black">AKTUELL VECKA: @Model.GetWeekNumber()</h4>
+            <div class="card-body card-border-dark rounded">
+                <ul class="list-group list-group-flush">
+                    @for (int i = 0; i < 7; i++)
+                    {
+                        <li class="list-group-item px-2">
+                            <b class="d-flex  justify-content-between align-items-center">
+                                <span>
+                                    @Model.GetWeekDay(i).DayOfWeek
+                                </span>
+                                <span>
+                                    @Model.GetWeekDay(i).ToString("dd'/'M")
+                                </span>
+                            </b>
+                            <ul class="list-group">
+                                @foreach (var item in Model.WeeklyActivities)
+                                {
+                                    @if (item.StartDate.Date == Model.GetWeekDay(i))
+                                    {
+                                        <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
+                                            <span>@item.Name</span>
+                                            @if (item.ActivityType.RequireDocument)
+                                            {
+                                                @if (Model.Documents.FirstOrDefault(e => e.ActivityId == item.Id) != null)
+                                                {
+                                                    <span>Uploaded</span>
+                                                }
+                                                else
+                                                {
+                                                    <div class="ddzone" data-domain="assignment" data-id="@item.Id">
+                                                        <div class="fileinput">
+                                                            <button type="button" class="btn btn-sm btn-outline-warning">
+                                                             <span class="fas fa-file-archive"> </span>
+                                                                Ladda Upp
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                    }
+                </ul>
+
+
+                <br />
+                
+            </div>
+        </div>
+               
 
         <div class="row my-3"></div>
-
-        <div class="container list-inline-item bg-border-dark text-black">
-
-            <div id="cardvecka" class="card card-border-dark rounded">
-                <h4 class="card-header bg-info text-black">AKTUELL VECKA: @Model.GetWeekNumber()</h4>
-                <div class="card-body card-border-dark rounded">
-                    <ul class="list-group list-group-flush">
-                        @for (int i = 0; i < 7; i++)
-                        {
-                            <li class="list-group-item px-2">
-                                <b class="d-flex  justify-content-between align-items-center">
-                                    <span>
-                                        @Model.GetWeekDay(i).DayOfWeek
-                                    </span>
-                                    <span>
-                                        @Model.GetWeekDay(i).ToString("dd'/'M")
-                                    </span>
-                                </b>
-                                <ul class="list-group">
-                                    @foreach (var item in Model.WeeklyActivities)
-                                    {
-                                        @if (item.StartDate.Date == Model.GetWeekDay(i))
-                                        {
-                                            <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
-                                                <a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
-                                            </li>
-                                        }
-                                    }
-                                </ul>
-                            </li>
-                        }
-                    </ul>
-
-
-                    <br />
-                    @*<div id="cardvecka" class="card-body  card-border-dark rounded">
-        <div class="card-body  card-border-dark rounded">
-            <button class="badge badge-pill btn-lg btn-danger" type="button" data-toggle="collapse" data-target="#EjActcoll" aria-expanded="false" aria-controls="EjActivitycollapse">
-                EJ INLÄMNAD
-            </button>
-            <div class="collapse" id="EjActcoll">
-                <div class="card card-body">
-                    <ul>
-                        @if (Model != null)
-                        {
-
-                            @if (Model.LateAssignments.Count() > 0)
-                            {
-
-                                @foreach (var assignment in Model.LateAssignments)
-                                {
-                                    <li>
-                                        <h5> <a asp-controller="Activities" asp-action="Details" asp-route-courseId="@Model.CourseId" asp-route-id="@assignment.Id">@assignment.Name</a> <span class="float-right">SISTA INLÄMNINGSDATUM: @assignment.EndDate</span></h5>
-                                    </li>
-                                }
-                            }
-                            else
-                            {
-                                <li>INGEN SEN INLÄMNINGSUPPGIFTER!</li>
-                            }
-                        }
-                    </ul>
-
+        <div class="card">
+            <h5 class="card-header bg-secondary text-black">UPLOADS</h5>
+            <div class="card-body  card-border-dark rounded">
+                <button class="badge badge-pill btn-lg btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Documents
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        @*<a asp-controller="Documents" asp-action="Details" asp-route-courseId="@Model.CourseId" asp-route-id="">@Activity.Name</a>
+                            <a href="@s">@name</a>*@
+                    </div>
                 </div>
-            </div>
-                </div>
-                </div>*@
             </div>
         </div>
 
-
-                    @*<div class="card-body  card-border-dark rounded">
-        <button class="badge badge-pill btn-lg btn-warning" type="button" data-toggle="collapse" data-target="#EjActivitycol" aria-expanded="false" aria-controls="EjActivitycollapse">
-            ANKOMMANDE AKTIVITETER
-        </button>
-        <div class="collapse" id="EjActivitycol">
-            <div class="card card-body">
-                <ul>
-
-                    @if (Model != null)
-                    {
-                        @if (Model.CurrentAssignments.Count() > 0)
-                        {
-
-                            @foreach (var activity in Model.CurrentAssignments)
-                            {
-
-                                <li>
-                                    <h5> <a asp-controller="Activities" asp-action="Details" asp-route-courseId="@Model.CourseId" asp-route-id="@activity.Id">@activity.Name</a> <span class="float-right">SISTA INLÄMNINGSDATUM: @activity.EndDate</span></h5>
-                                </li>
-                            }
-                        }
-                        else
-                        {
-                            <li>INGEN ANKOMMANDE AKTIVITET</li>
-                        }
-                    }
-
-                </ul>
-            </div>
-        </div>*@
-
-                    <div class="row my-3"></div>
-                    <div class="card">
-                        <h5 class="card-header bg-secondary text-black">UPLOADS</h5>
-                        <div class="card-body  card-border-dark rounded">
-                            <button class="badge badge-pill btn-lg btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                Documents
-                            </button>
-                            <div class="collapse" id="collapseExample">
-                                <div class="card card-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+    </div>
 
 
-    </body>
-</html>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.min.js" integrity="sha256-fegGeSK7Ez4lvniVEiz1nKMx9pYtlLwPNRPf6uc8d+8=" crossorigin="anonymous"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>var url_action='@Url.Action("PostDoc", "Uploads")';</script>
+<script src="~/js/upload.js"></script>

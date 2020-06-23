@@ -97,11 +97,12 @@ namespace LMSLexicon20.Controllers
         {
             var user = await _context.Users.FindAsync(id);
             var viewModel = _mapper.Map<StudentIndexViewModel>(user);
-
+            var documents = await _context.Documents.Where(e =>e.UserId == id).ToListAsync();
+            viewModel.Documents = documents;
             var today = DateTime.Today;
             var mondayWeekStartDay = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
 
-            var activities = _context.Activities.Where(e => e.Module.CourseId == user.CourseId);
+            var activities = _context.Activities.Include(e=>e.ActivityType).Include(e=>e.Module).Where(e => e.Module.CourseId == user.CourseId);
             viewModel.WeeklyActivities = await activities.Where(e => e.StartDate >= mondayWeekStartDay && e.StartDate < mondayWeekStartDay.AddDays(6)).ToListAsync();
 
             return View(viewModel);
