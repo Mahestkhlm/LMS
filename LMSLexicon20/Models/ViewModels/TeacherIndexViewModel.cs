@@ -14,6 +14,8 @@ namespace LMSLexicon20.Models.ViewModels
         public string FullName { get; set; }
         public int? CourseId { get; set; }
         public int? StudentsInCourse { get; set; }
+        public Module CurrentModule { get; set; }
+
         public Course Course { get; set; }
         [Display(Name = "Dokument")]
         public ICollection<Document> Documents { get; set; }
@@ -28,7 +30,7 @@ namespace LMSLexicon20.Models.ViewModels
             //DateTime date2 = new DateTime(2020, 06, 29); //yyyy, MM, dd
             Calendar cal = dfi.Calendar;
 
-            return cal.GetWeekOfYear(date1, dfi.CalendarWeekRule,dfi.FirstDayOfWeek);
+            return cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
         }
         public string[] WeekDays { get { return new string[] { "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag" }; } set { } }
         //public int CurrentWeek { get { return DateTime.Now.DayOfYear / 7; } set { } }

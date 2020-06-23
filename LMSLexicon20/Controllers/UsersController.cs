@@ -60,20 +60,25 @@ namespace LMSLexicon20.Controllers
                 NotFound();
             }
             var viewModel = _mapper.Map<TeacherIndexViewModel>(user);
-            
-            if (user.CourseId != null) viewModel.Course = await _context.Courses.FindAsync(user.CourseId);
 
+            if (user.CourseId != null) 
+                viewModel.Course = await _context.Courses
+                    .Include(c=>c.Modules)
+                    .FirstOrDefaultAsync(c=>c.Id==user.CourseId);
+            viewModel.StudentsInCourse = _userManager.GetUsersInRoleAsync("Student").Result
+                            .Where(u => u.CourseId == user.CourseId).Count();
+            viewModel.CurrentModule = viewModel.Course.Modules
+                .FirstOrDefault(m => m.StartDate <= DateTime.Now.Date
+                    && m.EndDate >= DateTime.Now.Date);
             viewModel.Assignments = await _context.Activities
                 .Where(a => a.Module.CourseId == user.CourseId)
                 .Where(a => a.HasDeadline == true)
                 .Include(a => a.Documents)
-                .ThenInclude(d=>d.User)
+                .ThenInclude(d => d.User)
                 .OrderBy(a => a.EndDate)
                 .ToListAsync();
 
-            viewModel.StudentsInCourse = _userManager.GetUsersInRoleAsync("Student").Result
-                .Where(u=>u.CourseId==user.CourseId).Count();  
-                
+
             var now = DateTime.Now;
 
             //alla activities i kursen
@@ -162,7 +167,7 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(string id)
         {
-            
+
             var model = await _context.Users.FindAsync(id);
             if (model == null)
                 NotFound();
