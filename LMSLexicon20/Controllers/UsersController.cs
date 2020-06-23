@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-
 using LMSLexicon20.Data;
 using LMSLexicon20.Extensions;
 using LMSLexicon20.Filters;
@@ -31,7 +30,6 @@ namespace LMSLexicon20.Controllers
             _context = dbContext;
             _userManager = userManager;
             _mapper = mapper;
-
         }
 
         public IActionResult Index()
@@ -66,11 +64,14 @@ namespace LMSLexicon20.Controllers
             //ToDo: annat sätt?
             if (user.CourseId != null) viewModel.Course = await _context.Courses.FindAsync(user.CourseId);
 
+            //ToDo: kolla att det funkar
             viewModel.Assignments = await _context.Activities
                 .Where(a => a.Module.CourseId == user.CourseId)
                 .Where(a => a.HasDeadline == true)
-                .OrderBy(a=>a.EndDate)
+                .Include(a => a.Documents)
+                .OrderBy(a => a.EndDate)
                 .ToListAsync();
+
             var now = DateTime.Now;
 
             //alla activities i kursen
