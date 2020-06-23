@@ -96,7 +96,7 @@
         <div class="col-md-1"></div>
         <div class="col-md">
             <div class="card border-primary">
-                <div class="card-header bg-primary text-white">Inlämningar</div>
+                <div class="card-header bg-primary text-white">Aktivitet</div>
                 <div class="card-body">
                     <b class="d-flex  justify-content-between align-items-center">
                         <span>@Html.DisplayNameFor(Model => Model.Assignments)</span>
@@ -145,7 +145,11 @@
                                                         </a>
                                                         <span>
                                                             @Html.DisplayFor(model => doc.Name)
+                                                            <i class="fas fa-info-circle text-info ml-3" data-toggle="tooltip" title="Inlämnad @Html.DisplayFor(model=>doc.Date)" data-placement="right"></i>
                                                         </span>
+                                                        @*<span>
+                                                            Inlämnad @Html.DisplayFor(model=>doc.Date)
+                                                        </span>*@
                                                     </div>
                                                 }
                                             }}
