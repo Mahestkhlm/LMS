@@ -124,9 +124,7 @@ body {
     width: 100%;
     border: 8px inherit;
     border-radius: 35px;
-    padding: 50px;
     margin: 10px;
-    height: 200px;
     background-color: GrayText;
     background-image: linear-gradient(to bottom right, white, grey);
     transition: width 2s;
@@ -134,6 +132,8 @@ body {
 
 #cardvecka {
     background-color: transparent;
+    width: 100%;
+    margin: 10px;
     border-style: groove;
     border-radius: 35px;
     opacity: inherit;
