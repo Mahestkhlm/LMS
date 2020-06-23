@@ -33,21 +33,20 @@
     </header>
     <div class="container" id="sharedLayout">
         <main role="main" class="pb-3">
-            @*var message =(MessageVM)TempData["UserMessage"];*@
             @{var clsOn = "";}
             @{clsOn = (TempData["SuccessText"] != null) ? "on" : ""; }
 
-            <div style="display: none" class="alert alert-success @clsOn" id="message-alert">
+            <div style="display: none" class="alert alert-success center @clsOn" id="message-alert">
                 <button type="button" class="close" data-dismiss="alert">x</button>
-                <span>@TempData["SuccessText"]</span>
+                <strong><span>@TempData["SuccessText"]</span></strong>
             </div>
-
 
             @{clsOn = (TempData["FailText"] != null) ? "on" : ""; }
-            <div style="display: none" class="alert alert-danger @clsOn" id="message-alert">
+            <div style="display: none" class="alert alert-danger  center @clsOn" id="message-alert">
                 <button type="button" class="close" data-dismiss="alert">x</button>
-                <span>@TempData["FailText"]</span>
+                <strong><span>@TempData["FailText"]</span></strong>
             </div>
+
             @RenderBody()
         </main>
     </div>
@@ -77,6 +76,7 @@
                     sessionStorage.removeItem("msg_cls");
                     sessionStorage.removeItem("msg_alert");
                 }
+
                 $msg.fadeTo(3000, 500).slideUp(500, function () { $msg.slideUp(500); });
             }
             msgAlert();

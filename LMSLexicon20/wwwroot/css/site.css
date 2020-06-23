@@ -138,3 +138,33 @@ body {
     border-radius: 35px;
     opacity: inherit;
 }
+
+.center {
+    position: absolute;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 48%;
+    height: 59%;
+    max-width: 640px;
+    max-height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+button.close {
+    position: relative;
+    bottom: 55%;
+    left: 100%;
+    color:lightcoral;
+}
+
+.alert.center {
+    opacity: 0.9;
+    z-index: 1;
+}
+

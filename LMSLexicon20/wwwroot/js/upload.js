@@ -37,7 +37,12 @@ $(function () {
 
                     
                     sessionStorage.setItem("msg_cls", "alert-success");
-                    sessionStorage.setItem("msg_alert", 'Uppladdning av filen:' + file.name +' klar.');
+                    if (file.length > 1) {
+                        sessionStorage.setItem("msg_alert", 'Uppladdning av ' + file.length + ' dokument klart.');
+                    }
+                    else {
+                        sessionStorage.setItem("msg_alert", 'Uppladdning av dokument: ' + file.name + ' klar.');
+                    }
                     window.location.reload();
                 },
                 error: function (file, response) {
@@ -47,7 +52,7 @@ $(function () {
                     //errorDisplay[errorDisplay.length - 1].innerHTML = 'Error';  //'@TempData["FailText"]
 
                     sessionStorage.setItem("msg_cls", "alert-danger");
-                    sessionStorage.setItem("msg_alert", 'Uppladdning av filen:' + file.name + ' mislyckades. Fel:' + response);
+                    sessionStorage.setItem("msg_alert", 'Uppladdning av filen:' + file.name + ' mislyckades.\nFelmeddelande:' + response);
                     msgAlert();
                 }
             });
