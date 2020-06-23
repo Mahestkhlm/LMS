@@ -71,12 +71,8 @@ namespace LMSLexicon20.Controllers
                 .OrderBy(a => a.EndDate)
                 .ToListAsync();
 
-            var courseTakers = await _context.Users
-                .Where(u => u.CourseId == user.CourseId)
-                .ToListAsync();
-            //ToDo: lös finare
-            viewModel.StudentsInCourse = courseTakers.Count()-1;
-                
+            viewModel.StudentsInCourse = _userManager.GetUsersInRoleAsync("Student").Result
+                .Where(u=>u.CourseId==user.CourseId).Count();  
                 
             var now = DateTime.Now;
 
