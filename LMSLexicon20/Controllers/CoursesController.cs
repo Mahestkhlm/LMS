@@ -55,7 +55,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Courses/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? mod_id, int? act_id)
         {
             if (id == null)
             {
@@ -95,8 +95,8 @@ namespace LMSLexicon20.Controllers
                                        EndDateToEarly = (m.EndDate < c.StartDate),
                                        EndDateToLate = (m.EndDate > c.EndDate),
                                        EndDateOverlap = c.Modules.Where(m2 => m.EndDate > m2.StartDate && m.EndDate < m2.EndDate).Any(),
-                                       Description = m.Description,
-                                       Expanded = (DateTime.Now > m.StartDate &&  DateTime.Now<m.EndDate),
+                                       Description = m.Description,          
+                                       Expanded = (mod_id == null) ? (DateTime.Now > m.StartDate &&  DateTime.Now<m.EndDate): mod_id== m.Id,
                                        Documents = m.Documents
                                        ,
                                        ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
@@ -114,10 +114,11 @@ namespace LMSLexicon20.Controllers
                                                 EndDateToLate = (a.EndDate > m.EndDate),
                                                 EndDateOverlap = m.Activities.Where(a2 => a.EndDate > a2.StartDate && a.EndDate < a2.EndDate).Any(),
                                                 Description = a.Description,
-                                                Expanded = (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate),
+                                                Expanded = (act_id == null) ? (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate) : act_id == a.Id,
                                                 HasDeadline=a.HasDeadline,
                                                 Documents = a.Documents.Where(d => d.UserId == null).ToList(),
-                                                NrOfAssignments= a.Documents.Where(d => d.UserId != null).Count()
+                                                NrOfAssignments= a.Documents.Where(d => d.UserId != null).Count(),
+                                                Assignments = a.Documents.Where(d => d.UserId != null).ToList()
                                                 ,
                                                 ActivityTypeWM =
                                                 new ActivityTypeWM

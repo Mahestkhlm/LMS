@@ -56,7 +56,7 @@
 
 <div>
     <div class="@clsDD" data-domain="course" data-id="@Model.Id">
-        <div class="fileinput">
+        <div>  @*class="fileinput"*@
             <div class="row" style="margin-left:0; display: flex">
                 <div class="col">
                     <i class="fas fa-university"></i>Kurs
@@ -190,7 +190,7 @@
                             <div class="row">
 
                                 <div class="col-5 @clsDD" data-domain="module" data-id="@itemM.Id">
-                                    <div class="fileinput">
+                                    <div> @*class="fileinput"*@
                                         <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}")" aria-expanded="@itemM.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}")">
                                             <i class="fas fa-layer-group"></i>
                                             <span class="course-module-name">@Html.DisplayFor(modelItem => itemM.Name)</span>
@@ -320,7 +320,7 @@
                                                 <div class="row">
 
                                                     <div class="col-5 @clsDD" data-domain="activity" data-id="@itemA.Id">
-                                                        <div class="fileinput">
+                                                        <div> @*class="fileinput"*@
                                                             <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemA.Id}")" aria-expanded="@itemA.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemA.Id}")">
                                                                 <i class="fas fa-tasks"></i>
                                                                 <span class="course-activity-name">@Html.DisplayFor(modelItem => itemA.Name)</span>
@@ -425,25 +425,42 @@
                                             <br /><br />
                                             <span style="font-weight:bold">@Html.DisplayFor(modelItem => itemA.ActivityTypeWM.Name)</span>
 
-                                            @if (itemA.ActivityTypeWM.RequireDocument)
-                                            {
-                                                <div class="ddzone" data-domain="assignment" data-id="@itemA.Id"> @*restrict to teacher class="ddzone@clsDD"*@
-                                                    <div class="fileinput">
-                                                        <button type="button" class="btn btn-sm btn-outline-warning">
-                                                            <span class="fas fa-file-archive"></span>
-                                                            Dokument <span class="badge badge-light text-small " style="vertical-align: top">@itemA.NrOfAssignments</span>
-                                                        </button>
+                                            <div class="row">
+                                                @if (itemA.ActivityTypeWM.RequireDocument)
+                                                {
+                                                    var clsOutline = "btn-outline-warning"; if (itemA.HasDeadline && itemA.EndDate < DateTime.Now) clsOutline = "btn-outline-danger";<div class="ddzone" data-domain="assignment" data-id="@itemA.Id">
+                                                        @*restrict to teacher class="ddzone@clsDD"*@
+                                                        <div class="fileinput">
+                                                            <button type="button" class="btn btn-sm @clsOutline">
+                                                                <span class="fas fa-file-archive"></span>
+                                                                Dokument <span class="badge badge-light text-small " style="vertical-align: top">@itemA.NrOfAssignments</span>
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            }
-                                            @if (itemA.HasDeadline)
+                                                }
+                                                @if (itemA.HasDeadline)
+                                                {
+                                                    <span class="course-activity-deadline-date">@Html.DisplayFor(modelItem => itemA.EndDate)</span>
+                                                }
+                                            </div>
+
+                                            @{first = true;}
+                                            @foreach (var itemD in itemA.Assignments)
                                             {
-                                                <span class="course-activity-deadline-date">@Html.DisplayFor(modelItem => itemA.EndDate)</span>
+                                                if (!first)
+                                                {
+                                                    <span>&nbsp;|&nbsp;</span>
+                                                }
+                                                else
+                                                {
+                                                    first = false;
+                                                }
+                                                <a target="_new" href="@itemD.Path">@itemD.Name</a>
                                             }
 
                                             <br />
                                         </div>
-                                    </div>
+                                        </div>
                                 </div> @*card*@
                             </div>
                         }
