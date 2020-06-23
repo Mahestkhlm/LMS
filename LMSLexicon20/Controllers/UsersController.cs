@@ -50,7 +50,6 @@ namespace LMSLexicon20.Controllers
             }
             return View();
         }
-        //ToDo: roles
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> TeacherIndex(string id)
         {
@@ -61,17 +60,24 @@ namespace LMSLexicon20.Controllers
                 NotFound();
             }
             var viewModel = _mapper.Map<TeacherIndexViewModel>(user);
-            //ToDo: annat sätt?
+            
             if (user.CourseId != null) viewModel.Course = await _context.Courses.FindAsync(user.CourseId);
 
-            //ToDo: kolla att det funkar
             viewModel.Assignments = await _context.Activities
                 .Where(a => a.Module.CourseId == user.CourseId)
                 .Where(a => a.HasDeadline == true)
                 .Include(a => a.Documents)
+                .ThenInclude(d=>d.User)
                 .OrderBy(a => a.EndDate)
                 .ToListAsync();
 
+            var courseTakers = await _context.Users
+                .Where(u => u.CourseId == user.CourseId)
+                .ToListAsync();
+            //ToDo: lös finare
+            viewModel.StudentsInCourse = courseTakers.Count()-1;
+                
+                
             var now = DateTime.Now;
 
             //alla activities i kursen
@@ -120,7 +126,6 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> CreateUser(CreateUserViewModel viewModel, int? id = null)
         {
-            //ToDo: fråga Dimitris om att döpa om asp-route-values till nåt annat än id (ex. courseId)
             if (ModelState.IsValid)
             {
                 //Hämta användare
@@ -161,8 +166,10 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(string id)
         {
-            //ToDo: nullcheck?
+            
             var model = await _context.Users.FindAsync(id);
+            if (model == null)
+                NotFound();
             var isStudent = await _userManager.IsInRoleAsync(model, "Student");
             var viewModel = _mapper.Map<UserEditViewModel>(model);
             if (isStudent)
@@ -187,7 +194,6 @@ namespace LMSLexicon20.Controllers
             }
 
             viewModel.Id = id;
-            //ToDo: kolla dubletter email
             if (ModelState.IsValid)
             {
                 var model = await _context.Users.FindAsync(id);
