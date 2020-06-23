@@ -1,0 +1,67 @@
+﻿@model LMSLexicon20.Models.ViewModels.TeacherIndexViewModel
+
+<div class="card border-primary">
+    <div class="card-header bg-primary text-white">Aktivitet</div>
+    <div class="card-body">
+        <b class="d-flex  justify-content-between align-items-center">
+            <span>@Html.DisplayNameFor(Model => Model.Assignments)</span>
+            <span>Deadline</span>
+        </b>
+        @* assignments-accordion *@
+        <div class="accordion" id="accordion">
+            @foreach (var item in Model.Assignments)
+            {
+                //card for item
+                <div class="card border-0 m-0">
+                    @*header/collapse-button*@
+                    <div class="d-flex  justify-content-between align-items-center" id="@String.Format($"heading{item.Id}")">
+                        <h2 class="mb-0">
+                            <a href="#" class="btn btn-link btn-block text-left px-0" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")">
+                                @Html.DisplayFor(Model => item.Name)
+                                <span class="badge badge-pill badge-success text-left ml-1 badge-count">
+                                    @if (item.Documents != null)
+                                    {
+                                        @item.Documents.Where(d => d.UserId != null).Count()
+                                        <span>av</span>
+                                        @Model.StudentsInCourse
+                                    }
+                                    else
+                                    { <span>0</span>}
+                                </span>
+                            </a>
+                        </h2>
+                        <span>
+                            @item.EndDate.ToString("dd'/'M")
+                        </span>
+                    </div>
+                    @*content*@
+                    <div id="@String.Format($"collapse{item.Id}")" class="collapse" data-parent="#accordion">
+                        <div class="card-body">
+                            @if (item.Documents != null)
+                            {
+                                @foreach (var doc in item.Documents)
+                                {
+                                    if (doc.UserId != null)
+                                    {
+                                        @*<script>showBadge();</script>*@
+                                        <div class="d-flex  justify-content-between align-items-center">
+                                            <a asp-action="Details" asp-route-id="@doc.UserId">
+                                                @Html.DisplayFor(model => doc.User.UserName)
+                                            </a>
+                                            <span>
+                                                @Html.DisplayFor(model => doc.Name)
+                                                <i class="fas fa-info-circle text-info ml-3" data-toggle="tooltip" title="Inlämnad @Html.DisplayFor(model=>doc.Date)" data-placement="right"></i>
+                                            </span>
+                                            @*<span>
+                                                    Inlämnad @Html.DisplayFor(model=>doc.Date)
+                                                </span>*@
+                                        </div>
+                                    }
+                                }}
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
