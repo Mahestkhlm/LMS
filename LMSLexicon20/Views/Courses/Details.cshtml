@@ -1,5 +1,6 @@
 ﻿@model LMSLexicon20.ViewModels.CourseDetailVM
 @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.css" integrity="sha256-3SE+Qz2RvIa5gOHSNS50MUTTzRAOYREA5+DOmMNFPYk=" crossorigin="anonymous" />*@
+<link rel="stylesheet" href="~/css/upload.css" />
 
 <style>
     .course-accordion {
@@ -41,28 +42,6 @@
         text-decoration: underline;
         text-decoration-color: gold;
     }
-
-    .ddzone.in {
-        background: palegreen;
-        border: 2px solid #65c465;
-        opacity: 0.5;
-    }
-
-    .ddzone.hover {
-        background: lawngreen;
-    }
-
-    .ddzone.fade {
-        transition: all 0.3s ease-out;
-        opacity: 1;
-    }
-
-    .ddzone {
-        min-height: 25px;
-        border: 0px solid rgba(80,80, 80, 0.3);
-        background: rgba(255,255, 255, 0.1);
-        padding: 0;
-    }
 </style>
 <head>
     <base href="~/" />
@@ -77,7 +56,7 @@
 
 <div>
     <div class="@clsDD" data-domain="course" data-id="@Model.Id">
-        <div class="fileinput">
+        <div>  @*class="fileinput"*@
             <div class="row" style="margin-left:0; display: flex">
                 <div class="col">
                     <i class="fas fa-university"></i>Kurs
@@ -165,7 +144,6 @@
     </dl>
 </div>
 
-<<<<<<<<< Temporary merge branch 1
 @if (User.IsInRole("Teacher") && Model != null)
 {
     <div class="col" style="display: flex; justify-content: flex-end">
@@ -212,7 +190,7 @@
                             <div class="row">
 
                                 <div class="col-5 @clsDD" data-domain="module" data-id="@itemM.Id">
-                                    <div class="fileinput">
+                                    <div> @*class="fileinput"*@
                                         <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}")" aria-expanded="@itemM.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}")">
                                             <i class="fas fa-layer-group"></i>
                                             <span class="course-module-name">@Html.DisplayFor(modelItem => itemM.Name)</span>
@@ -342,7 +320,7 @@
                                                 <div class="row">
 
                                                     <div class="col-5 @clsDD" data-domain="activity" data-id="@itemA.Id">
-                                                        <div class="fileinput">
+                                                        <div> @*class="fileinput"*@
                                                             <button class="btn btn-link" data-toggle="collapse" data-target="@String.Format($"#collapse{itemM.Id}_{itemA.Id}")" aria-expanded="@itemA.Expanded" aria-controls="@String.Format($"collapse{itemM.Id}_{itemA.Id}")">
                                                                 <i class="fas fa-tasks"></i>
                                                                 <span class="course-activity-name">@Html.DisplayFor(modelItem => itemA.Name)</span>
@@ -447,25 +425,42 @@
                                             <br /><br />
                                             <span style="font-weight:bold">@Html.DisplayFor(modelItem => itemA.ActivityTypeWM.Name)</span>
 
-                                            @if (itemA.ActivityTypeWM.RequireDocument)
-                                            {
-                                                <div class="@clsDD" data-domain="assignment" data-id="@itemA.Id">
-                                                    <div class="fileinput">
-                                                        <button type="button" class="btn btn-sm btn-outline-warning">
-                                                            <span class="fas fa-file-archive"></span>
-                                                            Dokument <span class="badge badge-light text-small " style="vertical-align: top">@itemA.NrOfAssignments</span>
-                                                        </button>
+                                            <div class="row">
+                                                @if (itemA.ActivityTypeWM.RequireDocument)
+                                                {
+                                                    var clsOutline = "btn-outline-warning"; if (itemA.HasDeadline && itemA.EndDate < DateTime.Now) clsOutline = "btn-outline-danger";<div class="ddzone" data-domain="assignment" data-id="@itemA.Id">
+                                                        @*restrict to teacher class="ddzone@clsDD"*@
+                                                        <div class="fileinput">
+                                                            <button type="button" class="btn btn-sm @clsOutline">
+                                                                <span class="fas fa-file-archive"></span>
+                                                                Dokument <span class="badge badge-light text-small " style="vertical-align: top">@itemA.NrOfAssignments</span>
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            }
-                                            @if (itemA.HasDeadline)
+                                                }
+                                                @if (itemA.HasDeadline)
+                                                {
+                                                    <span class="course-activity-deadline-date">@Html.DisplayFor(modelItem => itemA.EndDate)</span>
+                                                }
+                                            </div>
+
+                                            @{first = true;}
+                                            @foreach (var itemD in itemA.Assignments)
                                             {
-                                                <span class="course-activity-deadline-date">@Html.DisplayFor(modelItem => itemA.EndDate)</span>
+                                                if (!first)
+                                                {
+                                                    <span>&nbsp;|&nbsp;</span>
+                                                }
+                                                else
+                                                {
+                                                    first = false;
+                                                }
+                                                <a target="_new" href="@itemD.Path">@itemD.Name</a>
                                             }
 
                                             <br />
                                         </div>
-                                    </div>
+                                        </div>
                                 </div> @*card*@
                             </div>
                         }
@@ -501,76 +496,34 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.min.js" integrity="sha256-fegGeSK7Ez4lvniVEiz1nKMx9pYtlLwPNRPf6uc8d+8=" crossorigin="anonymous"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
-@*<script src="~/js/upload.js"></script>*@
+<script>var url_action='@Url.Action("PostDoc", "Uploads")';</script>
+<script src="~/js/upload.js"></script>
+
 <script>
-        $(function () {
-            $("#accordion").on("hide.bs.collapse show.bs.collapse", e => {
-                $(e.target)
-                    .prev()
-                    .find("i:last-child") //
-                    .toggleClass("fa-caret-left fa-caret-down");
+    $(function () {
+        $("#accordion").on("hide.bs.collapse show.bs.collapse", e => {
+            $(e.target)
+                .prev()
+                .find("i:last-child") //
+                .toggleClass("fa-caret-left fa-caret-down");
 
-                $(e.target)
-                    .prev()
-                    .find("svg:last-child") //.fa-inverse
-                    .toggleClass("fa-caret-left fa-caret-down");
-            });
-
-            $("#accordion").on("shown.bs.collapse", e => {
-                $("html, body").animate(
-                    {
-                        scrollTop: $(e.target)
-                            .prev()
-                            .offset().top
-                    },
-                    400
-                );
-            });
-
-            $(".ddzone").on({
-                dragover: function (e) {
-                    var $this = $(this);
-                    $this.addClass('in');
-                },
-                dragleave: function (e) {
-                    var $this = $(this);
-                    $this.removeClass('in');
-                }
-            });
-
-            var myDropzone;
-            $(".ddzone").each(function () {
-                var $this = $(this);
-                var $this_fileinput = $this.find("div.fileinput").get(0);
-
-                myDropzone = new Dropzone($this.get(0),
-                {
-                    //$this.Dropzone({
-                    paramName: "files", // The name that will be used to transfer the file
-                    maxFilesize: 2, // MB
-
-                    url: '@Url.Action("PostDoc", "Uploads")',
-                    params: {
-                        domain: $this.data("domain"),
-                        id: $this.data("id")
-                    },
-                    acceptedFiles: '.pdf,.doc,.docx,.txt,.xls,.xlsx,.csv',
-                    //addRemoveLinks: true,
-                    clickable: $this_fileinput, //".ddzone" $this, // ".fileinput-button" Define the element that should be used as click trigger to select files
-
-                    success: function (file, response) {
-                        console.log("Successfully uploaded " + file);
-                        file.previewElement.innerHTML = "";
-                        window.location.reload();
-                    },
-                    error: function (file, response) {
-                        console.log("something goes wrong: " + response);
-                        //file.previewElement.innerHTML = "";
-                        //var errorDisplay = document.querySelectorAll('[data-dz-errormessage]');
-                        //errorDisplay[errorDisplay.length - 1].innerHTML = 'Error';  //'@TempData["FailText"]
-                    }
-                });
-            });
-
+            $(e.target)
+                .prev()
+                .find("svg:last-child") //.fa-inverse
+                .toggleClass("fa-caret-left fa-caret-down");
         });
+
+        $("#accordion").on("shown.bs.collapse", e => {
+            $("html, body").animate(
+                {
+                    scrollTop: $(e.target)
+                        .prev()
+                        .offset().top
+                },
+                400
+            );
+        });
+
+
+    });
 </script>

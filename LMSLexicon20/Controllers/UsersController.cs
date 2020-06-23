@@ -89,31 +89,15 @@ namespace LMSLexicon20.Controllers
         public async Task<IActionResult> StudentIndex(string id)
         {
             var user = await _context.Users.FindAsync(id);
-            //var user = _userManager.FindByIdAsync(id);
             var viewModel = _mapper.Map<StudentIndexViewModel>(user);
 
-            var currentUserId = _userManager.GetUserId(User);
-            var now = DateTime.Now;
-            var studentCourse = await _context.Users.Include(u => u.Course).Where(u => currentUserId == u.Id).FirstOrDefaultAsync();
-            var modules = await _context.Modules.Include(m => m.Activities).ToListAsync();
-            var activities = await _context.Activities.Include(a => a.Documents).ToListAsync();
-            var activitytype = await _context.ActivityTypes.FirstOrDefaultAsync(t => t.Name == "E-learningpass");
+            var today = DateTime.Today;
+            var mondayWeekStartDay = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
 
-            var CurrActivities = activities.Where(a => a.StartDate <= now && a.EndDate >= now && a.Module.Course.Id == studentCourse.Course.Id);
-            var PastAssignments = CurrActivities?.Where(a => a.ActivityTypeId == activitytype.Id);
-            var lateAssignments = activities.Where(a => a.EndDate < now && a.ActivityTypeId == activitytype.Id && (a.Documents.FirstOrDefault(d => d.UserId == currentUserId) == null));
-            //
-            var ViewModel = new StudentIndexViewModel
-            {
-                CourseId = studentCourse.Course.Id,
-                CourseName = studentCourse.Course.Name,
-                NextActivites = null,
-                PrevActivities = null,
-                CurrentActivites = CurrActivities,
-                CurrentAssignments = PastAssignments,
-                LateAssignments = lateAssignments
-            };
-            return View(ViewModel);
+            var activities = _context.Activities.Where(e => e.Module.CourseId == user.CourseId);
+            viewModel.WeeklyActivities = await activities.Where(e => e.StartDate >= mondayWeekStartDay && e.StartDate < mondayWeekStartDay.AddDays(6)).ToListAsync();
+
+            return View(viewModel);
         }
         // GET: User/Create
         [Authorize(Roles = "Teacher")]
