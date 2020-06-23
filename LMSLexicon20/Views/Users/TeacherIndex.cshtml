@@ -68,7 +68,7 @@
                                         @*@if (DateTime.Now.AddDays(i) <= item.EndDate
                                             && DateTime.Now.AddDays(i) >= item.StartDate)*@
                                         @if (DateTime.Now.AddDays(i).Date <= item.EndDate
-                      && DateTime.Now.AddDays(i).Date >= item.StartDate)
+&& DateTime.Now.AddDays(i).Date >= item.StartDate)
                                         {
                                             <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
                                                 @Html.DisplayFor(modelItem => item.Name)
@@ -105,6 +105,12 @@
                                     <h2 class="mb-0">
                                         <a href="#" class="btn btn-link btn-block text-left px-0" data-toggle="collapse" data-target="@String.Format($"#collapse{item.Id}")">
                                             @Html.DisplayFor(Model => item.Name)
+                                            <span class="badge badge-pill badge-success text-left ml-1 badge-count d-none">
+                                                @if (item.Documents != null)
+                                                {@item.Documents.Count()}
+                                                else
+                                                {<span>0</span>}
+                                            </span>
                                         </a>
                                     </h2>
                                     <span>
@@ -114,13 +120,26 @@
                                 @*content*@
                                 <div id="@String.Format($"collapse{item.Id}")" class="collapse" data-parent="#accordion">
                                     <div class="card-body">
-                                        Student
+                                        @if (item.Documents != null)
+                                        {
+                                            @foreach (var doc in item.Documents)
+                                            {
+                                                if (doc.UserId!=null)
+                                                {
+                                                    @*<script>showBadge();</script>*@
+                                                    <div class="d-flex  justify-content-between align-items-center">
+                                                        <a asp-action="Details" asp-route-id="@doc.UserId">
+                                                            @Html.DisplayFor(model => doc.User.UserName)
+                                                        </a>
+                                                        <span>
+                                                            @Html.DisplayFor(model => doc.Name)
+                                                        </span>
+                                                    </div>
+                                                }
+                                            }}
                                     </div>
                                 </div>
                             </div>
-                            @*<a asp-controller="Activities" asp-action="Details" asp-route-id="@item.Id">
-                                    @Html.DisplayFor(Model => item.Name)
-                                </a>*@
                         }
                     </div>
                 </div>
@@ -128,4 +147,10 @@
         </div>
     </div>
 </div>
-
+@*<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    function showBadge() {
+        alert("hej");
+        $("badge-count").removeClass("d-none");
+    }
+</script>*@
