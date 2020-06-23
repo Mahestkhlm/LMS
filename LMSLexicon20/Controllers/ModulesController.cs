@@ -41,7 +41,6 @@ namespace LMSLexicon20.Controllers
         // GET: Modules/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            //ToDo: ta in int eller int?
             var model = await context.Modules
                 .Include(m => m.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -94,7 +93,6 @@ namespace LMSLexicon20.Controllers
                 var model = mapper.Map<Module>(viewModel);
                 model.CourseId = id;
 
-                //ToDo: kan man ha FÖR många async?
                 await context.Modules.AddAsync(model);
                 await context.SaveChangesAsync();
 
@@ -129,10 +127,13 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int id)
         {
-            //ToDo: nullcheck?
-            //För att kunna gå tillbaka till kurs
             var model = await context.Modules.FindAsync(id);
+            if (model==null)
+            {
+                NotFound();
+            }
             var viewModel = mapper.Map<EditModuleViewModel>(model);
+            //För att kunna gå tillbaka till kurs
             TempData["CourseId"] = model.CourseId;
             return View(viewModel);
         }
@@ -163,8 +164,8 @@ namespace LMSLexicon20.Controllers
                 model.StartDate = viewModel.StartDate;
                 model.EndDate = viewModel.EndDate;
                 model.Description = viewModel.Description;
-                //ToDo: behövs den?
-                context.Entry(model).Property(p => p.CourseId).IsModified = false;
+                
+                //context.Entry(model).Property(p => p.CourseId).IsModified = false;
 
                 try
                 {
