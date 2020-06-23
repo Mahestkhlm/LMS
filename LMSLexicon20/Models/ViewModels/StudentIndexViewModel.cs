@@ -19,9 +19,11 @@ namespace LMSLexicon20.Models.ViewModels
         public int CourseId { get; set; }
         public string CourseName { get; set; }
 
+        [Display(Name = "Dokument")]
+        public ICollection<Document> Documents { get; set; }
         public ICollection<Activity> Activities { get; set; }
         public ICollection<Activity> WeeklyActivities { get; set; }
-
+        
         public ICollection<Activity> Assignments { get; set; } //activitytype == inlämmningsuppgifter
         public IEnumerable<Activity> CurrentAssignments { get; set; }
         public IEnumerable<Activity> LateAssignments { get; set; }
