@@ -248,7 +248,7 @@ namespace LMSLexicon20.Data
 
 
 
-                //--------SKAPA STUDENT--------
+                //--------SKAPA STUDENT2--------
                 //var studentPW = "abc123";
                 studentEmail = "student2@lms.se";
                 studentUser = await userManager.FindByEmailAsync(studentEmail);
@@ -270,7 +270,7 @@ namespace LMSLexicon20.Data
                     if (!addTeacherResult.Succeeded) throw new Exception(string.Join("\n", addTeacherResult.Errors));
                 }
 
-                //--------GE ROLL STUDENT--------
+                //--------GE ROLL STUDENT2--------
                 student = await userManager.FindByNameAsync(studentEmail);
 
                 if (!await userManager.IsInRoleAsync(student, "Student"))
@@ -279,6 +279,36 @@ namespace LMSLexicon20.Data
                     if (!addToRoleResult.Succeeded) throw new Exception(string.Join("\n", addToRoleResult.Errors));
                 }
 
+                //--------SKAPA STUDENT2--------
+                //var studentPW = "abc123";
+                studentEmail = "student3@lms.se";
+                studentUser = await userManager.FindByEmailAsync(studentEmail);
+                if (studentUser == null)
+                {
+                    var user = new User
+                    {
+                        UserName = studentEmail,
+                        FirstName = "Student3",
+                        LastName = "3",
+                        Email = studentEmail,
+                        RegDate = DateTime.Now,
+                        CourseId = CourseId
+
+                    };
+
+                    //--------LÄGG TILL STUDENT2--------
+                    var addTeacherResult = await userManager.CreateAsync(user, studentPW);
+                    if (!addTeacherResult.Succeeded) throw new Exception(string.Join("\n", addTeacherResult.Errors));
+                }
+
+                //--------GE ROLL STUDENT2--------
+                student = await userManager.FindByNameAsync(studentEmail);
+
+                if (!await userManager.IsInRoleAsync(student, "Student"))
+                {
+                    var addToRoleResult = await userManager.AddToRoleAsync(student, "Student");
+                    if (!addToRoleResult.Succeeded) throw new Exception(string.Join("\n", addToRoleResult.Errors));
+                }
 
 
 
