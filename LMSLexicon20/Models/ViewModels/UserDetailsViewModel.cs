@@ -30,5 +30,6 @@ namespace LMSLexicon20.Models.ViewModels
 
         [Display(Name = "Kurs")]
         public Course Course { get; set; }
+        public ICollection<Document> Documents { get; set; }
     }
 }

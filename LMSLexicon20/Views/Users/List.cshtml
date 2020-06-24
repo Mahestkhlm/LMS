@@ -48,8 +48,10 @@
                 <td  class="col-md-2">
                     @Html.DisplayFor(modelItem => item.FullName)
                 </td>
-                <td  class="col-md-3">
-                    @Html.DisplayFor(modelItem => item.Email)
+                <td class="col-md-3">
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Email)
+                        </a>
                 </td>
                 <td  class="col-md-2">
                     <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">
