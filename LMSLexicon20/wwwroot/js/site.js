@@ -3,6 +3,18 @@
 
 // Write your JavaScript code.
 
+$(function () {
+    let elements = $(".openassignment");
+    $.each(elements, function () {
+        let activityEndDate = Date.parse($(this).attr("data-enddate"));
+        let today = Date.now();
+        if (activityEndDate < today) {
+            $(this).addClass("text-white bg-danger");
+        }
+    });
+
+})
+
 function DisplayAddTeacherSuccess() {
     $("#addteachersuccess").html("En lärare har tilldelats").fadeOut(3000);
 }
