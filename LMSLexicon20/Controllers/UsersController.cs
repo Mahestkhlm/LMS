@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-
 using LMSLexicon20.Data;
 using LMSLexicon20.Extensions;
+using LMSLexicon20.Filters;
 using LMSLexicon20.Models;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 
@@ -30,17 +31,140 @@ namespace LMSLexicon20.Controllers
             _context = dbContext;
             _userManager = userManager;
             _mapper = mapper;
-
         }
 
         public IActionResult Index()
         {
             return View();
         }
-
+        [Authorize]
         public IActionResult Start()
         {
+            var id = _userManager.GetUserId(User);
+            if (User.IsInRole("Teacher"))
+            {
+                return RedirectToAction(nameof(TeacherIndex), new { id = id });
+            }
+            else if (User.IsInRole("Student"))
+            {
+                return RedirectToAction(nameof(StudentIndex), new { id = id });
+            }
             return View();
+        }
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> TeacherIndex(string id)
+        {
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var viewModel = _mapper.Map<TeacherIndexViewModel>(user);
+
+            if (user.CourseId != null)
+                viewModel.Course = await _context.Courses
+                    .Include(c => c.Modules)
+                    .FirstOrDefaultAsync(c => c.Id == user.CourseId);
+
+            viewModel.StudentsInCourse = _userManager.GetUsersInRoleAsync("Student").Result
+                            .Where(u => u.CourseId == user.CourseId).Count();
+
+            viewModel.CurrentModule = viewModel.Course.Modules
+                .FirstOrDefault(m => m.StartDate <= DateTime.Now.Date
+                    && m.EndDate >= DateTime.Now.Date);
+
+            viewModel.Assignments = await _context.Activities
+                .Where(a => a.Module.CourseId == user.CourseId)
+                .Where(a => a.HasDeadline == true)
+                .Include(a => a.Documents)
+                .ThenInclude(d => d.User)
+                .OrderBy(a => a.EndDate)
+                .ToListAsync();
+
+
+            var now = DateTime.Now;
+
+            var today = DateTime.Now;
+            //starta veckan med närmaste föregående måndag
+            //räkna hur många dagar det var sedan 
+            //ons=3 idag+(-3+1) => idag+-2 dgr =måndag(1)
+            viewModel.StartOfWeek = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+
+            //alla activities i kursen
+            viewModel.WeeklyActivities = await _context.Activities
+               .Where(a => a.Module.CourseId == user.CourseId)
+               .Where(a => viewModel.StartOfWeek.AddDays(6)>=a.StartDate.Date && viewModel.StartOfWeek.Date <=a.EndDate  )
+               .ToListAsync();
+
+            //alla som startar innan sjunde dagen och slutar efter första dagen i veckan
+            //.Where(a =>
+            //     now.AddDays(6) > a.StartDate
+            //     && now < a.EndDate)
+
+            return View(viewModel);
+        }
+        public async Task<IActionResult> ShowDocuments(int id)
+        {
+            var activity = await _context.Activities
+                .Include(a => a.Documents)
+                .ThenInclude(d => d.User)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            //endast inlämningar från elever
+            if (activity.Documents == null)
+                return NotFound();
+            var documents = activity.Documents
+                .GroupBy(d => d.UserId)
+                .Select(d => d.First())
+                .ToList();
+
+            var model = new ShowDocuments
+            {
+                Id = id,
+                Documents = documents
+            };
+            if (model == null)
+                return NotFound();
+            if (Request.IsAjax())
+                return PartialView("ShowDocumentsPartial", model);
+            return View(model);
+        }
+        public async Task<IActionResult> StudentIndex(string id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            //var viewModel = _mapper.Map<StudentIndexViewModel>(user);
+            var viewModel = _mapper.ProjectTo<StudentIndexViewModel>(_userManager.Users).FirstOrDefault(e => e.Id == id);
+            var documents = await _context.Documents.Where(e => e.UserId == id).ToListAsync();
+
+            viewModel.Documents = documents;
+
+            var today = DateTime.Today;
+            var mondayWeekStartDay = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+
+            var activities = _context.Activities.Include(e => e.ActivityType).Include(e => e.Module).Where(e => e.Module.CourseId == user.CourseId);
+            viewModel.WeeklyActivities = await activities.Where(e => e.StartDate.Date >= mondayWeekStartDay && e.StartDate.Date < mondayWeekStartDay.AddDays(6)).ToListAsync();
+
+            var assignments = await activities.Include(e => e.Documents).Where(e => e.ActivityType.RequireDocument == true && e.StartDate.Date <= today).ToListAsync();
+            var openAssignment = new List<Activity>();
+
+            foreach (var item in assignments)
+            {
+                openAssignment.Add(item);
+            }
+
+            foreach (var assignment in assignments)
+            {
+                foreach (var document in documents)
+                {
+                    if (assignment.Id == document.ActivityId)
+                    {
+                        openAssignment.Remove(assignment);
+                    }
+                }
+            }
+            viewModel.OpenAssignments = openAssignment;
+            return View(viewModel);
         }
 
 
@@ -65,7 +189,6 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> CreateUser(CreateUserViewModel viewModel, int? id = null)
         {
-            //ToDo: fråga Dimitris om att döpa om asp-route-values till nåt annat än id (ex. courseId)
             if (ModelState.IsValid)
             {
                 //Hämta användare
@@ -106,8 +229,10 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(string id)
         {
-            //ToDo: nullcheck?
+
             var model = await _context.Users.FindAsync(id);
+            if (model == null)
+                NotFound();
             var isStudent = await _userManager.IsInRoleAsync(model, "Student");
             var viewModel = _mapper.Map<UserEditViewModel>(model);
             if (isStudent)
@@ -132,7 +257,6 @@ namespace LMSLexicon20.Controllers
             }
 
             viewModel.Id = id;
-            //ToDo: kolla dubletter email
             if (ModelState.IsValid)
             {
                 var model = await _context.Users.FindAsync(id);
@@ -187,7 +311,7 @@ namespace LMSLexicon20.Controllers
                 await _context.SaveChangesAsync();
                 TempData["SuccessText"] = $"Användare {userName} har tagits bort";
             }
-            
+
             return RedirectToAction(nameof(List), new { filterSearch = "" });
         }
         static string GeneratePassword()
@@ -297,6 +421,7 @@ namespace LMSLexicon20.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateAjax]
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> AddTeacherToCourse(int id, AddTeacherToCourseViewModel viewModel)
         {
@@ -327,16 +452,31 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new AddTeacherToCourseSuccessViewModel
+                    {
+                        TeacherId = viewModel.TeacherId
+                    };
+
+                    return PartialView("AddTeacherSuccessPartialView", ajaxModel);
+                }
                 TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är nu kursens lärare";
                 return RedirectToAction("Edit", "Courses", new { id = model.CourseId });
             }
-            TempData["FailText"] = $"Ingen lärare tilldelades till kursen!";
 
+            if (Request.IsAjax())
+            {
+                return PartialView("AddTeacherToCoursePartialView", viewModel);
+            }
+            TempData["FailText"] = $"Ingen lärare tilldelades till kursen!";
             return RedirectToAction("Edit", "Courses", new { id });
         }
 
         [Authorize(Roles = "Teacher")]
         [HttpPost]
+        [ValidateAjax]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveFromCourse(string id)
         {
@@ -350,7 +490,7 @@ namespace LMSLexicon20.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 model.CourseId = null;
                 try
                 {
@@ -368,6 +508,17 @@ namespace LMSLexicon20.Controllers
                         throw;
                     }
                 }
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new RemoveTeacherFromCourseSuccessViewModel
+                    {
+                        CourseId = courseId
+                    };
+
+                    return PartialView("RemoveTeacherSuccessPartialView", ajaxModel);
+                }
+
                 TempData["SuccessText"] = $"{model.FirstName} {model.LastName} är inte längre kursens lärare";
                 return RedirectToAction("Edit", "Courses", new { id = courseId });
             }

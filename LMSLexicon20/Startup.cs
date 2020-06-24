@@ -75,6 +75,9 @@ namespace LMSLexicon20
 
             services.AddScoped<ITeacherChoiceDropdown, TeacherChoiceDropdown>();
             services.AddScoped<IActivityTypeChoiceDropdown, ActivityTypeChoiceDropdown>();
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -103,7 +106,7 @@ namespace LMSLexicon20
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Users}/{action=Start}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

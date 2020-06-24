@@ -8,16 +8,22 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Net.Http.Headers;
 using System.Security.Claims;
 using System.Linq;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using LMSLexicon20.Data;
+using Microsoft.VisualBasic.CompilerServices;
+using LMSLexicon20.Models;
 
 namespace LMSLexicon20.Controllers
 {
     public class UploadsController : Controller
     {
-        private IWebHostEnvironment hostingEnvironment;
+        private IWebHostEnvironment _env;
+        private readonly ApplicationDbContext _context;
 
-        public UploadsController(IWebHostEnvironment hostingEnvironment)
+        public UploadsController(IWebHostEnvironment hostingEnvironments, ApplicationDbContext context)
         {
-            this.hostingEnvironment = hostingEnvironment;
+            _env = hostingEnvironments;
+            _context = context;
         }
 
 
@@ -33,29 +39,96 @@ namespace LMSLexicon20.Controllers
         {
             long size = files.Sum(f => f.Length);
             var filePath="";
-            string[] permittedExtensions = { ".txt", ".pdf", ".doc", ".docx", ".xls" };
+            string[] permittedExtensions = { ".txt", ".pdf", ".doc", ".docx", ".xls",".js", ".html", ".htm",".cshtml",".zip",".rar"};
+
+
+
+                                               
+
+
             foreach (IFormFile source in files)
             {
 
-                string uploadedFileName = ContentDispositionHeaderValue.Parse(source.ContentDisposition).FileName.ToString().Trim('"');
-                string untrustedFileName = Path.GetFileName(uploadedFileName);
-                var ext = Path.GetExtension(uploadedFileName).ToLowerInvariant();
-                if (!string.IsNullOrEmpty(ext) && permittedExtensions.Contains(ext))
+                try
                 {
-                    var filename = untrustedFileName; // Path.GetTempFileName();
-                    filename = this.EnsureCorrectFilename(filename);
-                    filePath =  this.GetPathAndFilename(filename, domain,id);
 
-                    //using (var stream = new FileStream(filePath, FileMode.Create)
-                    using FileStream output = System.IO.File.Create(filePath);
-                    await source.CopyToAsync(output);
+                    string uploadedFileName = ContentDispositionHeaderValue.Parse(source.ContentDisposition).FileName.ToString().Trim('"');
+                    string untrustedFileName = Path.GetFileName(uploadedFileName);
+                    var ext = Path.GetExtension(uploadedFileName).ToLowerInvariant();
+                    if (!string.IsNullOrEmpty(ext) && permittedExtensions.Contains(ext))
+                    {
+                        var filename = untrustedFileName; // Path.GetTempFileName();
+                        filename = this.EnsureCorrectFilename(filename);
+                        filePath = this.GetPathAndFilename(filename, domain, id);
+
+                        //using (var stream = new FileStream(filePath, FileMode.Create)
+                        using FileStream output = System.IO.File.Create(filePath);
+                        await source.CopyToAsync(output);
+                        filePath = Path.GetRelativePath(_env.ContentRootPath, filePath);
+                        filePath=filePath.Replace("wwwroot\\", ""); //Directory.GetCurrentDirectory()  HttpRuntime.AppDomainAppPath
+
+
+
+                        if (!await LinkDocToDomainAsync(filePath, domain, id))
+                        {
+                            //TempData["FailText"] = $"Kunde inte koppla {domain} / {id} till filen {filePath}. Upladdning avbryts";
+                            System.IO.File.Delete(filePath);
+                            throw new ApplicationException($"Kunde inte koppla {domain} / {id} till filen {filePath}. Upladdning avbryts");
+                        }
+                    }
+                    else
+                    {
+                        throw new ApplicationException($"Otillåten eller okänd filtyp {filePath}");
+                    }
+
                 }
+                catch (Exception ex)
+                {
+                    throw new ApplicationException($"Kunde inte skapa {filePath}", ex);
+                }
+
             }
 
+            return Ok(new { count = files.Count, size= size });
+            //return View();
+        }
 
-            //return Ok(new { count = files.Count, size, filePath });
-            return View();
-            //return RedirectToAction("Index");
+        private async Task<bool> LinkDocToDomainAsync(string filepath, string domain, string id)
+        {
+            if (string.IsNullOrEmpty(id)) return false;
+            var DocumetId = _context.Documents.Where(d => d.Path == filepath).Select(d => d.Id).FirstOrDefault();
+            //var DocumetId = _context.Set<Document>().Where(d => d.Path == filepath).Select(d => d.Id).FirstOrDefault();
+ 
+            
+
+
+            if (DocumetId > 0) return false; // same file
+            var filename = Path.GetFileName(filepath);
+
+            switch (domain)
+            {
+                case "course":
+                    _context.Documents.Add(new Document { CourseId= int.Parse(id), Path= filepath, Name= filename,Date=DateTime.Now });
+                    //_context.Set<Document>().Add(new Document { CourseId = int.Parse(id), Path = filepath, Name = filename, Date = DateTime.Now });
+                    
+                    break;
+                case "module":
+                    _context.Documents.Add(new Document { ModuleId = int.Parse(id), Path = filepath, Name = filename, Date = DateTime.Now });
+                    break;
+                case "activity":
+                    _context.Documents.Add(new Document { ActivityId = int.Parse(id), Path = filepath, Name = filename, Date = DateTime.Now });
+                    break;
+                case "assignment":
+                    var UserIdUploader = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    _context.Documents.Add(new Document { UserId = UserIdUploader, ActivityId = int.Parse(id), Path = filepath, Name = filename, Date = DateTime.Now });
+                    break;
+                default:
+                    return false;
+                    //break;
+            }
+       
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         private string EnsureCorrectFilename(string filename)
@@ -69,11 +142,12 @@ namespace LMSLexicon20.Controllers
         private string GetPathAndFilename(string filename, string domain, string id)
         {
             //var path = Path.Combine(_config["StoredFilesPath"],
-            //string path = this.hostingEnvironment.WebRootPath + "\\uploads\\";
+            //string path = _env.WebRootPath + "\\uploads\\";
 
-            string path = Path.Combine(this.hostingEnvironment.WebRootPath, "uploads");
+            string path = Path.Combine(_env.WebRootPath, "uploads");
             path = Path.Combine(path, domain);
-            if (domain=="users") path = Path.Combine(path,id ); //ägare => db User.FindFirstValue(ClaimTypes.NameIdentifier)
+            path = Path.Combine(path, id);
+            if (domain == "assignment") path = Path.Combine(path, User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);

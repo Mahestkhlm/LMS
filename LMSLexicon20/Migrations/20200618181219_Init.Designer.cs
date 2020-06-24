@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMSLexicon20.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200605135844_Init")]
+    [Migration("20200618181219_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.4")
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -73,7 +73,7 @@ namespace LMSLexicon20.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityType");
+                    b.ToTable("ActivityTypes");
                 });
 
             modelBuilder.Entity("LMSLexicon20.Models.Course", b =>
@@ -141,7 +141,7 @@ namespace LMSLexicon20.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Document");
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("LMSLexicon20.Models.Module", b =>
@@ -170,7 +170,7 @@ namespace LMSLexicon20.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Module");
+                    b.ToTable("Modules");
                 });
 
             modelBuilder.Entity("LMSLexicon20.Models.User", b =>

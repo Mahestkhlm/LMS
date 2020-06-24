@@ -11,6 +11,9 @@ using AutoMapper;
 using LMSLexicon20.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authorization;
+using LMSLexicon20.Extensions;
+using LMSLexicon20.Filters;
+using LMSLexicon20.ViewModels;
 
 namespace LMSLexicon20.Controllers
 {
@@ -38,7 +41,6 @@ namespace LMSLexicon20.Controllers
         // GET: Modules/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            //ToDo: ta in int eller int?
             var model = await context.Modules
                 .Include(m => m.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -55,6 +57,8 @@ namespace LMSLexicon20.Controllers
         public IActionResult CreateModule(int id)
         {
             TempData["courseId"] = id;
+            if (Request.IsAjax())
+                return PartialView("CreateModulePartialView");
             return View();
         }
         //Post
@@ -73,6 +77,7 @@ namespace LMSLexicon20.Controllers
         ////Post
         //[HttpPost]
         [Authorize(Roles = "Teacher")]
+        [ValidateAjax]
         [HttpPost]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel viewModel, int id)
         {
@@ -88,12 +93,33 @@ namespace LMSLexicon20.Controllers
                 var model = mapper.Map<Module>(viewModel);
                 model.CourseId = id;
 
-                //ToDo: kan man ha FÖR många async?
                 await context.Modules.AddAsync(model);
                 await context.SaveChangesAsync();
+
+                if (Request.IsAjax())
+                {
+                    var ajaxModel = new ModuleDetailVM
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        StartDate = model.StartDate,
+                        EndDate = model.EndDate,
+                        Description = model.Description,
+                        CourseId = model.CourseId,
+                        Expanded = false
+                    };
+                    
+                    return PartialView("CreateModuleSuccessPartialView", ajaxModel);
+                }
+
                 TempData["SuccessText"] = $"Modulen: {model.Name} - är skapad!";
                 return RedirectToAction(nameof(Details), "Courses", new { id = model.CourseId });
             }
+            if (Request.IsAjax())
+            {
+                return PartialView("CreateModulePartialView", viewModel);
+            }
+
             return View(viewModel);
         }
 
@@ -101,10 +127,13 @@ namespace LMSLexicon20.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int id)
         {
-            //ToDo: nullcheck?
-            //För att kunna gå tillbaka till kurs
             var model = await context.Modules.FindAsync(id);
+            if (model==null)
+            {
+                NotFound();
+            }
             var viewModel = mapper.Map<EditModuleViewModel>(model);
+            //För att kunna gå tillbaka till kurs
             TempData["CourseId"] = model.CourseId;
             return View(viewModel);
         }
@@ -135,8 +164,8 @@ namespace LMSLexicon20.Controllers
                 model.StartDate = viewModel.StartDate;
                 model.EndDate = viewModel.EndDate;
                 model.Description = viewModel.Description;
-                //ToDo: behövs den?
-                context.Entry(model).Property(p => p.CourseId).IsModified = false;
+                
+                //context.Entry(model).Property(p => p.CourseId).IsModified = false;
 
                 try
                 {

@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using LMSLexicon20.Data;
 using LMSLexicon20.Models;
+using LMSLexicon20.Models.ViewModels;
 using LMSLexicon20.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using LMSLexicon20.Models.ViewModels;
-using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace LMSLexicon20.Controllers
 {
@@ -55,7 +55,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // GET: Courses/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? m_id, int? a_id)
         {
             if (id == null)
             {
@@ -64,9 +64,10 @@ namespace LMSLexicon20.Controllers
 
             var teachers = await userManager.GetUsersInRoleAsync("Teacher");
             var courseTeacher = teachers.FirstOrDefault(e => e.CourseId == id);
+            var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             //_context.Courses.Find(1)
-            //await 
+            //await
             var courseDetailVM = _context.Courses
                     //.Include(c => c.Modules)
                     //.ThenInclude(m => m.Activities)
@@ -78,26 +79,29 @@ namespace LMSLexicon20.Controllers
                         StartDate = c.StartDate,
                         EndDate = c.EndDate,
                         Description = c.Description,
-                        Teacher = courseTeacher
+                        Teacher = courseTeacher,
+                        UserId = UserId,
+                        Documents = c.Documents
                         ,
                         ModuleDetailVM = (ICollection<ModuleDetailVM>)c.Modules
                                     .OrderBy(c => c.StartDate)
                                     .Select(m => new ModuleDetailVM
                                     {
-                                       Id = m.Id,
-                                       Name = m.Name,
-                                       StartDate = m.StartDate,
-                                       StartDateToEarly = (m.StartDate < c.StartDate),
-                                       StartDateToLate = (m.StartDate > c.EndDate),
-                                       StartDateOverlap = c.Modules.Where(m2 => m.StartDate > m2.StartDate && m.StartDate < m2.EndDate).Any(),
-                                       EndDate = m.EndDate,
-                                       EndDateToEarly = (m.EndDate < c.StartDate),
-                                       EndDateToLate = (m.EndDate > c.EndDate),
-                                       EndDateOverlap = c.Modules.Where(m2 => m.EndDate > m2.StartDate && m.EndDate < m2.EndDate).Any(),
-                                       Description = m.Description,
-                                       Expanded = (DateTime.Now > m.StartDate &&  DateTime.Now<m.EndDate)
+                                        Id = m.Id,
+                                        Name = m.Name,
+                                        StartDate = m.StartDate,
+                                        StartDateToEarly = (m.StartDate < c.StartDate),
+                                        StartDateToLate = (m.StartDate > c.EndDate),
+                                        StartDateOverlap = c.Modules.Where(m2 => m.StartDate > m2.StartDate && m.StartDate < m2.EndDate).Any(),
+                                        EndDate = m.EndDate,
+                                        EndDateToEarly = (m.EndDate < c.StartDate),
+                                        EndDateToLate = (m.EndDate > c.EndDate),
+                                        EndDateOverlap = c.Modules.Where(m2 => m.EndDate > m2.StartDate && m.EndDate < m2.EndDate).Any(),
+                                        Description = m.Description,
+                                        Expanded = (m_id == null) ? (DateTime.Now > m.StartDate && DateTime.Now < m.EndDate) : m_id == m.Id,
+                                        Documents = m.Documents
                                        ,
-                                       ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
+                                        ActivityDetailVM = (ICollection<ActivityDetailVM>)m.Activities
                                             .OrderBy(a => a.StartDate)
                                             .Select(a => new ActivityDetailVM
                                             {
@@ -112,8 +116,11 @@ namespace LMSLexicon20.Controllers
                                                 EndDateToLate = (a.EndDate > m.EndDate),
                                                 EndDateOverlap = m.Activities.Where(a2 => a.EndDate > a2.StartDate && a.EndDate < a2.EndDate).Any(),
                                                 Description = a.Description,
-                                                Expanded = (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate),
-                                                HasDeadline=a.HasDeadline
+                                                Expanded = (a_id == null) ? (DateTime.Now > a.StartDate && DateTime.Now < a.EndDate) : a_id == a.Id,
+                                                HasDeadline = a.HasDeadline,
+                                                Documents = a.Documents.Where(d => d.UserId == null).ToList(),
+                                                NrOfAssignments = a.Documents.Where(d => d.UserId != null).Count(),
+                                                Assignments = a.Documents.Where(d => d.UserId != null).ToList()
                                                 ,
                                                 ActivityTypeWM =
                                                 new ActivityTypeWM
@@ -123,10 +130,9 @@ namespace LMSLexicon20.Controllers
                                                     RequireDocument = a.ActivityType.RequireDocument
                                                 }
                                             })
-                                   })
+                                    })
                     })
                     .FirstOrDefaultAsync(c => c.Id == id);
-
 
             if (courseDetailVM == null)
             {
@@ -145,7 +151,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -169,8 +175,6 @@ namespace LMSLexicon20.Controllers
             return View(viewModel);
         }
 
-
-
         // GET: Courses/Edit/5
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Edit(int? id)
@@ -192,7 +196,7 @@ namespace LMSLexicon20.Controllers
         }
 
         // POST: Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -257,7 +261,7 @@ namespace LMSLexicon20.Controllers
             course.Teacher = teachers.FirstOrDefault(e => e.CourseId == id);
             var students = await userManager.GetUsersInRoleAsync("Student");
             course.Students = students.Where(e => e.CourseId == id).ToList();
-            
+
             if (course == null)
             {
                 return NotFound();
@@ -290,13 +294,12 @@ namespace LMSLexicon20.Controllers
             TempData["SuccessText"] = $"Kursen: {course.Name} - är raderad!";
             return RedirectToAction(nameof(Index));
         }
-       
-
 
         private bool CourseExists(int id)
         {
             return _context.Courses.Any(e => e.Id == id);
         }
+
         [HttpPost]
         public JsonResult DoesCourseExist(int CourseId)
         {
@@ -309,6 +312,5 @@ namespace LMSLexicon20.Controllers
             var result = _context.Courses.Any(s => s.Name.ToLower() == name.ToLower());
             return Json(!result);
         }
-
     }
 }

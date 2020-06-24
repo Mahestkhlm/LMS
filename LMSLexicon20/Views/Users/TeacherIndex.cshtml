@@ -1,0 +1,86 @@
+﻿@model LMSLexicon20.Models.ViewModels.TeacherIndexViewModel
+@{
+    ViewData["Title"] = "Välkommen";
+}
+
+<div class="container teacher">
+    <div class="row pt-4">
+        <div class="col-md">
+            <div id="teacherHeader" class="media rounded p-4 teacher-container">
+                <img class="mr-3 rounded" src="~/Images/loginavatar.png" width="100" />
+                <div class="media-body">
+                    <h3>Välkommen @Model.FullName!</h3>
+                    <p>Det här är din profil där dina senaste aktiviteter och inlämningar visas.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row my-3">
+        <div class="col-md">
+            <div class="container rounded p-4 teacher-container">
+                <div class="media-body">
+                    <dl class="row">
+                        <dt class="col-sm-2">Din kurs:</dt>
+                        <dd class="col-sm-10">
+                            @if (Model.CourseId != null)
+                            {
+                                <a asp-controller="Courses" asp-action="Details" asp-route-id="@Model.CourseId">
+                                    @Html.DisplayFor(Model => Model.Course.Name)
+                                </a>
+                            }
+                            else
+                            {
+                                <span>Du har ingen kurs än. </span>
+                                <a asp-controller="Courses" asp-action="Index" asp-route-id="@Model.CourseId">
+                                    Välj en kurs i kursredigeraren.
+                                </a>
+                            }
+                        </dd>
+                        <dt class="col-sm-2">Aktuell modul:</dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(Model => Model.CurrentModule.Name)
+                        </dd>
+                        <dt class="col-sm-2">Antal elever:</dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(Model => Model.StudentsInCourse)
+                        </dd>
+
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row my-3"></div>
+    <div class="row px-4">
+        <div class="col-md">
+            <partial name="TeacherSchedulePartial" />
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md">
+            <div class="row">
+                <div class="col-md">
+                    <partial name="TeacherAssignmentsPartial" />
+                </div>
+            </div>
+            <div class="row my-3"></div>
+            <div class="row">
+                <div class="col-md">
+                    <div class="card border-primary">
+                        <div class="card-header bg-primary text-white">Inställningar</div>
+                        <div class="card-body py-2">
+                            <h5>Comming Soon...</h5>
+                            @*<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        function showBadge() {
+            alert("hej");
+            $("badge-count").removeClass("d-none");
+        }
+    </script>*@

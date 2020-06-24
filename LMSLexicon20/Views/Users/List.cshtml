@@ -31,7 +31,7 @@
                     @Html.DisplayNameFor(model => model.CourseName)<span> </span><a asp-action="List" asp-route-sortOrder="@ViewData["OptionFour"]" class="text-info">&#8645;</a>
                 </th>
                 <th class="col-md-3">
-                    <a asp-action="CreateUser" class="btn btn-sm btn-primary a-btn-slide-text">
+                    <a asp-action="User" class="btn btn-sm btn-primary a-btn-slide-text">
                         <i class="fas fa-plus-circle" aria-hidden="true"></i>
                         Lägg till en Lärare&nbsp;<i class="fas fa-university"></i>
                     </a>
@@ -48,8 +48,10 @@
                 <td  class="col-md-2">
                     @Html.DisplayFor(modelItem => item.FullName)
                 </td>
-                <td  class="col-md-3">
-                    @Html.DisplayFor(modelItem => item.Email)
+                <td class="col-md-3">
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Email)
+                        </a>
                 </td>
                 <td  class="col-md-2">
                     <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">
