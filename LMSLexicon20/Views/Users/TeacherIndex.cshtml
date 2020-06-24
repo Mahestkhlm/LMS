@@ -57,14 +57,29 @@
         </div>
         <div class="col-md-1"></div>
         <div class="col-md">
-            <partial name="TeacherAssignmentsPartial" />
+            <div class="row">
+                <div class="col-md">
+                    <partial name="TeacherAssignmentsPartial" />
+                </div>
+            </div>
+            <div class="row my-3"></div>
+            <div class="row">
+                <div class="col-md">
+                    <div class="card border-primary">
+                        <div class="card-header bg-primary text-white">Inställningar</div>
+                        <div class="card-body py-2">
+                            <h5>Comming Soon...</h5>
+                            @*<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">*@
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-@*<script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script>
-        function showBadge() {
-            alert("hej");
-            $("badge-count").removeClass("d-none");
-        }
-    </script>*@
+    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script>
+            function showBadge() {
+                alert("hej");
+                $("badge-count").removeClass("d-none");
+            }
+        </script>*@

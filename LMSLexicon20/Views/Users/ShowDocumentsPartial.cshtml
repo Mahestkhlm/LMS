@@ -1,7 +1,5 @@
 ﻿@model LMSLexicon20.Models.ViewModels.ShowDocuments
 
-    
-        
         <div class="card-body">
             @if (Model.Documents != null)
             {
@@ -23,4 +21,6 @@
                 }
             }
         </div>
-
+<script>$(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })</script>
