@@ -121,7 +121,7 @@ namespace LMSLexicon20.Controllers
             var user = await _context.Users.FindAsync(id);
             //var viewModel = _mapper.Map<StudentIndexViewModel>(user);
             var viewModel = _mapper.ProjectTo<StudentIndexViewModel>(_userManager.Users).FirstOrDefault(e => e.Id == id);
-            var documents = await _context.Documents.Where(e =>e.UserId == id).ToListAsync();
+            var documents = await _context.Documents.Where(e => e.UserId == id).ToListAsync();
             
             viewModel.Documents = documents;
 
@@ -131,24 +131,26 @@ namespace LMSLexicon20.Controllers
             var activities = _context.Activities.Include(e=>e.ActivityType).Include(e=>e.Module).Where(e => e.Module.CourseId == user.CourseId);
             viewModel.WeeklyActivities = await activities.Where(e => e.StartDate.Date >= mondayWeekStartDay && e.StartDate.Date < mondayWeekStartDay.AddDays(6)).ToListAsync();
 
-            var assignments = await activities.Include(e => e.Documents).Where(e => e.ActivityType.RequireDocument == true && e.StartDate.Date <= today).ToListAsync();
-            var openAssignment = new List<Activity>();
+            var openAssignment = await activities.Include(e => e.Documents).Where(e => e.ActivityType.RequireDocument == true && e.StartDate.Date <= today)
+                                                 .Where(e => e.Documents.Where(m => m.UserId == id).FirstOrDefault(m => m.ActivityId == e.Id) == null).ToListAsync();
 
-            foreach (var item in assignments)
-            {
-                openAssignment.Add(item);
-            }
+            //var openAssignment = new List<Activity>();
 
-            foreach (var assignment in assignments)
-            {
-                foreach (var document in documents)
-                {
-                    if (assignment.Id == document.ActivityId)
-                    {
-                        openAssignment.Remove(assignment);
-                    }
-                }
-            }
+            //foreach (var item in assignments)
+            //{
+            //    openAssignment.Add(item);
+            //}
+
+            //foreach (var assignment in assignments)
+            //{
+            //    foreach (var document in documents)
+            //    {
+            //        if (assignment.Id == document.ActivityId)
+            //        {
+            //            openAssignment.Remove(assignment);
+            //        }
+            //    }
+            //}
             viewModel.OpenAssignments = openAssignment;
             return View(viewModel);
         }
