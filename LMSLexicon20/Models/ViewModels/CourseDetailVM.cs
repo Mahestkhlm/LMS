@@ -33,6 +33,7 @@ namespace LMSLexicon20.ViewModels
 
         [Display(Name = "Lärare")]
         public User Teacher { get; set; }
+        public string UserId { get; set; }
 
         public ICollection<Document> Documents { get; set; }
 
