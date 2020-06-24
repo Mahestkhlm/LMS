@@ -1,76 +1,61 @@
 ﻿@model LMSLexicon20.Models.ViewModels.StudentIndexViewModel
 
 @{
-    ViewData["Title"] = "Student StartPage";
+    ViewData["Title"] = "Startsida";
 }
 
 
-
-<div style="background-color:ThreeDHighlight powderblue">
-
-
-    <div class="container">
-        <div class="row pt-4">
-            <div class="col-md">
-                <div id="StudentHeader" class="media rounded p-4">
-                    <img class="mr-3 rounded" src="~/Images/loginavatar.png" width="100" />
-                    <div class="media-body">
-                        <h3>VÄLKOMMEN @Model.FullName</h3>
-                        <p>Det här är din profil där dina senaste aktiviteter och inlämningar visas.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row my-3"></div>
-
-        <div class="row px-5">
-            <div id="carduppgifter" class="media rounded p-4">
+<div class="container" style="background-color:ThreeDHighlight powderblue">
+    <div class="row">
+        <div id="StudentHeader" class="media rounded">
+            <img class="mr-3 rounded" src="~/Images/loginavatar.png" width="100" />
+            <div class="media-body">
+                <h3>VÄLKOMMEN @Model.FullName</h3>
+                <p>Det här är din profil där dina senaste aktiviteter och inlämningar visas.</p>
                 <h5 class="mb-5">KURS: @Model.CourseName</h5>
-                <div class="card-body  card-border-dark rounded">
-                    <h4 class="card-header bg-info text-black">EJ INLÄMNADE UPPGIFTER</h4>
-                    <span class="badge badge-pill indigo"><i class="fas fa-bullhorn" aria-hidden="true"></i></span>
-                    <button class="badge badge-pill btn-lg btn-warning" type="button" data-toggle="collapse" data-target="#EjActivity1collapse" aria-expanded="false" aria-controls="EjActivitycollapse">
-                        EJ INLÄMNAD
-                    </button>
-                    @*<div class="collapse" id="EjActivity1collapse">
-                            <div class="card card-body">
-                                <ul>
-                                    @if (Model != null)
-                                    {
-
-                                        @if (Model.LateAssignments.Count() > 0)
-                                        {
-
-                                            @foreach (var assignment in Model.LateAssignments)
-                                            {
-                                                <li>
-                                                    <h5> <a asp-controller="Activities" asp-action="Details" asp-route-courseId="@Model.CourseId" asp-route-id="@assignment.Id">@assignment.Name</a> <span class="float-right">SISTA INLÄMNINGSDATUM: @assignment.EndDate</span></h5>
-                                                </li>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <li>INGEN SEN INLÄMNINGSUPPGIFTER!</li>
-                                        }
-                                    }
-                                </ul>
-
-                            </div>
-                        </div>*@
-                </div>
-
             </div>
         </div>
-        <div class="col-md-6"></div>
     </div>
-
     <div class="row my-3"></div>
 
-    <div class="container list-inline-item bg-border-dark text-black">
+    <div class="row">
+        <div id="carduppgifter" class="card card-border-dark rounded">
+            <h6 class="card-header bg-info text-black d-flex justify-content-between align-items-center">
+                <span>EJ INLÄMNADE UPPGIFTER</span>
+                <span>Deadline</span>
+            </h6>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    @if (Model.OpenAssignments.Count == 0)
+                    {
+                        <li class="list-group-item">All uppgifter är inlämnade</li>
+                    }
+                    @foreach (var item in Model.OpenAssignments)
+                    {
+                        <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
+                            <span>@item.Name</span>
+                            <div class="ddzone" data-domain="assignment" data-id="@item.Id">
+                                <div class="fileinput">
+                                    <button type="button" class="btn btn-sm btn-outline-warning">
+                                        <span class="fas fa-file-archive"> </span>
+                                        Ladda Upp
+                                    </button>
+                                </div>
+                            </div>
+                            <span>@item.EndDate.Date.ToString("dd'/'M")</span>
+                        </li>
+                    }
+                </ul>
 
+            </div>
+        </div>
+    </div>
+    <div class="row my-3"></div>
+
+    <div class="row">
         <div id="cardvecka" class="card card-border-dark rounded">
             <h4 class="card-header bg-info text-black">AKTUELL VECKA: @Model.GetWeekNumber()</h4>
-            <div class="card-body card-border-dark rounded">
+            <div class="card-body">
                 <ul class="list-group list-group-flush">
                     @for (int i = 0; i < 7; i++)
                     {
@@ -88,26 +73,28 @@
                                 {
                                     @if (item.StartDate.Date == Model.GetWeekDay(i))
                                     {
-                                        <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
+                                        <li class="list-group-item border-0 d-flex align-items-center py-1">
                                             <span>@item.Name</span>
-                                            @if (item.ActivityType.RequireDocument)
-                                            {
-                                                @if (Model.Documents.FirstOrDefault(e => e.ActivityId == item.Id) != null)
+                                            <div class="ml-2">
+                                                @if (item.ActivityType.RequireDocument)
                                                 {
-                                                    <span>Uploaded</span>
-                                                }
-                                                else
-                                                {
-                                                    <div class="ddzone" data-domain="assignment" data-id="@item.Id">
-                                                        <div class="fileinput">
-                                                            <button type="button" class="btn btn-sm btn-outline-warning">
-                                                             <span class="fas fa-file-archive"> </span>
-                                                                Ladda Upp
-                                                            </button>
+                                                    @if (Model.Documents.FirstOrDefault(e => e.ActivityId == item.Id) != null)
+                                                    {
+                                                        <span class="border bg-success text-white rounded-pill px-2">Uppladdat</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="ddzone" data-domain="assignment" data-id="@item.Id">
+                                                            <div class="fileinput">
+                                                                <button type="button" class="btn btn-sm btn-outline-warning">
+                                                                    <span class="fas fa-file-archive"> </span>
+                                                                    Ladda Upp
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    }
                                                 }
-                                            }
+                                            </div>
                                         </li>
                                     }
                                 }
@@ -115,15 +102,12 @@
                         </li>
                     }
                 </ul>
-
-
                 <br />
-                
             </div>
         </div>
-               
-
-        <div class="row my-3"></div>
+    </div>
+    <div class="row my-3"></div>
+    @*<div class="row">
         <div class="card">
             <h5 class="card-header bg-secondary text-black">UPLOADS</h5>
             <div class="card-body  card-border-dark rounded">
@@ -132,17 +116,14 @@
                 </button>
                 <div class="collapse" id="collapseExample">
                     <div class="card card-body">
-                        @*<a asp-controller="Documents" asp-action="Details" asp-route-courseId="@Model.CourseId" asp-route-id="">@Activity.Name</a>
-                            <a href="@s">@name</a>*@
+                       
                     </div>
                 </div>
             </div>
         </div>
-
-    </div>
-
-
+    </div>*@
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/dropzone.min.js" integrity="sha256-fegGeSK7Ez4lvniVEiz1nKMx9pYtlLwPNRPf6uc8d+8=" crossorigin="anonymous"></script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>var url_action='@Url.Action("PostDoc", "Uploads")';</script>

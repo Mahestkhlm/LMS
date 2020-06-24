@@ -39,7 +39,13 @@ namespace LMSLexicon20.Controllers
         {
             long size = files.Sum(f => f.Length);
             var filePath="";
-            string[] permittedExtensions = { ".txt", ".pdf", ".doc", ".docx", ".xls" };
+            string[] permittedExtensions = { ".txt", ".pdf", ".doc", ".docx", ".xls",".js", ".html", ".htm",".cshtml",".zip",".rar"};
+
+
+
+                                               
+
+
             foreach (IFormFile source in files)
             {
 
@@ -65,11 +71,16 @@ namespace LMSLexicon20.Controllers
 
                         if (!await LinkDocToDomainAsync(filePath, domain, id))
                         {
-                            TempData["FailText"] = $"Kunde inte koppla {domain} / {id} till filen {filePath}. Upladdning avbryts";
+                            //TempData["FailText"] = $"Kunde inte koppla {domain} / {id} till filen {filePath}. Upladdning avbryts";
                             System.IO.File.Delete(filePath);
+                            throw new ApplicationException($"Kunde inte koppla {domain} / {id} till filen {filePath}. Upladdning avbryts");
                         }
                     }
-                     
+                    else
+                    {
+                        throw new ApplicationException($"Otillåten eller okänd filtyp {filePath}");
+                    }
+
                 }
                 catch (Exception ex)
                 {
