@@ -1,40 +1,38 @@
 ﻿@model LMSLexicon20.Models.ViewModels.TeacherIndexViewModel
 
-    <div class="card border-primary">
-        <div class="card-header bg-primary text-white">Schema vecka @Model.GetWeekNumber()</div>
-        <div class="card-body py-2">
-            <ul class="list-group list-group-flush">
-                @for (int i = 0; i < 7; i++)
-                {
-                    <li class="list-group-item px-2">
-                        <b class="d-flex  justify-content-between align-items-center">
-                            <span>
-                                @DateTime.Now.AddDays(i).DayOfWeek
-
-                            </span>
-                            <span>
-                                @DateTime.Now.AddDays(i).ToString("dd'/'M")
-
-                            </span>
-                        </b>
-                        <ul class="list-group">
-                            @foreach (var item in Model.WeeklyActivities)
+<div class="card border-primary">
+    <div class="card-header bg-primary text-white">Schema vecka @Model.GetWeekNumber()</div>
+    <div class="card-body py-2">
+        <ul class="list-group list-group-flush">
+            @for (int i = 0; i < 7; i++)
+            {
+                <li class="list-group-item px-2">
+                    <b class="d-flex  justify-content-between align-items-center">
+                        <span>
+                            @*@DateTime.Now.AddDays(i).DayOfWeek*@
+                            @Model.WeekDays[i]
+                        </span>
+                        <span>
+                            @Model.StartOfWeek.AddDays(i).ToString("dd'/'M")
+                        </span>
+                    </b>
+                    <ul class="list-group">
+                        @foreach (var item in Model.WeeklyActivities)
+                        {
+                            //om gällande datum är >= än enddate - skriv ut
+                            @*@if (DateTime.Now.AddDays(i) <= item.EndDate
+                                && DateTime.Now.AddDays(i) >= item.StartDate)*@
+                            @if (Model.StartOfWeek.AddDays(i).Date <= item.EndDate
+                             && Model.StartOfWeek.AddDays(i).Date >= item.StartDate)
                             {
-                                //om gällande datum är >= än enddate - skriv ut
-
-                                @*@if (DateTime.Now.AddDays(i) <= item.EndDate
-                                    && DateTime.Now.AddDays(i) >= item.StartDate)*@
-                                @if (DateTime.Now.AddDays(i).Date <= item.EndDate
-                                  && DateTime.Now.AddDays(i).Date >= item.StartDate)
-                                {
-                                    <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
-                                        @Html.DisplayFor(modelItem => item.Name)
-                                    </li>
-                                }
+                                <li class="list-group-item border-0 d-flex justify-content-between align-items-center py-1">
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </li>
                             }
-                        </ul>
-                    </li>
-                }
-            </ul>
-        </div>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
     </div>
+</div>

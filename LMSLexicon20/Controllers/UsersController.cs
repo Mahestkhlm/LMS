@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 
@@ -65,14 +66,14 @@ namespace LMSLexicon20.Controllers
                 viewModel.Course = await _context.Courses
                     .Include(c => c.Modules)
                     .FirstOrDefaultAsync(c => c.Id == user.CourseId);
-            
+
             viewModel.StudentsInCourse = _userManager.GetUsersInRoleAsync("Student").Result
                             .Where(u => u.CourseId == user.CourseId).Count();
-            
+
             viewModel.CurrentModule = viewModel.Course.Modules
                 .FirstOrDefault(m => m.StartDate <= DateTime.Now.Date
                     && m.EndDate >= DateTime.Now.Date);
-            
+
             viewModel.Assignments = await _context.Activities
                 .Where(a => a.Module.CourseId == user.CourseId)
                 .Where(a => a.HasDeadline == true)
@@ -84,36 +85,49 @@ namespace LMSLexicon20.Controllers
 
             var now = DateTime.Now;
 
+            var today = DateTime.Now;
+            //starta veckan med närmaste föregående måndag
+            //räkna hur många dagar det var sedan 
+            //ons=3 idag+(-3+1) => idag+-2 dgr =måndag(1)
+            viewModel.StartOfWeek = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+
             //alla activities i kursen
             viewModel.WeeklyActivities = await _context.Activities
                .Where(a => a.Module.CourseId == user.CourseId)
-               //alla som startar innan sjunde dagen och slutar efter första dagen i veckan
-               .Where(a =>
-                    now.AddDays(6) > a.StartDate
-                    && now < a.EndDate)
+               .Where(a => viewModel.StartOfWeek.AddDays(6)>=a.StartDate.Date && viewModel.StartOfWeek.Date <=a.EndDate  )
                .ToListAsync();
+
+            //alla som startar innan sjunde dagen och slutar efter första dagen i veckan
+            //.Where(a =>
+            //     now.AddDays(6) > a.StartDate
+            //     && now < a.EndDate)
 
             return View(viewModel);
         }
         public async Task<IActionResult> ShowDocuments(int id)
         {
             var activity = await _context.Activities
-                .Include(a=>a.Documents)
-                .ThenInclude(d=>d.User)
-                .FirstOrDefaultAsync(a=>a.Id==id);
+                .Include(a => a.Documents)
+                .ThenInclude(d => d.User)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             //endast inlämningar från elever
             if (activity.Documents == null)
                 return NotFound();
-            var documents = activity.Documents.Where(d => d.UserId != null).ToList();
+            var documents = activity.Documents
+                .GroupBy(d => d.UserId)
+                .Select(d => d.First())
+                .ToList();
+
             var model = new ShowDocuments
-                {
-                    Id = id,
-                    Documents = documents
-                };
+            {
+                Id = id,
+                Documents = documents
+            };
             if (model == null)
                 return NotFound();
             if (Request.IsAjax())
-                return PartialView("ShowDocumentsPartial",model);
+                return PartialView("ShowDocumentsPartial", model);
             return View(model);
         }
         public async Task<IActionResult> StudentIndex(string id)
@@ -121,14 +135,14 @@ namespace LMSLexicon20.Controllers
             var user = await _context.Users.FindAsync(id);
             //var viewModel = _mapper.Map<StudentIndexViewModel>(user);
             var viewModel = _mapper.ProjectTo<StudentIndexViewModel>(_userManager.Users).FirstOrDefault(e => e.Id == id);
-            var documents = await _context.Documents.Where(e =>e.UserId == id).ToListAsync();
-            
+            var documents = await _context.Documents.Where(e => e.UserId == id).ToListAsync();
+
             viewModel.Documents = documents;
 
             var today = DateTime.Today;
             var mondayWeekStartDay = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
 
-            var activities = _context.Activities.Include(e=>e.ActivityType).Include(e=>e.Module).Where(e => e.Module.CourseId == user.CourseId);
+            var activities = _context.Activities.Include(e => e.ActivityType).Include(e => e.Module).Where(e => e.Module.CourseId == user.CourseId);
             viewModel.WeeklyActivities = await activities.Where(e => e.StartDate.Date >= mondayWeekStartDay && e.StartDate.Date < mondayWeekStartDay.AddDays(6)).ToListAsync();
 
             var assignments = await activities.Include(e => e.Documents).Where(e => e.ActivityType.RequireDocument == true && e.StartDate.Date <= today).ToListAsync();
@@ -152,8 +166,8 @@ namespace LMSLexicon20.Controllers
             viewModel.OpenAssignments = openAssignment;
             return View(viewModel);
         }
-        
-       
+
+
         // GET: User/Create
         [Authorize(Roles = "Teacher")]
         public ActionResult CreateUser(int? courseId = null)

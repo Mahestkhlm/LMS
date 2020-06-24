@@ -32,7 +32,8 @@ namespace LMSLexicon20.Models.ViewModels
 
             return cal.GetWeekOfYear(date1, dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
         }
-        public string[] WeekDays { get { return new string[] { "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag" }; } set { } }
+        public DateTime StartOfWeek { get; set; }
+        public string[] WeekDays { get { return new string[] { "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag","Söndag" }; } set { } }
         //public int CurrentWeek { get { return DateTime.Now.DayOfYear / 7; } set { } }
     }
 }
